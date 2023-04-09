@@ -18,6 +18,7 @@ model PlayerStatistics {
   playerId Int @unique
 
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model Player {
@@ -38,6 +39,7 @@ model Player {
   matchToPlayers MatchToPlayer[]
   messages Message[]
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model Match {
@@ -52,6 +54,7 @@ model Match {
   players     MatchToPlayer[]
 
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model MatchToPlayer {
