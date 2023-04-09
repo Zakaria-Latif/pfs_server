@@ -49,6 +49,7 @@ CREATE TABLE `PlayerStatistics` (
     `favoritePosition` VARCHAR(191) NOT NULL,
     `playerId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `PlayerStatistics_playerId_key`(`playerId`),
     PRIMARY KEY (`id`)
