@@ -11,6 +11,11 @@ import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import { OnModuleInit } from '@nestjs/common';
 
+import { MatchController } from './match/match.controller';
+import { MatchService } from './match/match.service';
+
+import { PrismaService } from './prisma.service';
+
 const prisma = new PrismaClient();
 
 const generatePlayers = (count: number) => {
@@ -83,16 +88,21 @@ const generateMatches = (count: number) => {
     MatchModule,
     MessageModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, MatchController],
+  providers: [AppService, PrismaService, MatchService],
 })
 export class AppModule implements OnModuleInit {
   async onModuleInit() {
     const players = generatePlayers(10);
     const playerStatistics = generatePlayerStatistics(10);
     const matches = generateMatches(10);
-    await prisma.player.createMany({ data: players });
-    await prisma.playerStatistics.createMany({ data: playerStatistics });
-    await prisma.match.createMany({ data: matches });
+    try {
+      await prisma.player.createMany({ data: players });
+      await prisma.playerStatistics.createMany({ data: playerStatistics });
+      await prisma.match.createMany({ data: matches });
+    } catch (error) {
+      console.log('ERROR ON INIT THE DUMMY DATA: ', error);
+    }
+    console.log('Password', process.env.DATABASE_PASSWORD);
   }
 }
