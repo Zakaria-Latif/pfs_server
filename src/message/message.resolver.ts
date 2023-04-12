@@ -1,17 +1,18 @@
 import { Query, Resolver } from '@nestjs/graphql';
-import { Message } from './message.entity';
 import { MessageService } from './message.service';
+import { Message } from '@prisma/client';
+import { Message as MessageM } from './message.entity';
 
-@Resolver(()=>Message)
+@Resolver(()=>MessageM)
 export class MessageResolver {
     constructor(
-        private matchService: MessageService,
+        private messageService: MessageService,
         // private movieCommentService: MovieCommentService,
       ) {}
     
-      @Query(() => [Message])
+      @Query(() => [MessageM])
       async getAllMessages(): Promise<Message[]> {
-        return this.matchService.getAllMessages();
+        return this.messageService.getAllMessages();
       }
     
 }

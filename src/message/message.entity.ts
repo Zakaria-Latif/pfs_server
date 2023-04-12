@@ -1,16 +1,25 @@
-import { Field, Int, ObjectType  } from '@nestjs/graphql';
-import { GraphQLBoolean } from 'graphql';
+import { Field, Float, Int, ObjectType  } from '@nestjs/graphql';
+import { Group } from 'src/group/group.entity';
+import { Player } from 'src/player/player.entity';
 
 @ObjectType()
 export class Message {
-    @Field(type=>Int)
-    id: number
+    @Field(type => Int)
+    id: number;
     @Field()
-    message: string
-    // group       Group
-    // groupId    Int
-    // sender      Player   @relation(fields: [senderId], references: [id])
-    // senderId    Int
-    @Field(type=>GraphQLBoolean)
-    isRead: boolean      
+    message: string;
+    @Field(type => Int)
+    groupId: number;
+    @Field(()=>Group)
+    group: Group;
+    @Field(type => Int)
+    senderId: number;
+    @Field(()=>Player)
+    sender: Player;
+    @Field()
+    isRead: boolean;
+    @Field()
+    createdAt: Date;
+    @Field()
+    updatedAt: Date;
 }

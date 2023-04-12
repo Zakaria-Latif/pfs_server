@@ -2,13 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Match {
+type MatchToPlayer {
   id: Int!
-  location: String!
-  time: DateTime!
-  playersNumber: Int!
-  prize: String!
-  duration: Float!
+  rate: Float!
+  position: String!
+  playerId: Int!
+  matchId: Int!
+  createdAt: DateTime!
 }
 
 """
@@ -19,10 +19,113 @@ scalar DateTime
 type Message {
   id: Int!
   message: String!
+  groupId: Int!
+  group: Group!
+  senderId: Int!
+  sender: Player!
   isRead: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Group {
+  id: Int!
+  name: String!
+  players: [GroupToPlayer!]!
+  messages: [Message!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type GroupToPlayer {
+  id: Int!
+  player: Player!
+  playerId: Int!
+  group: Group!
+  groupId: Int!
+  createdAt: DateTime!
+}
+
+type PlayerStatistics {
+  id: Int!
+  rate: Float!
+  matchesNumber: Int!
+  favoritePosition: String
+  playerId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Player {
+  id: Int!
+  username: String!
+  password: String!
+  fullName: String!
+  location: String!
+  isVerified: Boolean!
+  verificationToken: String!
+  resetToken: String!
+  resetExpiration: DateTime!
+  description: String
+  playerStatistics: PlayerStatistics
+  playerStatisticsId: Int!
+  groups: [GroupToPlayer!]!
+  createdMatches: [Match!]!
+  matchToPlayers: [MatchToPlayer!]!
+  messages: [Message!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Match {
+  id: Int!
+  location: String!
+  name: String!
+  time: DateTime!
+  playersNumber: Int!
+  prize: String!
+  duration: Float!
+  creator: Player!
+  players: [MatchToPlayer!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
-  getAllMatches: [Match!]!
+  getAllMatches(paginationInput: PaginationInput!): [Match!]!
+  searchMatches(searchMatchesInput: FilterMatchInput!): [Match!]!
   getAllMessages: [Message!]!
+}
+
+input PaginationInput {
+  skip: Int!
+  take: Int!
+}
+
+input FilterMatchInput {
+  minDuration: Float!
+  maxDuration: Float!
+  from: DateTime!
+  to: DateTime!
+}
+
+type Mutation {
+  createMatch(createMatchInput: CreateMatchInput!): Match!
+  addPlayerToMatch(addPlayerToMatchInput: AddPlayerToMatchInput!): Match!
+}
+
+input CreateMatchInput {
+  name: String!
+  location: String!
+  time: DateTime!
+  playersNumber: Int!
+  prize: String!
+  duration: Float!
+  creatorId: Int!
+}
+
+input AddPlayerToMatchInput {
+  playerId: Int!
+  matchId: Int!
+  creatorId: Int!
 }

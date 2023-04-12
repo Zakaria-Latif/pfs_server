@@ -10,6 +10,9 @@ import { join } from 'path';
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import { OnModuleInit } from '@nestjs/common';
+import { PlayerService } from './player/player.service';
+import { PlayerResolver } from './player/player.resolver';
+import { PlayerModule } from './player/player.module';
 
 const prisma = new PrismaClient();
 
@@ -19,7 +22,7 @@ const generatePlayers = (count: number) => {
     data.push({
       username: faker.internet.userName(),
       password: faker.internet.password(),
-      fullName: faker.name.findName(),
+      fullName: faker.name.fullName(),
       location: faker.address.city(),
       isVerified: faker.datatype.boolean(),
       verificationToken: faker.datatype.uuid(),
@@ -59,6 +62,7 @@ const generateMatches = (count: number) => {
   for (let i = 0; i < count; i++) {
     data.push({
       location: faker.address.city(),
+      name: faker.address.city(),
       time: faker.date.future(),
       playersNumber: faker.datatype.number({ min: 8, max: 22 }),
       prize: faker.company.catchPhrase(),
@@ -82,17 +86,18 @@ const generateMatches = (count: number) => {
     }),
     MatchModule,
     MessageModule,
+    PlayerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PlayerService, PlayerResolver],
 })
 export class AppModule implements OnModuleInit {
   async onModuleInit() {
-    const players = generatePlayers(10);
-    const playerStatistics = generatePlayerStatistics(10);
-    const matches = generateMatches(10);
-    await prisma.player.createMany({ data: players });
-    await prisma.playerStatistics.createMany({ data: playerStatistics });
-    await prisma.match.createMany({ data: matches });
+    // const players = generatePlayers(10);
+    // const playerStatistics = generatePlayerStatistics(10);
+    // const matches = generateMatches(10);
+    // await prisma.player.createMany({ data: players });
+    // await prisma.playerStatistics.createMany({ data: playerStatistics });
+    // await prisma.match.createMany({ data: matches });
   }
 }
