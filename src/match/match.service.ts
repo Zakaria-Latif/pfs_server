@@ -1,48 +1,68 @@
-
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
-import { AddPlayerToMatchInput, CreateMatchInput, FilterMatchInput, PaginationInput } from './match.input';
-import { Match } from '@prisma/client';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { CreateMatchInput } from './dto/create-match.input';
+import { UpdateMatchInput } from './dto/update-match.input';
+import { Match } from './entities/match.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationGroupInput } from 'src/group/dto/pagination-group.input';
+import { Player } from 'src/player/entities/player.entity';
+import { PlayerService } from 'src/player/player.service';
+import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
+import { MatchToPlayerService } from 'src/match-to-player/match-to-player.service';
+import { SearchMatchInput } from './dto/search-match.input';
 
 @Injectable()
 export class MatchService {
-   constructor(private prisma: PrismaService) {}
- 
-   async getAllMatches(paginationInput: PaginationInput): Promise<Match[]> {
-       return this.prisma.match.findMany({skip: paginationInput.skip, take: paginationInput.take});
-   }
+  constructor(@InjectRepository(Match) private matchRepository: Repository<Match>, 
+    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,
+    @Inject(forwardRef(() => PlayerService))
+    private readonly matchToPlayerService: MatchToPlayerService
+  ){}
+  
+  async create(createMatchInput: CreateMatchInput):  Promise<Match> {
+    return this.matchRepository.create(createMatchInput);
+  }
 
-   async createMatch(createMatchInput: CreateMatchInput): Promise<Match>{
-    return this.prisma.match.create({
-        data: {
-            name: createMatchInput.name,
-            location: createMatchInput.location,
-            time: createMatchInput.time,
-            playersNumber: createMatchInput.playersNumber,
-            prize: createMatchInput.prize,
-            duration: createMatchInput.duration,
-            creator: {
-              connect: { id: createMatchInput.creatorId },
-            },
-            // Include any other optional fields here
-          },
+  async findAll(paginationInput: PaginationGroupInput):  Promise<Match[]> {
+    return this.matchRepository.find({
+      skip: paginationInput.skip,
+      take: paginationInput.take
+    });
+  }
+
+  async search(searchMatchInput: SearchMatchInput): Promise<Match[]>{
+    const query = this.matchRepository.createQueryBuilder('match')
+    .where('match.duration BETWEEN :min AND :max', { min: searchMatchInput.minDuration, max: searchMatchInput.maxDuration })
+    .andWhere('match.time BETWEEN :startDate AND :endDate', { startDate: searchMatchInput.dateFrom, endDate: searchMatchInput.dateTo });
+    return await query.getMany();
+  }
+
+  async findOne(id: number):  Promise<Match> {
+    return this.matchRepository.findOneOrFail({ where: { id } });;
+  }
+
+  async update(id: number, updateMatchInput: UpdateMatchInput):  Promise<Match> {
+    return null;
+  }
+
+  async remove(id: number) :  Promise<Match>{
+    return null;
+  }
+
+  async getMatchesByCreatorId(creatorId: number): Promise<Match[]>{
+    return this.matchRepository.find({
+      where: {
+        creatorId
+      }
     })
-   }
+  }
 
-    async searchMatches(filterMatchInput: FilterMatchInput): Promise<Match[]>{
-      return this.prisma.match.findMany({where: {
-        duration: {
-          gte: filterMatchInput.minDuration,
-          lte: filterMatchInput.maxDuration,
-        },
-        time: {
-          gte: filterMatchInput.from.toISOString(),
-          lte: filterMatchInput.to.toISOString()
-        }
-      }});
-    }
+  async getCreator(creatorId: number): Promise<Player>{
+    return this.playerService.findOne(creatorId);
+  }
 
-    async addPlayerToMatch(addPlayerToMatchInput: AddPlayerToMatchInput): Promise<Match>{
-      return null
-    }
+  async getPlayers(matchId: number): Promise<MatchToPlayer[]>{
+    return this.matchToPlayerService.findMatchToPlayerByMatchId(matchId);
+  }
 }

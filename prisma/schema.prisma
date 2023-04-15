@@ -25,15 +25,15 @@ model Player {
   id          Int      @id @default(autoincrement())
   username    String
   password    String
-  fullName    String
-  location    String
+  email String
+  location    String?
   isVerified Boolean @default(false)
-  verificationToken String
-  resetToken String
+  verificationToken String?
+  resetToken String?
   resetExpiration DateTime @default(now())
   description String?  @default("")
   playerStatistics PlayerStatistics?
-  playerStatisticsId Int
+  playerStatisticsId Int?
   groups      GroupToPlayer[]
   createdMatches Match[]
   matchToPlayers MatchToPlayer[]
@@ -41,8 +41,6 @@ model Player {
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
-
-   
 }
 
 model Match {

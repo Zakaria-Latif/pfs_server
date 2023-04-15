@@ -3,101 +3,59 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { MatchModule } from './match/match.module';
-import { MessageModule } from './message/message.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-
-import { PrismaClient } from '@prisma/client';
-import { faker } from '@faker-js/faker';
 import { OnModuleInit } from '@nestjs/common';
-import { PlayerService } from './player/player.service';
-import { PlayerResolver } from './player/player.resolver';
+import { MatchService } from './match/match.service';
+import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
+import { PlayerStatisticsModule } from './player-statistics/player-statistics.module';
+import { GroupModule } from './group/group.module';
+import { GroupToPlayerModule } from './group-to-player/group-to-player.module';
+import { MessageModule } from './message/message.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Group } from './group/entities/group.entity';
+import { GroupToPlayer } from './group-to-player/entities/group-to-player.entity';
+import { Match } from './match/entities/match.entity';
+import { Message } from './message/entities/message.entity';
+import { Player } from './player/entities/player.entity';
+import { PlayerStatistics } from './player-statistics/entities/player-statistic.entity';
+import { MatchToPlayerModule } from './match-to-player/match-to-player.module';
+import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity';
 
-const prisma = new PrismaClient();
-
-const generatePlayers = (count: number) => {
-  const data = [];
-  for (let i = 0; i < count; i++) {
-    data.push({
-      username: faker.internet.userName(),
-      password: faker.internet.password(),
-      fullName: faker.name.fullName(),
-      location: faker.address.city(),
-      isVerified: faker.datatype.boolean(),
-      verificationToken: faker.datatype.uuid(),
-      resetToken: faker.datatype.uuid(),
-      resetExpiration: faker.date.future(),
-      description: faker.lorem.sentence(),
-      playerStatisticsId: i + 1,
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.recent(),
-    });
-  }
-  return data;
-};
-
-const generatePlayerStatistics = (count: number) => {
-  const data = [];
-  for (let i = 0; i < count; i++) {
-    data.push({
-      rate: parseFloat(faker.finance.amount(0, 100, 2)),
-      matchesNumber: faker.datatype.number(100),
-      favoritePosition: faker.helpers.arrayElement([
-        'forward',
-        'midfielder',
-        'defender',
-        'goalkeeper',
-      ]),
-      playerId: i + 1,
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.recent(),
-    });
-  }
-  return data;
-};
-
-const generateMatches = (count: number) => {
-  const data = [];
-  for (let i = 0; i < count; i++) {
-    data.push({
-      location: faker.address.city(),
-      name: faker.address.city(),
-      time: faker.date.future(),
-      playersNumber: faker.datatype.number({ min: 8, max: 22 }),
-      prize: faker.company.catchPhrase(),
-      duration: parseFloat(faker.finance.amount(0.5, 4, 1)),
-      creatorId: i + 1,
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.recent(),
-    });
-  }
-  return data;
-};
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-
-      // to generate schema from @ObjectType() class
-      // autoSchemaFile: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('app.host', 'localhost'),
+        port: configService.get<number>('app.port', 3306),
+        username: configService.get<string>('app.username', 'root'),
+        password: configService.get<string>('app.password', 'root'),
+        database: configService.get<string>('app.database', 'pfs'),
+        entities: [Group, GroupToPlayer, Match, MatchToPlayer, Message, Player, PlayerStatistics],
+        synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
+      }),
+      inject: [ConfigService],
+    }),
     MatchModule,
-    MessageModule,
     PlayerModule,
+    PlayerStatisticsModule,
+    GroupModule,
+    GroupToPlayerModule,
+    MessageModule,
+    MatchToPlayerModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, PlayerService, PlayerResolver],
 })
 export class AppModule implements OnModuleInit {
   async onModuleInit() {
-    // const players = generatePlayers(10);
-    // const playerStatistics = generatePlayerStatistics(10);
-    // const matches = generateMatches(10);
-    // await prisma.player.createMany({ data: players });
-    // await prisma.playerStatistics.createMany({ data: playerStatistics });
-    // await prisma.match.createMany({ data: matches });
   }
 }

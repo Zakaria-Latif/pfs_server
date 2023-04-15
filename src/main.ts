@@ -1,21 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// import { Sequelize } from 'sequelize';
-
-// const sequelize = new Sequelize('test', 'root', 'ZaKa1234@', {
-//   host: 'localhost',
-//   dialect: 'mysql',
-//   port: 3306,
-// });
+import * as path from 'path';
+import * as dotenv from 'dotenv';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  // TODO: Config the database credentials, PORT...
+  // Load environment variables
+  dotenv.config({
+    path: path.resolve(
+      __dirname,
+      `${
+        process.env.NODE_ENV === 'development'
+          ? './config/config-dev.env'
+          : './config/config-prod.env'
+      }`,
+    ),
+  });
+
   const app = await NestFactory.create(AppModule);
-  // try {
-  //   await sequelize.authenticate();
-  //   console.log('Connection has been established successfully.');
-  // } catch (error) {
-  //   console.error('Unable to connect to the database:', error);
-  // }
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }
 bootstrap();
