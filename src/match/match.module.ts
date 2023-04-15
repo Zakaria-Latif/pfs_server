@@ -1,15 +1,13 @@
-import { Module } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
-import { MatchResolver } from './match.resolver';
+import { Module, forwardRef } from '@nestjs/common';
 import { MatchService } from './match.service';
-import { MatchController } from './match.controller';
+import { MatchResolver } from './match.resolver';
+import { Match } from './entities/match.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PlayerModule } from 'src/player/player.module';
 
 @Module({
-  // in this example MovieCommentModule doesn't exist, but
-  // you can check the provided source code
-  // imports: [forwardRef(() => MovieCommentModule)],
-  providers: [MatchResolver, MatchService, PrismaService],
-  exports: [MatchResolver, MatchService],
-  controllers: [MatchController],
+  imports: [ TypeOrmModule.forFeature([Match]) , forwardRef(()=>PlayerModule) ],
+  providers: [MatchResolver, MatchService],
+  exports: [ MatchService ]
 })
 export class MatchModule {}

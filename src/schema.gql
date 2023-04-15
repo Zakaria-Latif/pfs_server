@@ -2,13 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Match {
+type Message {
+  """The ID of the message"""
   id: Int!
-  location: String!
-  time: DateTime!
-  playersNumber: Int!
-  prize: String!
-  duration: Float!
+
+  """The content of the message"""
+  message: String!
+  groupId: Int!
+
+  """The group that the message belongs to"""
+  group: Group!
+  senderId: Int!
+
+  """The player that sent the message"""
+  sender: Player!
+
+  """Whether the message has been read"""
+  isRead: Boolean!
+
+  """The timestamp when the message was created"""
+  createdAt: DateTime!
+
+  """The timestamp when the message was last updated"""
+  updatedAt: DateTime!
 }
 
 """
@@ -16,13 +32,218 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Message {
+type Group {
   id: Int!
-  message: String!
-  isRead: Boolean!
+  name: String!
+  players: [GroupToPlayer!]!
+  messages: [Message!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type GroupToPlayer {
+  """The ID of the GroupToPlayer"""
+  id: Int!
+  playerId: Int!
+
+  """The player of the GroupToPlayer"""
+  player: Player!
+  groupId: Int!
+
+  """The group of the GroupToPlayer"""
+  group: Group!
+
+  """The timestamp representing when the GroupToPlayer was created"""
+  createdAt: DateTime!
+
+  """The timestamp representing when the GroupToPlayer was last updated"""
+  updatedAt: DateTime!
+}
+
+type PlayerStatistics {
+  id: Int!
+  rate: Float!
+  matchesNumber: Int!
+  position: String!
+  playerId: Int!
+  player: Player!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Player {
+  id: Int!
+  username: String!
+  password: String!
+  email: String!
+  location: String
+  isVerified: Boolean!
+  verificationToken: String
+  resetToken: String
+  resetExpiration: DateTime!
+  description: String!
+  playerStatisticsId: Int!
+  playerStatistics: PlayerStatistics
+  groups: [GroupToPlayer!]!
+  createdMatches: [Match!]!
+  matchToPlayers: [MatchToPlayer!]!
+  messages: [Message!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type MatchToPlayer {
+  id: Int!
+  rate: Float!
+  position: String!
+  playerId: Int!
+  player: Player!
+  matchId: Int!
+  match: Match!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Match {
+  id: Int!
+  location: String!
+  name: String!
+  time: DateTime!
+  playersNumber: Int!
+  prize: String!
+  duration: Float!
+  creatorId: Int!
+  creator: Player!
+  players: [MatchToPlayer!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
-  getAllMatches: [Match!]!
-  getAllMessages: [Message!]!
+  match(id: Int!): Match!
+  search(searchMatchInput: SearchMatchInput!): [Match!]!
+  player(id: Int!): Player!
+  playerStatistic(id: Int!): PlayerStatistics!
+  groupToPlayer(id: Int!): GroupToPlayer!
+  matchToPlayer(id: Int!): MatchToPlayer!
+  message(id: Int!): Message!
+  group(id: Int!): Group!
+}
+
+input SearchMatchInput {
+  minDuration: Float!
+  maxDuration: Float!
+  dateFrom: DateTime!
+  dateTo: DateTime!
+}
+
+type Mutation {
+  createMatch(createMatchInput: CreateMatchInput!): Match!
+  updateMatch(updateMatchInput: UpdateMatchInput!): Match!
+  removeMatch(id: Int!): Match!
+  createPlayer(createPlayerInput: CreatePlayerInput!): Player!
+  updatePlayer(updatePlayerInput: UpdatePlayerInput!): Player!
+  removePlayer(id: Int!): Player!
+  createPlayerStatistic(createPlayerStatisticInput: CreatePlayerStatisticInput!): PlayerStatistics!
+  updatePlayerStatistic(updatePlayerStatisticInput: UpdatePlayerStatisticInput!): PlayerStatistics!
+  removePlayerStatistic(id: Int!): PlayerStatistics!
+  createGroupToPlayer(createGroupToPlayerInput: CreateGroupToPlayerInput!): GroupToPlayer!
+  updateGroupToPlayer(updateGroupToPlayerInput: UpdateGroupToPlayerInput!): GroupToPlayer!
+  removeGroupToPlayer(id: Int!): GroupToPlayer!
+  createMatchToPlayer(createMatchToPlayerInput: CreateMatchToPlayerInput!): MatchToPlayer!
+  updateMatchToPlayer(updateMatchToPlayerInput: UpdateMatchToPlayerInput!): MatchToPlayer!
+  removeMatchToPlayer(id: Int!): MatchToPlayer!
+  createMessage(createMessageInput: CreateMessageInput!): Message!
+  updateMessage(updateMessageInput: UpdateMessageInput!): Message!
+  removeMessage(id: Int!): Message!
+  createGroup(createGroupInput: CreateGroupInput!): Group!
+  updateGroup(updateGroupInput: UpdateGroupInput!): Group!
+  removeGroup(id: Int!): Group!
+}
+
+input CreateMatchInput {
+  location: String!
+  name: String!
+  time: DateTime!
+  playersNumber: Int!
+  prize: String!
+  duration: Float!
+  creatorId: Int!
+}
+
+input UpdateMatchInput {
+  location: String
+  name: String
+  time: DateTime
+  playersNumber: Int
+  prize: String
+  duration: Float
+  creatorId: Int
+  id: Int!
+}
+
+input CreatePlayerInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePlayerInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePlayerStatisticInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePlayerStatisticInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateGroupToPlayerInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateGroupToPlayerInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateMatchToPlayerInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMatchToPlayerInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateMessageInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMessageInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateGroupInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateGroupInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

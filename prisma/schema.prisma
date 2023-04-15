@@ -13,7 +13,7 @@ model PlayerStatistics {
   id          Int      @id @default(autoincrement())
   rate Float @default(0)
   matchesNumber Int @default(0)
-  favoritePosition String
+  favoritePosition String @default("Attack")
   player Player @relation(fields: [playerId], references: [id])
   playerId Int @unique
 
@@ -25,26 +25,28 @@ model Player {
   id          Int      @id @default(autoincrement())
   username    String
   password    String
-  fullName    String
-  location    String
+  email String
+  location    String?
   isVerified Boolean @default(false)
-  verificationToken String
-  resetToken String
+  verificationToken String?
+  resetToken String?
   resetExpiration DateTime @default(now())
   description String?  @default("")
   playerStatistics PlayerStatistics?
-  playerStatisticsId Int
+  playerStatisticsId Int?
   groups      GroupToPlayer[]
   createdMatches Match[]
   matchToPlayers MatchToPlayer[]
   messages Message[]
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
 }
 
 model Match {
   id          Int      @id @default(autoincrement())
-  location String 
+  location String
+  name String //label for the match
   time        DateTime
   playersNumber Int
   prize String //the prize is not always money so it's a String
@@ -68,6 +70,7 @@ model MatchToPlayer {
   @@unique([playerId, matchId])
 
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model Group {
@@ -77,6 +80,7 @@ model Group {
   messages    Message[]
 
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model GroupToPlayer {
@@ -88,6 +92,7 @@ model GroupToPlayer {
   @@unique([playerId, groupId])
 
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 model Message{
@@ -99,6 +104,7 @@ model Message{
   senderId    Int
   isRead      Boolean @default(false)
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 }
 
 
