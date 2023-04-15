@@ -26,21 +26,22 @@ import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
 
-    ConfigModule.forRoot(),
+    
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get<string>('app.host', 'localhost'),
-        port: configService.get<number>('app.port', 3306),
-        username: configService.get<string>('app.username', 'root'),
-        password: configService.get<string>('app.password', 'root'),
-        database: configService.get<string>('app.database', 'pfs'),
+        host: configService.get<string>('app.host', process.env.DATABASE_HOST),
+        port: configService.get<number>('app.port', Number(process.env.DATABASE_PORT)),
+        username: configService.get<string>('app.username', process.env.DATABASE_USER),
+        password: configService.get<string>('app.password', process.env.DATABASE_PASSWORD),
+        database: configService.get<string>('app.database', process.env.DATABASE_NAME),
         entities: [Group, GroupToPlayer, Match, MatchToPlayer, Message, Player, PlayerStatistics],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
       }),

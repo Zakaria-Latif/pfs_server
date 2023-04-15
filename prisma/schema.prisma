@@ -4,7 +4,7 @@ generator client {
  
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:root@localhost:3306/test"
+  url      = "mysql://root:ZaKa1234@@localhost:3306/pfs"
 }
 
 //Creating models, to migrate run: npx prisma migrate dev 
