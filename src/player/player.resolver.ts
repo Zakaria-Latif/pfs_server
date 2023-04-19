@@ -16,10 +16,10 @@ export class PlayerResolver {
   constructor(private readonly playerService: PlayerService
     ) {}
 
-  @Mutation(() => Player)
-  async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
-    return this.playerService.create(createPlayerInput);
-  }
+  // @Mutation(() => Player)
+  // async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
+  //   return this.playerService.create(createPlayerInput);
+  // }
 
   @Query(() => [Player], { name: 'player' })
   async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput): Promise<Player[]> {
