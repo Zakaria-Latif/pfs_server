@@ -35,7 +35,7 @@ export class PlayerService {
   ){}
 
   async create(createPlayerInput: CreatePlayerInput): Promise<Player>{
-    return null;
+    return this.playerRepository.create(createPlayerInput);
   };
 
   async findAll(paginationInput: PaginationGroupInput): Promise<Player[]> {
@@ -66,6 +66,12 @@ export class PlayerService {
     return null;
   }
 
+  async findPlayerByUsername(username: string): Promise<Player>{
+    return this.playerRepository.findOne({
+      where: { username }
+    })
+  }
+  
   async getPlayerStatistics(statisticsId: number): Promise<PlayerStatistics>{
     return this.playerStatisticsService.findOne(statisticsId);
   }

@@ -75,7 +75,7 @@ type Player {
   id: Int!
   username: String!
   password: String!
-  email: String!
+  fullName: String!
   location: String
   isVerified: Boolean!
   verificationToken: String
@@ -119,6 +119,11 @@ type Match {
   updatedAt: DateTime!
 }
 
+type LoginResponse {
+  accessToken: String!
+  player: Player!
+}
+
 type Query {
   match(id: Int!): Match!
   search(searchMatchInput: SearchMatchInput!): [Match!]!
@@ -129,6 +134,7 @@ type Query {
   matchToPlayer(id: Int!): MatchToPlayer!
   message(id: Int!): Message!
   group(id: Int!): Group!
+  login(loginInput: LoginInput!): LoginResponse!
 }
 
 input SearchMatchInput {
@@ -146,11 +152,15 @@ input PaginationGroupInput {
   take: Int!
 }
 
+input LoginInput {
+  username: String!
+  password: String!
+}
+
 type Mutation {
   createMatch(createMatchInput: CreateMatchInput!): Match!
   updateMatch(updateMatchInput: UpdateMatchInput!): Match!
   removeMatch(id: Int!): Match!
-  createPlayer(createPlayerInput: CreatePlayerInput!): Player!
   updatePlayer(updatePlayerInput: UpdatePlayerInput!): Player!
   removePlayer(id: Int!): Player!
   createPlayerStatistic(createPlayerStatisticInput: CreatePlayerStatisticInput!): PlayerStatistics!
@@ -168,6 +178,7 @@ type Mutation {
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
+  signup(signUpInput: SignUpInput!): LoginResponse!
 }
 
 input CreateMatchInput {
@@ -191,14 +202,12 @@ input UpdateMatchInput {
   id: Int!
 }
 
-input CreatePlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 input UpdatePlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  username: String
+  password: String
+  fullName: String
+  location: String
+  description: String
   id: Int!
 }
 
@@ -255,4 +264,10 @@ input UpdateGroupInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!
+}
+
+input SignUpInput {
+  fullName: String!
+  username: String!
+  password: String!
 }

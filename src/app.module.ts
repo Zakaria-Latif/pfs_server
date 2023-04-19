@@ -23,6 +23,7 @@ import { PlayerStatistics } from './player-statistics/entities/player-statistic.
 import { MatchToPlayerModule } from './match-to-player/match-to-player.module';
 import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity';
 import * as morgan from 'morgan';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -54,6 +55,7 @@ import * as morgan from 'morgan';
     GroupToPlayerModule,
     MessageModule,
     MatchToPlayerModule,
+    AuthModule,
   ],
   
 })

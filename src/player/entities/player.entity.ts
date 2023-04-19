@@ -23,7 +23,7 @@ export class Player {
 
   @Column()
   @Field()
-  email: string;
+  fullName: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

@@ -10,18 +10,21 @@ import { Match } from 'src/match/entities/match.entity';
 import { MatchService } from 'src/match/match.service';
 import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
 import { Message } from 'src/message/entities/message.entity';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 
 @Resolver(() => Player)
 export class PlayerResolver {
   constructor(private readonly playerService: PlayerService
     ) {}
 
-  @Mutation(() => Player)
-  async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
-    return this.playerService.create(createPlayerInput);
-  }
+  // @Mutation(() => Player)
+  // async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
+  //   return this.playerService.create(createPlayerInput);
+  // }
 
   @Query(() => [Player], { name: 'players' })
+  @UseGuards(JwtAuthGuard)
   async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput): Promise<Player[]> {
     return this.playerService.findAll(paginationInput);
   }
