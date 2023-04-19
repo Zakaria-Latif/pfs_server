@@ -21,7 +21,7 @@ export class PlayerResolver {
     return this.playerService.create(createPlayerInput);
   }
 
-  @Query(() => [Player], { name: 'player' })
+  @Query(() => [Player], { name: 'players' })
   async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput): Promise<Player[]> {
     return this.playerService.findAll(paginationInput);
   }
@@ -65,8 +65,4 @@ export class PlayerResolver {
   async messages(@Parent() player: Player): Promise<Message[]>{
     return this.playerService.getMessages(player.id);
   }
-
-
-
-
 }

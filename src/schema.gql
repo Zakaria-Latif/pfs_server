@@ -122,6 +122,7 @@ type Match {
 type Query {
   match(id: Int!): Match!
   search(searchMatchInput: SearchMatchInput!): [Match!]!
+  players(paginationInput: PaginationGroupInput!): [Player!]!
   player(id: Int!): Player!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
@@ -135,6 +136,14 @@ input SearchMatchInput {
   maxDuration: Float!
   dateFrom: DateTime!
   dateTo: DateTime!
+}
+
+input PaginationGroupInput {
+  """Skip"""
+  skip: Int!
+
+  """Take"""
+  take: Int!
 }
 
 type Mutation {

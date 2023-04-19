@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { OnModuleInit } from '@nestjs/common';
+import { OnModuleInit , MiddlewareConsumer,  NestModule} from '@nestjs/common';
 import { MatchService } from './match/match.service';
 import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
@@ -22,6 +22,7 @@ import { Player } from './player/entities/player.entity';
 import { PlayerStatistics } from './player-statistics/entities/player-statistic.entity';
 import { MatchToPlayerModule } from './match-to-player/match-to-player.module';
 import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity';
+import * as morgan from 'morgan';
 
 
 @Module({
@@ -31,7 +32,6 @@ import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-
     
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -55,8 +55,15 @@ import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity
     MessageModule,
     MatchToPlayerModule,
   ],
+  
 })
-export class AppModule implements OnModuleInit {
+export class AppModule implements NestModule, OnModuleInit {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(morgan('dev')).forRoutes('*');
+    console.log('Morgan initialized');
+  }
+
   async onModuleInit() {
+    console.log('App module initialized');
   }
 }
