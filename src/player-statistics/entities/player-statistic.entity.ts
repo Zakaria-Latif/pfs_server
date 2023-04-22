@@ -1,7 +1,16 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { Player } from 'src/player/entities/player.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-
+import { Player } from '../../player/entities/player.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToMany,
+  Column,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -18,16 +27,20 @@ export class PlayerStatistics {
   @Field(() => Int, { defaultValue: 0 })
   matchesNumber: number;
 
-  @Column({ type: 'text'})
-  @Field(()=>String,  { defaultValue: "Attack" })
+  @Column({ type: 'text' })
+  @Field(() => String, { defaultValue: 'Attack' })
   position: string;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   playerId: number;
 
-  @ManyToOne(() => Player, (player) => player.playerStatistics)
+  /*@ManyToOne(() => Player, (player) => player.playerStatistics)
   @Field(() => Player)
+  player: Player;*/
+
+  @OneToOne(() => Player)
+  @JoinColumn()
   player: Player;
 
   @Field(() => Date)

@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int, Parent, ResolveField } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  Parent,
+  ResolveField,
+} from '@nestjs/graphql';
 import { PlayerService } from './player.service';
 import { Player } from './entities/player.entity';
 import { CreatePlayerInput } from './dto/create-player.input';
@@ -13,8 +21,7 @@ import { Message } from 'src/message/entities/message.entity';
 
 @Resolver(() => Player)
 export class PlayerResolver {
-  constructor(private readonly playerService: PlayerService
-    ) {}
+  constructor(private readonly playerService: PlayerService) {}
 
   // @Mutation(() => Player)
   // async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
@@ -22,7 +29,9 @@ export class PlayerResolver {
   // }
 
   @Query(() => [Player], { name: 'player' })
-  async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput): Promise<Player[]> {
+  async findAll(
+    @Args('paginationInput') paginationInput: PaginationGroupInput,
+  ): Promise<Player[]> {
     return this.playerService.findAll(paginationInput);
   }
 
@@ -32,41 +41,41 @@ export class PlayerResolver {
   }
 
   @Mutation(() => Player)
-  async updatePlayer(@Args('updatePlayerInput') updatePlayerInput: UpdatePlayerInput): Promise<Player>{
+  async updatePlayer(
+    @Args('updatePlayerInput') updatePlayerInput: UpdatePlayerInput,
+  ): Promise<Player> {
     return this.playerService.update(updatePlayerInput.id, updatePlayerInput);
   }
 
   @Mutation(() => Player)
-  async removePlayer(@Args('id', { type: () => Int }) id: number): Promise<Player> {
+  async removePlayer(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Player> {
     return this.playerService.remove(id);
   }
 
-  @ResolveField(returns=>PlayerStatistics)
+  /*@ResolveField(returns=>PlayerStatistics)
   async playerStatistics(@Parent() player: Player): Promise<PlayerStatistics>{
     return this.playerService.getPlayerStatistics(player.playerStatisticsId);
-  }
+  }*/
 
-  @ResolveField(returns=>[GroupToPlayer])
-  async groups(@Parent() player: Player): Promise<GroupToPlayer[]>{
+  @ResolveField((returns) => [GroupToPlayer])
+  async groups(@Parent() player: Player): Promise<GroupToPlayer[]> {
     return this.playerService.getGroupToPlayer(player.id);
   }
 
-  @ResolveField(returns=>[Match])
-  async createdMatches(@Parent() player: Player): Promise<Match[]>{
+  @ResolveField((returns) => [Match])
+  async createdMatches(@Parent() player: Player): Promise<Match[]> {
     return this.playerService.getCreatedMatches(player.id);
   }
 
-  @ResolveField(returns=>[MatchToPlayer])
-  async matchToPlayers(@Parent() player: Player): Promise<MatchToPlayer[]>{
+  @ResolveField((returns) => [MatchToPlayer])
+  async matchToPlayers(@Parent() player: Player): Promise<MatchToPlayer[]> {
     return this.playerService.getMatchToPlayers(player.id);
   }
 
-  @ResolveField(returns=>[Message])
-  async messages(@Parent() player: Player): Promise<Message[]>{
+  @ResolveField((returns) => [Message])
+  async messages(@Parent() player: Player): Promise<Message[]> {
     return this.playerService.getMessages(player.id);
   }
-
-
-
-
 }

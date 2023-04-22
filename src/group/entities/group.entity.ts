@@ -1,7 +1,14 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { GroupToPlayer } from 'src/group-to-player/entities/group-to-player.entity';
-import { Message } from 'src/message/entities/message.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { GroupToPlayer } from '../../group-to-player/entities/group-to-player.entity';
+import { Message } from '../../message/entities/message.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -14,11 +21,11 @@ export class Group {
   @Field()
   name: string;
 
-  @OneToMany(() => GroupToPlayer, groupToPlayer => groupToPlayer.group)
+  @OneToMany(() => GroupToPlayer, (groupToPlayer) => groupToPlayer.group)
   @Field(() => [GroupToPlayer])
   players: GroupToPlayer[];
 
-  @OneToMany(() => Message, message => message.group)
+  @OneToMany(() => Message, (message) => message.group)
   @Field(() => [Message])
   messages: Message[];
 

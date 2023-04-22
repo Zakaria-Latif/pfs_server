@@ -1,7 +1,16 @@
 import { ObjectType, Field, Int, Float, InputType } from '@nestjs/graphql';
-import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
-import { Player } from 'src/player/entities/player.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { MatchToPlayer } from '../../match-to-player/entities/match-to-player.entity';
+import { Player } from '../../player/entities/player.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToMany,
+  Column,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -35,15 +44,15 @@ export class Match {
   duration: number;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   creatorId: number;
 
-  @ManyToOne(() => Player, player => player.createdMatches)
+  @ManyToOne(() => Player, (player) => player.createdMatches)
   @JoinColumn({ name: 'creatorId' })
   @Field(() => Player)
   creator: Player;
 
-  @OneToMany(() => MatchToPlayer, matchToPlayer => matchToPlayer.match)
+  @OneToMany(() => MatchToPlayer, (matchToPlayer) => matchToPlayer.match)
   @Field(() => [MatchToPlayer])
   players: MatchToPlayer[];
 

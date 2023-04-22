@@ -13,56 +13,64 @@ import { SearchMatchInput } from './dto/search-match.input';
 
 @Injectable()
 export class MatchService {
-  constructor(@InjectRepository(Match) private matchRepository: Repository<Match>, 
+  constructor(
+    @InjectRepository(Match) private matchRepository: Repository<Match>,
     @Inject(forwardRef(() => PlayerService))
     private readonly playerService: PlayerService,
     @Inject(forwardRef(() => PlayerService))
-    private readonly matchToPlayerService: MatchToPlayerService
-  ){}
-  
-  async create(createMatchInput: CreateMatchInput):  Promise<Match> {
+    private readonly matchToPlayerService: MatchToPlayerService,
+  ) {}
+
+  async create(createMatchInput: CreateMatchInput): Promise<Match> {
     return this.matchRepository.create(createMatchInput);
   }
 
-  async findAll(paginationInput: PaginationGroupInput):  Promise<Match[]> {
+  async findAll(paginationInput: PaginationGroupInput): Promise<Match[]> {
     return this.matchRepository.find({
       skip: paginationInput.skip,
-      take: paginationInput.take
+      take: paginationInput.take,
     });
   }
 
-  async search(searchMatchInput: SearchMatchInput): Promise<Match[]>{
-    const query = this.matchRepository.createQueryBuilder('match')
-    .where('match.duration BETWEEN :min AND :max', { min: searchMatchInput.minDuration, max: searchMatchInput.maxDuration })
-    .andWhere('match.time BETWEEN :startDate AND :endDate', { startDate: searchMatchInput.dateFrom, endDate: searchMatchInput.dateTo });
+  async search(searchMatchInput: SearchMatchInput): Promise<Match[]> {
+    const query = this.matchRepository
+      .createQueryBuilder('match')
+      .where('match.duration BETWEEN :min AND :max', {
+        min: searchMatchInput.minDuration,
+        max: searchMatchInput.maxDuration,
+      })
+      .andWhere('match.time BETWEEN :startDate AND :endDate', {
+        startDate: searchMatchInput.dateFrom,
+        endDate: searchMatchInput.dateTo,
+      });
     return await query.getMany();
   }
 
-  async findOne(id: number):  Promise<Match> {
-    return this.matchRepository.findOneOrFail({ where: { id } });;
+  async findOne(id: number): Promise<Match> {
+    return this.matchRepository.findOneOrFail({ where: { id } });
   }
 
-  async update(id: number, updateMatchInput: UpdateMatchInput):  Promise<Match> {
+  async update(id: number, updateMatchInput: UpdateMatchInput): Promise<Match> {
     return null;
   }
 
-  async remove(id: number) :  Promise<Match>{
+  async remove(id: number): Promise<Match> {
     return null;
   }
 
-  async getMatchesByCreatorId(creatorId: number): Promise<Match[]>{
+  async getMatchesByCreatorId(creatorId: number): Promise<Match[]> {
     return this.matchRepository.find({
       where: {
-        creatorId
-      }
-    })
+        creatorId,
+      },
+    });
   }
 
-  async getCreator(creatorId: number): Promise<Player>{
+  async getCreator(creatorId: number): Promise<Player> {
     return this.playerService.findOne(creatorId);
   }
 
-  async getPlayers(matchId: number): Promise<MatchToPlayer[]>{
+  async getPlayers(matchId: number): Promise<MatchToPlayer[]> {
     return this.matchToPlayerService.findMatchToPlayerByMatchId(matchId);
   }
 }

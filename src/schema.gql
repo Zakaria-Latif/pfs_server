@@ -60,17 +60,6 @@ type GroupToPlayer {
   updatedAt: DateTime!
 }
 
-type PlayerStatistics {
-  id: Int!
-  rate: Float!
-  matchesNumber: Int!
-  position: String!
-  playerId: Int!
-  player: Player!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 type Player {
   id: Int!
   username: String!
@@ -82,8 +71,6 @@ type Player {
   resetToken: String
   resetExpiration: DateTime!
   description: String!
-  playerStatisticsId: Int!
-  playerStatistics: PlayerStatistics
   groups: [GroupToPlayer!]!
   createdMatches: [Match!]!
   matchToPlayers: [MatchToPlayer!]!
@@ -117,6 +104,17 @@ type Match {
   players: [MatchToPlayer!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type PlayerStatistics {
+  id: Int!
+  rate: Float!
+  matchesNumber: Int!
+  position: String!
+  playerId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  player: Player!
 }
 
 type LoginResponse {

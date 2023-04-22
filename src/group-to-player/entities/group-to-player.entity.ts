@@ -1,7 +1,15 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Group } from 'src/group/entities/group.entity';
-import { Player } from 'src/player/entities/player.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
+import { Group } from '../../group/entities/group.entity';
+import { Player } from '../../player/entities/player.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Column,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -11,7 +19,7 @@ export class GroupToPlayer {
   id: number;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   playerId: number;
 
   @ManyToOne(() => Player, { cascade: true })
@@ -20,7 +28,7 @@ export class GroupToPlayer {
   player: Player;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   groupId: number;
 
   @ManyToOne(() => Group, { cascade: true })
@@ -29,10 +37,16 @@ export class GroupToPlayer {
   group: Group;
 
   @CreateDateColumn()
-  @Field(() => Date, { description: 'The timestamp representing when the GroupToPlayer was created' })
+  @Field(() => Date, {
+    description:
+      'The timestamp representing when the GroupToPlayer was created',
+  })
   createdAt: Date;
 
   @UpdateDateColumn()
-  @Field(() => Date, { description: 'The timestamp representing when the GroupToPlayer was last updated' })
+  @Field(() => Date, {
+    description:
+      'The timestamp representing when the GroupToPlayer was last updated',
+  })
   updatedAt: Date;
 }

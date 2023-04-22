@@ -24,7 +24,6 @@ import { MatchToPlayerModule } from './match-to-player/match-to-player.module';
 import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity';
 import { AuthModule } from './auth/auth.module';
 
-
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -39,10 +38,18 @@ import { AuthModule } from './auth/auth.module';
         type: 'mysql',
         host: configService.get<string>('app.host', 'localhost'),
         port: configService.get<number>('app.port', 3306),
-        username: configService.get<string>('app.username', 'root'),
-        password: configService.get<string>('app.password', 'root'),
+        username: configService.get<string>('app.username', 'nizar'),
+        password: configService.get<string>('app.password', '@Data20120'),
         database: configService.get<string>('app.database', 'pfs'),
-        entities: [Group, GroupToPlayer, Match, MatchToPlayer, Message, Player, PlayerStatistics],
+        entities: [
+          Group,
+          GroupToPlayer,
+          Match,
+          MatchToPlayer,
+          Message,
+          Player,
+          PlayerStatistics,
+        ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
       }),
       inject: [ConfigService],
@@ -58,6 +65,5 @@ import { AuthModule } from './auth/auth.module';
   ],
 })
 export class AppModule implements OnModuleInit {
-  async onModuleInit() {
-  }
+  async onModuleInit() {}
 }

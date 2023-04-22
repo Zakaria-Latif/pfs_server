@@ -1,7 +1,16 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Group } from 'src/group/entities/group.entity';
-import { Player } from 'src/player/entities/player.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Group } from '../../group/entities/group.entity';
+import { Player } from '../../player/entities/player.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToMany,
+  Column,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -15,7 +24,7 @@ export class Message {
   message: string;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   groupId: number;
 
   @ManyToOne(() => Group, { onDelete: 'CASCADE' })
@@ -24,7 +33,7 @@ export class Message {
   group: Group;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   senderId: number;
 
   @ManyToOne(() => Player, { onDelete: 'CASCADE' })
@@ -37,10 +46,14 @@ export class Message {
   isRead: boolean;
 
   @CreateDateColumn()
-  @Field(() => Date, { description: 'The timestamp when the message was created' })
+  @Field(() => Date, {
+    description: 'The timestamp when the message was created',
+  })
   createdAt: Date;
 
   @UpdateDateColumn()
-  @Field(() => Date, { description: 'The timestamp when the message was last updated' })
+  @Field(() => Date, {
+    description: 'The timestamp when the message was last updated',
+  })
   updatedAt: Date;
 }
