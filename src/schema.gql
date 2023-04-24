@@ -75,7 +75,7 @@ type Player {
   id: Int!
   username: String!
   password: String!
-  email: String!
+  fullName: String!
   location: String
   isVerified: Boolean!
   verificationToken: String
@@ -127,6 +127,7 @@ type LoginResponse {
 type Query {
   match(id: Int!): Match!
   search(searchMatchInput: SearchMatchInput!): [Match!]!
+  players(paginationInput: PaginationGroupInput!): [Player!]!
   player(id: Int!): Player!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
@@ -143,9 +144,17 @@ input SearchMatchInput {
   dateTo: DateTime!
 }
 
+input PaginationGroupInput {
+  """Skip"""
+  skip: Int!
+
+  """Take"""
+  take: Int!
+}
+
 input LoginInput {
+  username: String!
   password: String!
-  email: String!
 }
 
 type Mutation {
@@ -169,7 +178,7 @@ type Mutation {
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
-  signup(signInput: SignInput!): LoginResponse!
+  signup(signUpInput: SignUpInput!): LoginResponse!
 }
 
 input CreateMatchInput {
@@ -196,7 +205,7 @@ input UpdateMatchInput {
 input UpdatePlayerInput {
   username: String
   password: String
-  email: String
+  fullName: String
   location: String
   description: String
   id: Int!
@@ -257,8 +266,8 @@ input UpdateGroupInput {
   id: Int!
 }
 
-input SignInput {
+input SignUpInput {
+  fullName: String!
   username: String!
-  email: String!
   password: String!
 }

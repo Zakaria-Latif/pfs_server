@@ -66,9 +66,9 @@ export class PlayerService {
     return null;
   }
 
-  async findPlayerByEmail(email: string): Promise<Player>{
+  async findPlayerByUsername(username: string): Promise<Player>{
     return this.playerRepository.findOne({
-      where: { email }
+      where: { username }
     })
   }
   

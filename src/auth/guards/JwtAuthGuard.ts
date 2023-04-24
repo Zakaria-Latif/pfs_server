@@ -12,5 +12,5 @@ export class JwtAuthGuard extends AuthGuard('jwt'){
         const gqlReq = ctx.getContext().req;
         
         return gqlReq;
-      } 
+    } 
 }

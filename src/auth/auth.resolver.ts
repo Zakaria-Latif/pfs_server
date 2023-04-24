@@ -5,26 +5,23 @@ import { CreateAuthInput } from './dto/create-auth.input';
 import { UpdateAuthInput } from './dto/update-auth.input';
 import { LoginResponse } from './dto/login-response.output';
 import { LoginInput } from './dto/login.input';
-import { LocalAuthGuard } from './guards/LocalAuthGuard';
-import { UseGuards } from '@nestjs/common';
-import { SignInput } from './dto/signup-input';
+import { SignUpInput } from './dto/signup-input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Query(() => LoginResponse)
-  @UseGuards(LocalAuthGuard)
   login(
-    @Args('loginInput') loginInput: LoginInput, @Context() player
+    @Args('loginInput') loginInput: LoginInput
   ): Promise<LoginResponse> {
-    return this.authService.login(player.user);
+    return this.authService.login(loginInput);
   } 
 
   @Mutation(()=>LoginResponse)
   signup(
-    @Args('signInput') signInput: SignInput
+    @Args('signUpInput') signUpInput: SignUpInput
   ): Promise<LoginResponse> {
-    return this.authService.signup(signInput);
+    return this.authService.signup(signUpInput);
   } 
 }

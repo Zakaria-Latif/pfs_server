@@ -5,6 +5,7 @@ import { IsEmail, IsString } from 'class-validator';
 export class CreatePlayerInput {
   @Field()
   @IsString()
+  @IsEmail()
   username: string;
 
   @Field()
@@ -12,8 +13,8 @@ export class CreatePlayerInput {
   password: string;
 
   @Field()
-  @IsEmail()
-  email: string;
+  @IsString()
+  fullName: string;
 
   @Field({ nullable: true })
   @IsString()

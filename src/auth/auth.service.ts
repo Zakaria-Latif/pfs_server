@@ -5,7 +5,8 @@ import { PlayerService } from 'src/player/player.service';
 import { Player } from 'src/player/entities/player.entity';
 import { LoginResponse } from './dto/login-response.output';
 import { JwtService } from '@nestjs/jwt';
-import { SignInput } from './dto/signup-input';
+import { SignUpInput } from './dto/signup-input';
+import { LoginInput } from './dto/login.input';
 import * as bcrypt from 'bcrypt';
 
 
@@ -14,37 +15,62 @@ export class AuthService {
   
   constructor(private playerService: PlayerService, private readonly jwtService: JwtService){}
 
-  async validatePlayer(email: string, password: string): Promise<any>{
-    const user = await this.playerService.findPlayerByEmail(email);
-    if (user?.password !== password) {
-      return null;
+  async login(loginInput: LoginInput): Promise<any>{
+    const user = await this.playerService.findPlayerByUsername(loginInput.username);
+    if (!user) {
+      return "User Not Found";
     }
-    const { password: pass, ...result } = user;
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
-    return result;
+    bcrypt.compare(
+      loginInput.password,
+      user.password,
+      (err, isMatch: boolean) => {
+          if (err) throw err;
+          if (isMatch === true) {
+            const token = this.jwtService.sign(
+              {
+                  user,
+              },
+              { expiresIn: "24h" }
+          );
+              return  token
+          } else {
+              return "Password Incorrect"
+          }
+      }
+  )
   }
-  async login(player: Player): Promise<LoginResponse>{
-    // const { password, ...rest } = player;
+
+  async validatePlayer(player: Player): Promise<LoginResponse>{
     return {
       accessToken: this.jwtService.sign({ username: player.username, sub: player.id }),
       player
     }
   }
 
-  async signup(signupInput: SignInput): Promise<LoginResponse>{
-    const user= await this.playerService.findPlayerByEmail(signupInput.email);
-    if(user) throw new BadRequestException("Email has already been used by an other player");
+  async signup(signupInput: SignUpInput): Promise<LoginResponse>{
+    const user= await this.playerService.findPlayerByUsername(signupInput.username);
+    if(user) throw new BadRequestException("Username has already been used by an other player");
 
     const player=await this.playerService.create({
+      fullName: signupInput.fullName,
       username: signupInput.username,
-      email: signupInput.email,
-      password: await bcrypt.hash(signupInput.password, 10)
+      password: await bcrypt.hash(signupInput.password, 12)
     });
     return {
       accessToken: this.jwtService.sign({ username: player.username, sub: player.id }),
       player
     }
+  }
+
+  async validateUserByJwt(token: string): Promise<Player> {
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET
+    });
+    const user= await this.playerService.findPlayerByUsername(payload.username);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return user
   }
 
   async validateUserById(id: any): Promise<Player> {
