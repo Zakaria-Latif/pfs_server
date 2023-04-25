@@ -82,7 +82,6 @@ type Player {
   resetToken: String
   resetExpiration: DateTime!
   description: String!
-  playerStatisticsId: Int!
   playerStatistics: PlayerStatistics
   groups: [GroupToPlayer!]!
   createdMatches: [Match!]!

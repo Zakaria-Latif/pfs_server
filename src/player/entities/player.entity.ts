@@ -1,9 +1,9 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { GroupToPlayer } from 'src/group-to-player/entities/group-to-player.entity';
-import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
-import { Match } from 'src/match/entities/match.entity';
-import { Message } from 'src/message/entities/message.entity';
-import { PlayerStatistics } from 'src/player-statistics/entities/player-statistic.entity';
+import { GroupToPlayer } from '../../group-to-player/entities/group-to-player.entity';
+import { MatchToPlayer } from '../../match-to-player/entities/match-to-player.entity';
+import { Match } from '../../match/entities/match.entity';
+import { Message } from '../../message/entities/message.entity';
+import { PlayerStatistics } from '../../player-statistics/entities/player-statistic.entity';
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity()
@@ -49,15 +49,15 @@ export class Player {
   @Field()
   description: string;
 
-  @Column()
+  /*@Column()
   @Field(type=>Int)
-  playerStatisticsId: number;
+  playerStatisticsId: number;*/
 
   @OneToOne(() => PlayerStatistics, (playerStatistics) => playerStatistics.player, {
     nullable: true,
     cascade: true,
   })
-  @JoinColumn()
+  //@JoinColumn()
   @Field(() => PlayerStatistics, { nullable: true })
   playerStatistics?: PlayerStatistics;
 

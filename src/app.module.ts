@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { OnModuleInit , MiddlewareConsumer,  NestModule} from '@nestjs/common';
+import { OnModuleInit, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { MatchService } from './match/match.service';
 import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
@@ -88,7 +88,6 @@ const generateMatches = (count: number) => {
   return data;
 };
 
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -97,17 +96,37 @@ const generateMatches = (count: number) => {
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     TypeOrmModule.forFeature([Player]),
-    
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
         host: configService.get<string>('app.host', process.env.DATABASE_HOST),
-        port: configService.get<number>('app.port', Number(process.env.DATABASE_PORT)),
-        username: configService.get<string>('app.username', process.env.DATABASE_USER),
-        password: configService.get<string>('app.password', process.env.DATABASE_PASSWORD),
-        database: configService.get<string>('app.database', process.env.DATABASE_NAME),
-        entities: [Group, GroupToPlayer, Match, MatchToPlayer, Message, Player, PlayerStatistics],
+        port: configService.get<number>(
+          'app.port',
+          Number(process.env.DATABASE_PORT),
+        ),
+        username: configService.get<string>(
+          'app.username',
+          process.env.DATABASE_USER,
+        ),
+        password: configService.get<string>(
+          'app.password',
+          process.env.DATABASE_PASSWORD,
+        ),
+        database: configService.get<string>(
+          'app.database',
+          process.env.DATABASE_NAME,
+        ),
+        entities: [
+          Group,
+          GroupToPlayer,
+          Match,
+          MatchToPlayer,
+          Message,
+          Player,
+          PlayerStatistics,
+        ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
       }),
       inject: [ConfigService],
@@ -121,13 +140,12 @@ const generateMatches = (count: number) => {
     MatchToPlayerModule,
     AuthModule,
   ],
-  providers: [
-    PlayerRepository,
-  ],
+  providers: [PlayerRepository],
 })
 export class AppModule implements NestModule, OnModuleInit {
-  
-  constructor(@InjectRepository(Player) private playerRepository: Repository<Player>) {}
+  constructor(
+    @InjectRepository(Player) private playerRepository: Repository<Player>,
+  ) {}
 
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(morgan('dev')).forRoutes('*');
@@ -135,7 +153,7 @@ export class AppModule implements NestModule, OnModuleInit {
   }
 
   async onModuleInit() {
-    const players = generatePlayers(10);
+    /*const players = generatePlayers(10);
     const playerStatistics = generatePlayerStatistics(10);
     const matches = generateMatches(10);
 
@@ -147,6 +165,6 @@ export class AppModule implements NestModule, OnModuleInit {
         console.log(e)
       }
     }
-    console.log('App module initialized');
+    console.log('App module initialized');*/
   }
 }
