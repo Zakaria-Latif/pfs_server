@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int, Float, InputType } from '@nestjs/graphql';
-import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { MatchToPlayer } from '../../match-to-player/entities/match-to-player.entity';
+import { Player } from '../../player/entities/player.entity';
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
