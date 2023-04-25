@@ -24,7 +24,7 @@ export class PlayerResolver {
   // }
 
   @Query(() => [Player], { name: 'players' })
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput): Promise<Player[]> {
     return this.playerService.findAll(paginationInput);
   }
