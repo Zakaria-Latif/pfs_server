@@ -49,9 +49,9 @@ export class Player {
   @Field()
   description: string;
 
-  /*@Column()
+  @Column()
   @Field(type=>Int)
-  playerStatisticsId: number;*/
+  playerStatisticsId: number;
 
   @OneToOne(() => PlayerStatistics, (playerStatistics) => playerStatistics.player, {
     nullable: true,
