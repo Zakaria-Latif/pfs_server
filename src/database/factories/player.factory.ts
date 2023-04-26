@@ -1,10 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
-
-import { Player } from '../../player/entities/player.entity';
+import { PlayerStatistics } from '../../player-statistics/entities/player-statistic.entity';
+import { Player } from "../../player/entities/player.entity";
 
 define(Player, (fak: typeof faker) => {
   const player = new Player();
+  player.id= faker.datatype.number({ max: 5000 });
   player.username = faker.name.firstName();
   player.password = faker.internet.password();
   player.fullName = faker.name.fullName();
@@ -16,5 +17,18 @@ define(Player, (fak: typeof faker) => {
   player.description = faker.lorem.sentence();
   player.createdAt = faker.date.past();
   player.updatedAt = faker.date.recent();
+
+  const playerStats = new PlayerStatistics();
+  playerStats.id= faker.datatype.number({ max: 2000 });
+  playerStats.rate= faker.datatype.number({ max: 10 });
+  playerStats.matchesNumber= faker.datatype.number({ max: 30 });
+  playerStats.position= faker.helpers.arrayElement(['Goalkeeper', 'Defender', 'Midfielder', 'Attack']);
+  playerStats.createdAt= faker.date.past();
+  playerStats.updatedAt= faker.date.recent();
+  playerStats.player = player;
+  
+  player.playerStatistics = playerStats;
+  player.playerStatisticsId=playerStats.id;
+
   return player;
 });

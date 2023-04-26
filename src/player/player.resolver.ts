@@ -57,10 +57,10 @@ export class PlayerResolver {
     return this.playerService.remove(id);
   }
 
-  /*@ResolveField(returns=>PlayerStatistics)
+  @ResolveField(returns=>PlayerStatistics)
   async playerStatistics(@Parent() player: Player): Promise<PlayerStatistics>{
     return this.playerService.getPlayerStatistics(player.playerStatisticsId);
-  }*/
+  }
 
   @ResolveField((returns) => [GroupToPlayer])
   async groups(@Parent() player: Player): Promise<GroupToPlayer[]> {
