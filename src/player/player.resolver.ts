@@ -25,11 +25,6 @@ import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 export class PlayerResolver {
   constructor(private readonly playerService: PlayerService) {}
 
-  // @Mutation(() => Player)
-  // async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
-  //   return this.playerService.create(createPlayerInput);
-  // }
-
   @Query(() => [Player], { name: 'players' })
   @UseGuards(JwtAuthGuard)
   async findAll(
@@ -43,14 +38,15 @@ export class PlayerResolver {
     return this.playerService.findOne(id);
   }
 
-  @Mutation(() => Player)
+  //It's not in the docs yet
+  @Mutation(() => Player, { name: "updatePlayer" })
   async updatePlayer(
     @Args('updatePlayerInput') updatePlayerInput: UpdatePlayerInput,
   ): Promise<Player> {
     return this.playerService.update(updatePlayerInput.id, updatePlayerInput);
   }
 
-  @Mutation(() => Player)
+  @Mutation(() => Player, { name: "removePlayer" })
   async removePlayer(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Player> {

@@ -14,7 +14,8 @@ export class CreatePlayerInput {
 
   @Field()
   @IsString()
-  fullName: string;
+  @IsEmail()
+  email: string;
 
   @Field({ nullable: true })
   @IsString()

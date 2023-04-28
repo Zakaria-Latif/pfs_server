@@ -5,6 +5,7 @@ import { Match } from '../../match/entities/match.entity';
 import { Message } from '../../message/entities/message.entity';
 import { PlayerStatistics } from '../../player-statistics/entities/player-statistic.entity';
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { IsEmail } from 'class-validator';
 
 @Entity()
 @ObjectType()
@@ -23,7 +24,8 @@ export class Player {
 
   @Column()
   @Field()
-  fullName: string;
+  @IsEmail()
+  email: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -49,9 +51,9 @@ export class Player {
   @Field()
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(type=>Int)
-  playerStatisticsId: number;
+  playerStatisticsId?: number;
 
   @OneToOne(() => PlayerStatistics, (playerStatistics) => playerStatistics.player, {
     nullable: true,

@@ -1,73 +1,198 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# TeamForge GraphQl Api Docs
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Welcome to the documentation for our GraphQL API. This API allows you to perform various operations related to player, matches, messages... management, including user authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Authentication
+To access protected routes in your GraphQL API, you need to authenticate first. The API supports authentication using JWT tokens.
 
-## Description
+### Signup
+To sign up a new player, you can use the following GraphQL mutation:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation(Guide Lines)
-
-```bash
-$ npm install
+```
+mutation {
+  signup(signUpInput: {
+    email: "SaulGoodMannF@gmail.uk",
+    username: "JamesBND",
+    password: "jessyPinkman12342"
+  }){
+    accessToken,
+    player{
+      playerStatistics{
+        rate
+      }
+    }
+  }
+}
 ```
 
-## Running the app
+The signup mutation takes a signUpInput object, which should contain the new player's email, username, and password. Upon successful signup, the mutation returns a JWT token (accessToken) and the player object, which includes the player's statistics, such as their rating.
 
-```bash
-# development
-$ npm run start
 
-# watch mode
-$ npm run start:dev
+### Login
+To log in a player, you can use the following GraphQL query:
 
-# production mode
-$ npm run start:prod
+```
+query {
+  login(loginInput: {
+    username: "JamesBND",
+    password: "jessyPinkman12342"
+  }){
+    accessToken,
+    player{
+      username,
+      playerStatistics{
+        rate
+      }
+    }
+  }
+}
 ```
 
-## Test
+The login query takes a loginInput object, which should contain the player's username and password. Upon successful login, the query returns a JWT token (accessToken) and the player object, which includes the player's username and statistics, such as their rating.
 
-```bash
-# unit tests
-$ npm run test
+## Player Management
 
-# e2e tests
-$ npm run test:e2e
+### Retrieving Players
+To retrieve a list of players, you can use the following GraphQL query:
 
-# test coverage
-$ npm run test:cov
+```
+query {
+  players(paginationInput: {skip: 0, take: 10}) {
+    id,
+    username,
+    playerStatistics{
+      rate
+    }
+  }
+}
 ```
 
-## Support
+The players query takes a paginationInput object, which specifies how many players to retrieve and where to start. The query returns a list of players, including their ID, username, and rating.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### To retrieve a single player, you can use the following GraphQL query:
 
-## Stay in touch
+```
+query {
+  player(id: 267) {
+    username,
+    playerStatistics{
+      rate,
+      player{
+        username,
+        messages{
+          message
+        }
+      }
+    }
+  }
+}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The player query takes a id parameter, which specifies the ID of the player to retrieve. The query returns a single player, including their username, rating, and any associated messages.
 
-## License
+### Deleting Players
+To delete a player, you can use the following GraphQL mutation:
 
-Nest is [MIT licensed](LICENSE).
+```
+mutation {
+  removePlayer(id: 863) {
+    username
+  }
+}
+```
+
+The removePlayer mutation takes an id parameter, which specifies the ID of the player to delete. Upon successful deletion, the mutation returns the player's username.
+
+## Match Management
+
+### Retrieving Matches
+To retrieve a list of matches, you can use the following GraphQL query:
+
+```
+query {
+  matches(paginationInput:{skip: 1, take:10}) {
+    name,
+    location,
+    time
+  }
+}
+```
+
+The matches query takes a paginationInput object, which specifies how many matches to retrieve and where to start. The query returns a list of matches, including their name, location, and time.
+
+### To retrieve a single match, you can use the following GraphQL query:
+
+```
+query {
+  match(id: 2) {
+    name,
+    location,
+    id,
+    creator{
+      username,
+      playerStatistics{
+        rate,
+        player{
+          username
+        }
+      }
+    }
+  }
+}
+```
+
+The match query takes an id parameter, which specifies the ID of the match to retrieve. The query returns a single match, including its name, location, ID, and creator information.
+
+### Searching for Matches
+To search for matches based on certain criteria, you can use the following GraphQL query:
+
+```
+query {
+  search(searchMatchInput: {
+    minDuration: 2,
+    maxDuration: 10,
+    dateFrom: "2023-06-16T10:12:01.000Z",
+    dateTo: "2024-02-16T10:31:00.000Z"
+  }) {
+    location,
+    name,
+    id
+  }
+}
+```
+
+The search query takes a searchMatchInput object, which specifies the criteria to search for matches based on. The query returns a list of matches that match the specified criteria.
+
+### Creating Matches
+To create a new match, you can use the following GraphQL mutation:
+
+```
+mutation {
+  createMatch(createMatchInput: {
+    location: "Central Park",
+    name: "Sunday Football Match",
+    time: "2023-05-01T14:30:00.000Z",
+    playersNumber: 10,
+    prize: "$100",
+    duration: 2.5,
+    creatorId: 267
+  }) {
+    name
+  }
+}
+```
+
+The createMatch mutation takes a createMatchInput object, which specifies the details of the new match to create. Upon successful creation, the mutation returns the name of the new match.
+
+### Deleting Matches
+To delete a match, you can use the following GraphQL mutation:
+
+```
+mutation {
+  removeMatch(id: 2) {
+    name
+  }
+}
+```
+
+The removeMatch mutation takes an id parameter, which specifies the ID of the match to delete. Upon successful deletion, the mutation returns the name of the deleted match.

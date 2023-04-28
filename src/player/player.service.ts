@@ -18,6 +18,7 @@ import { Message } from 'src/message/entities/message.entity';
 import { MessageService } from 'src/message/message.service';
 import { SearchMatchInput } from 'src/match/dto/search-match.input';
 import { SearchPlayerInput } from './dto/search-player.input';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class PlayerService {
@@ -35,7 +36,21 @@ export class PlayerService {
   ){}
 
   async create(createPlayerInput: CreatePlayerInput): Promise<Player>{
-    return this.playerRepository.create(createPlayerInput);
+    const player = new Player();
+    player.username = createPlayerInput.username;
+    player.password = createPlayerInput.password;
+    player.email = createPlayerInput.email;
+    player.location = 'New York';
+    player.isVerified = false;
+    player.description = 'Lorem ipsum dolor sit amet';
+
+    const playerStatistics = new PlayerStatistics();
+    playerStatistics.rate = 0;
+    playerStatistics.matchesNumber = 0;
+    playerStatistics.position = 'Defense';
+
+    player.playerStatistics = playerStatistics;
+    return this.playerRepository.save(player);
   };
 
   async findAll(paginationInput: PaginationGroupInput): Promise<Player[]> {
@@ -63,7 +78,12 @@ export class PlayerService {
   }
 
   async remove(id: number): Promise<Player> {
-    return null;
+    const player = await this.playerRepository.findOneById(id);
+    if (!player) {
+      throw new NotFoundError(`Player with id ${id} not found`);
+    }
+    await this.playerRepository.remove(player);
+    return player;
   }
 
   async findPlayerByUsername(username: string): Promise<Player>{

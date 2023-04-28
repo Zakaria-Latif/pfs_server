@@ -15,30 +15,26 @@ export class AuthService {
   
   constructor(private playerService: PlayerService, private readonly jwtService: JwtService){}
 
-  async login(loginInput: LoginInput): Promise<any>{
+  async login(loginInput: LoginInput): Promise<LoginResponse> {
+    console.log(loginInput);
     const user = await this.playerService.findPlayerByUsername(loginInput.username);
+    console.log({user});
     if (!user) {
-      return "User Not Found";
+      throw new UnauthorizedException("This user does not exist");
     }
-    bcrypt.compare(
-      loginInput.password,
-      user.password,
-      (err, isMatch: boolean) => {
-          if (err) throw err;
-          if (isMatch === true) {
-            const token = this.jwtService.sign(
-              {
-                  user,
-              },
-              { expiresIn: "24h" }
-          );
-              return  token
-          } else {
-              return "Password Incorrect"
-          }
+
+    const isMatch = await bcrypt.compare(loginInput.password, user.password);
+    if (isMatch) {
+      const token = this.jwtService.sign({ username: user.username, sub: user.id }, 
+        { expiresIn: '24h' , secret: process.env.JWT_SECRET});
+      return {
+        accessToken: token,
+        player: user,
       }
-  )
+    }
+    throw new UnauthorizedException("Password is not valid");
   }
+   
 
   async validatePlayer(player: Player): Promise<LoginResponse>{
     return {
@@ -52,17 +48,20 @@ export class AuthService {
     if(user) throw new BadRequestException("Username has already been used by an other player");
 
     const player=await this.playerService.create({
-      fullName: signupInput.fullName,
+      email: signupInput.email,
       username: signupInput.username,
       password: await bcrypt.hash(signupInput.password, 12)
     });
     return {
-      accessToken: this.jwtService.sign({ username: player.username, sub: player.id }),
+      accessToken: this.jwtService.sign({ username: player.username, sub: player.id }, 
+        { secret: process.env.JWT_SECRET }
+        ),
       player
     }
   }
 
   async validateUserByJwt(token: string): Promise<Player> {
+    console.log({ JWT_SECRET: process.env.JWT_SECRET });
     const payload = this.jwtService.verify(token, {
       secret: process.env.JWT_SECRET
     });
@@ -75,25 +74,5 @@ export class AuthService {
 
   async validateUserById(id: any): Promise<Player> {
     return this.playerService.findOne(id);
-  }
-
-  create(createAuthInput: CreateAuthInput) {
-    return 'This action adds a new auth';
-  }
-
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthInput: UpdateAuthInput) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
   }
 }
