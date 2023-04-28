@@ -10,6 +10,7 @@ import { PlayerService } from 'src/player/player.service';
 import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
 import { MatchToPlayerService } from 'src/match-to-player/match-to-player.service';
 import { SearchMatchInput } from './dto/search-match.input';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class MatchService {
@@ -47,7 +48,12 @@ export class MatchService {
   }
 
   async remove(id: number) :  Promise<Match>{
-    return null;
+    const player = await this.matchRepository.findOneById(id);
+    if (!player) {
+      throw new NotFoundError(`Match with id ${id} not found`);
+    }
+    await this.matchRepository.remove(player);
+    return player;
   }
 
   async getMatchesByCreatorId(creatorId: number): Promise<Match[]>{

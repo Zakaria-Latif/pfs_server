@@ -12,12 +12,12 @@ import { SearchMatchInput } from './dto/search-match.input';
 export class MatchResolver {
   constructor(private readonly matchService: MatchService) {}
 
-  @Mutation(() => Match)
+  @Mutation(() => Match, {name: "createMatch"})
   async createMatch(@Args('createMatchInput') createMatchInput: CreateMatchInput):  Promise<Match> {
     return this.matchService.create(createMatchInput);
   }
 
-  @Query(() => [Match], { name: 'match' })
+  @Query(() => [Match], { name: 'matches' })
   async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput):  Promise<Match[]> {
     return this.matchService.findAll(paginationInput);
   }
@@ -32,12 +32,13 @@ export class MatchResolver {
     return this.matchService.findOne(id);
   }
 
+  //This is not in the docs yet
   @Mutation(() => Match)
   async updateMatch(@Args('updateMatchInput') updateMatchInput: UpdateMatchInput):  Promise<Match> {
     return this.matchService.update(updateMatchInput.id, updateMatchInput);
   }
 
-  @Mutation(() => Match)
+  @Mutation(() => Match, { name: "removeMatch" })
   async removeMatch(@Args('id', { type: () => Int }) id: number):  Promise<Match> {
     return this.matchService.remove(id);
   }
