@@ -8,7 +8,7 @@ To access protected routes in your GraphQL API, you need to authenticate first. 
 ### Signup
 To sign up a new player, you can use the following GraphQL mutation:
 
-```json
+```
 mutation {
   signup(signUpInput: {
     email: "SaulGoodMannF@gmail.uk",
