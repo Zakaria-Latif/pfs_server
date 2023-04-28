@@ -1,11 +1,11 @@
-#TeamForge GraphQl Api Docs
+# TeamForge GraphQl Api Docs
 
 Welcome to the documentation for our GraphQL API. This API allows you to perform various operations related to player, matches, messages... management, including user authentication.
 
-##Authentication
+## Authentication
 To access protected routes in your GraphQL API, you need to authenticate first. The API supports authentication using JWT tokens.
 
-###Signup
+### Signup
 To sign up a new player, you can use the following GraphQL mutation:
 
 
@@ -27,7 +27,7 @@ mutation {
 The signup mutation takes a signUpInput object, which should contain the new player's email, username, and password. Upon successful signup, the mutation returns a JWT token (accessToken) and the player object, which includes the player's statistics, such as their rating.
 
 
-###Login
+### Login
 To log in a player, you can use the following GraphQL query:
 
 query {
@@ -47,9 +47,9 @@ query {
 
 The login query takes a loginInput object, which should contain the player's username and password. Upon successful login, the query returns a JWT token (accessToken) and the player object, which includes the player's username and statistics, such as their rating.
 
-##Player Management
+## Player Management
 
-###Retrieving Players
+### Retrieving Players
 To retrieve a list of players, you can use the following GraphQL query:
 
 query {
@@ -64,7 +64,7 @@ query {
 
 The players query takes a paginationInput object, which specifies how many players to retrieve and where to start. The query returns a list of players, including their ID, username, and rating.
 
-###To retrieve a single player, you can use the following GraphQL query:
+### To retrieve a single player, you can use the following GraphQL query:
 
 query {
   player(id: 267) {
@@ -83,7 +83,7 @@ query {
 
 The player query takes a id parameter, which specifies the ID of the player to retrieve. The query returns a single player, including their username, rating, and any associated messages.
 
-###Deleting Players
+### Deleting Players
 To delete a player, you can use the following GraphQL mutation:
 
 mutation {
@@ -94,9 +94,9 @@ mutation {
 
 The removePlayer mutation takes an id parameter, which specifies the ID of the player to delete. Upon successful deletion, the mutation returns the player's username.
 
-##Match Management
+## Match Management
 
-###Retrieving Matches
+### Retrieving Matches
 To retrieve a list of matches, you can use the following GraphQL query:
 
 query {
@@ -109,7 +109,7 @@ query {
 
 The matches query takes a paginationInput object, which specifies how many matches to retrieve and where to start. The query returns a list of matches, including their name, location, and time.
 
-###To retrieve a single match, you can use the following GraphQL query:
+### To retrieve a single match, you can use the following GraphQL query:
 
 query {
   match(id: 2) {
@@ -130,7 +130,7 @@ query {
 
 The match query takes an id parameter, which specifies the ID of the match to retrieve. The query returns a single match, including its name, location, ID, and creator information.
 
-###Searching for Matches
+### Searching for Matches
 To search for matches based on certain criteria, you can use the following GraphQL query:
 
 query {
@@ -148,7 +148,7 @@ query {
 
 The search query takes a searchMatchInput object, which specifies the criteria to search for matches based on. The query returns a list of matches that match the specified criteria.
 
-###Creating Matches
+### Creating Matches
 To create a new match, you can use the following GraphQL mutation:
 
 mutation {
@@ -167,7 +167,7 @@ mutation {
 
 The createMatch mutation takes a createMatchInput object, which specifies the details of the new match to create. Upon successful creation, the mutation returns the name of the new match.
 
-###Deleting Matches
+### Deleting Matches
 To delete a match, you can use the following GraphQL mutation:
 
 mutation {
