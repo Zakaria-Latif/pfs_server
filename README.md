@@ -8,7 +8,7 @@ To access protected routes in your GraphQL API, you need to authenticate first. 
 ### Signup
 To sign up a new player, you can use the following GraphQL mutation:
 
-
+```json
 mutation {
   signup(signUpInput: {
     email: "SaulGoodMannF@gmail.uk",
@@ -23,6 +23,7 @@ mutation {
     }
   }
 }
+```
 
 The signup mutation takes a signUpInput object, which should contain the new player's email, username, and password. Upon successful signup, the mutation returns a JWT token (accessToken) and the player object, which includes the player's statistics, such as their rating.
 
