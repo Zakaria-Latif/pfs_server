@@ -2,6 +2,116 @@
 
 Welcome to the documentation for our GraphQL API. This API allows you to perform various operations related to player, matches, messages... management, including user authentication.
 
+## Before we deep dive into the docs here are the entities the API exposes:
+
+### Player Entity
+
+| Field Name        | Type       | Description                                             |
+| ----------------- | ---------- | ------------------------------------------------------- |
+| id                | Int        | Unique identifier for the player                        |
+| username          | String     | The player's username                                   |
+| password          | String     | The player's password                                   |
+| email             | String     | The player's email                                      |
+| location          | String     | The player's location                                   |
+| isVerified        | Boolean    | Indicates if the player's email has been verified       |
+| verificationToken | String     | A token used for email verification                     |
+| resetToken        | String     | A token used for password reset                          |
+| resetExpiration   | Date       | The expiration date for the reset token                  |
+| description       | String     | A short description of the player                        |
+| playerStatisticsId| Int        | The ID of the associated PlayerStatistics entity         |
+| playerStatistics  | PlayerStatistics | The associated PlayerStatistics entity           |
+| groups            | [GroupToPlayer] | An array of the player's GroupToPlayer entities     |
+| createdMatches    | [Match]    | An array of the player's created Match entities          |
+| matchToPlayers    | [MatchToPlayer] | An array of the player's MatchToPlayer entities     |
+| messages          | [Message]  | An array of the player's Message entities                |
+| createdAt         | Date       | The date the player was created                          |
+| updatedAt         | Date       | The date the player was last updated                     |
+
+### PlayerStatistics Entity:
+
+| Field Name	| Type | Description |
+| ----------  | ---- | ----------- |
+| id	| Int	| Unique identifier for the player statistics |
+| rate	| Float	| The player's rate (default value is 0) |
+| matchesNumber	| Int	| The number of matches played by the player (default value is 0) |
+| position	| String	| The player's position (default value is "Attack") |
+| playerId	| Int	| The ID of the associated Player entity |
+| player	| Player	| The associated Player entity |
+| createdAt	| Date	| The date the player statistics were created | 
+| updatedAt	| Date	| The date the player statistics were last updated |
+
+### Match Entity:
+
+| Field Name	| Type	| Description |
+| ----------- | ----- | ----------- |
+| id	| Int	| Unique identifier for the match entity |
+| location	| String	| The location where the match is being played |
+| name	| String	| The name of the match |
+| time	| Date	| The date and time when the match is scheduled
+| playersNumber	| Int |	The number of players needed for the match |
+| prize |	String	| The prize for the match |
+| duration	| Float	| The duration of the match |
+| creatorId	| Int	| The ID of the associated creator Player entity |
+| creator	| Player	| The associated creator Player entity |
+| players	| [MatchToPlayer]	| The associated MatchToPlayer entities for the match |
+| createdAt	| Date	| The date the match was created |
+| updatedAt	| Date	| The date the match was last updated |
+
+### Message Entity
+
+| Field Name	| Type	| Description |
+| ----------- | ----- | ----------- |
+| id	| Int	| The ID of the message |
+| message	| String	| The content of the message |
+| groupId	| Int	| The ID of the associated group entity |
+| group	| Group	| The group that the message belongs to |
+| senderId	| Int	| The ID of the associated sender Player entity |
+| sender	| Player	| The player that sent the message |
+| isRead	| Boolean	| Whether the message has been read |
+| createdAt	| Date	| The timestamp when the message was created |
+| updatedAt	| Date	| The timestamp when the message was last updated |
+
+### MatchToPlayer Entity
+
+This entity represents the relationship between a `Match` and a `Player`, with additional data such as the player's position and rating for that particular match.
+
+| Field Name | Type    | Description                                        |
+| ---------- | ------- | -------------------------------------------------- |
+| id         | Int     | Unique identifier for the match-to-player entity  |
+| rate       | Float   | The player's rating for the match                  |
+| position   | String  | The player's position in the match                  |
+| playerId   | Int     | The ID of the associated player entity             |
+| player     | Player  | The associated player entity                       |
+| matchId    | Int     | The ID of the associated match entity              |
+| match      | Match   | The associated match entity                        |
+| createdAt  | Date    | The timestamp when the match-to-player was created |
+| updatedAt  | Date    | The timestamp when the match-to-player was updated |
+
+### GroupToPlayer Entity:
+
+| Field Name   | Type       | Description                                                             |
+| ------------ | ---------- | ----------------------------------------------------------------------- |
+| id           | Int        | The ID of the GroupToPlayer                                              |
+| playerId     | Int        | The ID of the associated player entity                                   |
+| player       | Player     | The associated player entity                                             |
+| groupId      | Int        | The ID of the associated group entity                                    |
+| group        | Group      | The associated group entity                                              |
+| createdAt    | Date       | The timestamp representing when the GroupToPlayer was created           |
+| updatedAt    | Date       | The timestamp representing when the GroupToPlayer was last updated      |
+
+
+## Group
+
+| Field | Type | Description |
+| --- | --- | --- |
+| id | Int | The ID of the group |
+| name | String | The name of the group |
+| players | [GroupToPlayer] | The list of players in the group |
+| messages | [Message] | The list of messages sent in the group |
+| createdAt | Date | The timestamp representing when the group was created |
+| updatedAt | Date | The timestamp representing when the group was last updated |
+
+
 ## Authentication
 To access protected routes in your GraphQL API, you need to authenticate first. The API supports authentication using JWT tokens.
 
