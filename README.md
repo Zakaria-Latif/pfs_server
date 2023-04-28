@@ -4,7 +4,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 
 ## Before we deep dive into the docs here are the entities the API exposes:
 
-### Player Entity
+### Player:
 
 | Field Name        | Type       | Description                                             |
 | ----------------- | ---------- | ------------------------------------------------------- |
@@ -27,7 +27,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt         | Date       | The date the player was created                          |
 | updatedAt         | Date       | The date the player was last updated                     |
 
-### PlayerStatistics Entity:
+### PlayerStatistics:
 
 | Field Name	| Type | Description |
 | ----------  | ---- | ----------- |
@@ -40,7 +40,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt	| Date	| The date the player statistics were created | 
 | updatedAt	| Date	| The date the player statistics were last updated |
 
-### Match Entity:
+### Match: 
 
 | Field Name	| Type	| Description |
 | ----------- | ----- | ----------- |
@@ -57,7 +57,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt	| Date	| The date the match was created |
 | updatedAt	| Date	| The date the match was last updated |
 
-### Message Entity
+### Message:
 
 | Field Name	| Type	| Description |
 | ----------- | ----- | ----------- |
@@ -71,7 +71,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt	| Date	| The timestamp when the message was created |
 | updatedAt	| Date	| The timestamp when the message was last updated |
 
-### MatchToPlayer Entity
+### MatchToPlayer:
 
 This entity represents the relationship between a `Match` and a `Player`, with additional data such as the player's position and rating for that particular match.
 
@@ -87,7 +87,7 @@ This entity represents the relationship between a `Match` and a `Player`, with a
 | createdAt  | Date    | The timestamp when the match-to-player was created |
 | updatedAt  | Date    | The timestamp when the match-to-player was updated |
 
-### GroupToPlayer Entity:
+### GroupToPlayer:
 
 | Field Name   | Type       | Description                                                             |
 | ------------ | ---------- | ----------------------------------------------------------------------- |
@@ -100,7 +100,7 @@ This entity represents the relationship between a `Match` and a `Player`, with a
 | updatedAt    | Date       | The timestamp representing when the GroupToPlayer was last updated      |
 
 
-## Group
+## Group:
 
 | Field | Type | Description |
 | --- | --- | --- |
