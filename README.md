@@ -4,7 +4,9 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 
 ## Before we deep dive into the docs here are the entities the API exposes:
 
-### Player:
+### Player Entity:
+
+*A Player is an entity that represents an individual who participates in sports matches and belongs to one or more groups. Players can be associated with matches through a MatchToPlayer entity, and can belong to groups through a GroupToPlayer entity. The Player entity contains information such as the player's name, age, gender, and any other relevant details.*
 
 | Field Name        | Type       | Description                                             |
 | ----------------- | ---------- | ------------------------------------------------------- |
@@ -27,7 +29,9 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt         | Date       | The date the player was created                          |
 | updatedAt         | Date       | The date the player was last updated                     |
 
-### PlayerStatistics:
+### PlayerStatistics Entity:
+
+*PlayerStatistics refers to the statistical data that is collected and associated with a particular player in a sports game or competition. It can include data points such as goals scored, assists, minutes played, shots taken, and other relevant metrics. PlayerStatistics are used to evaluate the performance of players and to make informed decisions about strategies and team compositions.*
 
 | Field Name	| Type | Description |
 | ----------  | ---- | ----------- |
@@ -40,7 +44,9 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt	| Date	| The date the player statistics were created | 
 | updatedAt	| Date	| The date the player statistics were last updated |
 
-### Match: 
+### Match Entity: 
+
+*Match refers to a scheduled game or competition between two teams or individuals. In our system, it is represented by the Match entity which includes details such as the date and time of the match, the location, and the participating teams/players. The Match entity is related to other entities in our system such as Player and MatchToPlayer to record details such as the players who participated in the match and their performance statistics.*
 
 | Field Name	| Type	| Description |
 | ----------- | ----- | ----------- |
@@ -57,7 +63,9 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt	| Date	| The date the match was created |
 | updatedAt	| Date	| The date the match was last updated |
 
-### Message:
+### Message Entity:
+
+*A message represents a single communication sent by a user within a group. It contains the content of the message, the user who sent it, and the group it was sent to. Messages are associated with a group using a many-to-one relationship.*
 
 | Field Name	| Type	| Description |
 | ----------- | ----- | ----------- |
@@ -71,9 +79,9 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | createdAt	| Date	| The timestamp when the message was created |
 | updatedAt	| Date	| The timestamp when the message was last updated |
 
-### MatchToPlayer:
+### MatchToPlayer Entity:
 
-This entity represents the relationship between a `Match` and a `Player`, with additional data such as the player's position and rating for that particular match.
+*This entity represents the relationship between a `Match` and a `Player`, with additional data such as the player's position and rating for that particular match.*
 
 | Field Name | Type    | Description                                        |
 | ---------- | ------- | -------------------------------------------------- |
@@ -87,7 +95,9 @@ This entity represents the relationship between a `Match` and a `Player`, with a
 | createdAt  | Date    | The timestamp when the match-to-player was created |
 | updatedAt  | Date    | The timestamp when the match-to-player was updated |
 
-### GroupToPlayer:
+### GroupToPlayer Entity:
+
+*GroupToPlayer is an entity that represents the relationship between a Group and a Player. It stores the ID of the Group and Player entities as foreign keys, as well as the timestamps for when the GroupToPlayer entity was created and last updated. The GroupToPlayer entity has a one-to-many relationship with the Group entity and a many-to-one relationship with the Player entity.*
 
 | Field Name   | Type       | Description                                                             |
 | ------------ | ---------- | ----------------------------------------------------------------------- |
@@ -100,7 +110,9 @@ This entity represents the relationship between a `Match` and a `Player`, with a
 | updatedAt    | Date       | The timestamp representing when the GroupToPlayer was last updated      |
 
 
-## Group:
+## Group Entity:
+
+*A Group is an entity that represents a collection of players who are participating together in a game or a tournament. It contains a name attribute that identifies the group, and is associated with a collection of GroupToPlayer entities that map players to the group. It also has a collection of Message entities, which contain messages sent between the players within the group.*
 
 | Field | Type | Description |
 | --- | --- | --- |
