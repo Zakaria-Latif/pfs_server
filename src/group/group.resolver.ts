@@ -26,7 +26,7 @@ export class GroupResolver {
     return this.groupService.create(createGroupInput);
   }
 
-  @Query(() => [Group], { name: 'group' })
+  @Query(() => [Group], { name: 'groups' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
   ): Promise<Group[]> {

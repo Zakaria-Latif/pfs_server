@@ -25,7 +25,7 @@ export class PlayerStatisticsResolver {
     return this.playerStatisticsService.create(createPlayerStatisticInput);
   }*/
 
-  @Query(() => [PlayerStatistics], { name: 'playerStatistic' })
+  @Query(() => [PlayerStatistics], { name: 'playerStatistics' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
   ): Promise<PlayerStatistics[]> {
