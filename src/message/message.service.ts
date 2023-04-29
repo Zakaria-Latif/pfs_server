@@ -12,56 +12,65 @@ import { Group } from 'src/group/entities/group.entity';
 
 @Injectable()
 export class MessageService {
-  constructor(@InjectRepository(Message) private messageRepository: Repository<Message>,
-  @Inject(forwardRef(() => PlayerService))
-  private readonly playerService: PlayerService,
-  @Inject(forwardRef(() => GroupService))
-  private readonly groupService: GroupService,
-  ){}
-  async create(createMessageInput: CreateMessageInput):  Promise<Message> {
-    return null;
+  constructor(
+    @InjectRepository(Message) private messageRepository: Repository<Message>,
+    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,
+    @Inject(forwardRef(() => GroupService))
+    private readonly groupService: GroupService,
+  ) {}
+  async create(createMessageInput: CreateMessageInput): Promise<Message> {
+    const message = this.messageRepository.create(createMessageInput);
+    return this.messageRepository.save(message);
   }
 
-  async findAll(paginationInput: PaginationGroupInput):  Promise<Message[]> {
+  async findAll(paginationInput: PaginationGroupInput): Promise<Message[]> {
     return this.messageRepository.find({
       skip: paginationInput.skip,
-      take: paginationInput.take
+      take: paginationInput.take,
     });
   }
 
-  async findOne(id: number):  Promise<Message> {
+  async findOne(id: number): Promise<Message> {
     return this.messageRepository.findOneOrFail({ where: { id } });
   }
 
-  async update(id: number, updateMessageInput: UpdateMessageInput):  Promise<Message> {
-    return null;
+  async update(updateMessageInput: UpdateMessageInput): Promise<Message> {
+    await this.messageRepository.save(updateMessageInput);
+    return this.messageRepository.findOneOrFail({
+      where: { id: updateMessageInput.id },
+    });
   }
 
-  async remove(id: number):  Promise<Message> {
-    return null;
+  async remove(id: Message['id']): Promise<Message> {
+    const message = await this.messageRepository.findOne({ where: { id: id } });
+
+    await this.messageRepository.delete({ id });
+
+    return message;
   }
 
-  async getMessagesBySenderId(senderId: number): Promise<Message[]>{
-    return this.messageRepository.find({
-      where:{
-        senderId
-      }
-    })
-  }
-
-  async findByGroupId(groupId: number): Promise<Message[]>{
+  async getMessagesBySenderId(senderId: number): Promise<Message[]> {
     return this.messageRepository.find({
       where: {
-        groupId
-      }
-    })
+        senderId,
+      },
+    });
   }
 
-  async getSender(senderId: number): Promise<Player>{
+  async findByGroupId(groupId: number): Promise<Message[]> {
+    return this.messageRepository.find({
+      where: {
+        groupId,
+      },
+    });
+  }
+
+  async getSender(senderId: number): Promise<Player> {
     return this.playerService.findOne(senderId);
   }
-  
-  async getGroup(groupId: number): Promise<Group>{
+
+  async getGroup(groupId: number): Promise<Group> {
     return this.groupService.findOne(groupId);
   }
 }

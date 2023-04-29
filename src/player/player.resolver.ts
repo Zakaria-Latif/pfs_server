@@ -25,10 +25,12 @@ import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 export class PlayerResolver {
   constructor(private readonly playerService: PlayerService) {}
 
-  // @Mutation(() => Player)
-  // async createPlayer(@Args('createPlayerInput') createPlayerInput: CreatePlayerInput):  Promise<Player> {
-  //   return this.playerService.create(createPlayerInput);
-  // }
+  @Mutation(() => Player)
+  async createPlayer(
+    @Args('createPlayerInput') createPlayerInput: CreatePlayerInput,
+  ): Promise<Player> {
+    return this.playerService.create(createPlayerInput);
+  }
 
   @Query(() => [Player], { name: 'players' })
   // @UseGuards(JwtAuthGuard)
@@ -41,24 +43,24 @@ export class PlayerResolver {
     return this.playerService.findOne(id);
   }
 
-  @Mutation(() => Player)
+  @Mutation(() => Player, { name: 'updatePlayer' })
   async updatePlayer(
     @Args('updatePlayerInput') updatePlayerInput: UpdatePlayerInput,
   ): Promise<Player> {
-    return this.playerService.update(updatePlayerInput.id, updatePlayerInput);
+    return this.playerService.update(updatePlayerInput);
   }
 
-  @Mutation(() => Player)
+  @Mutation(() => Player, { name: 'removePlayer' })
   async removePlayer(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Player> {
     return this.playerService.remove(id);
   }
 
-  /*@ResolveField(returns=>PlayerStatistics)
-  async playerStatistics(@Parent() player: Player): Promise<PlayerStatistics>{
+  @ResolveField((returns) => PlayerStatistics)
+  async playerStatistics(@Parent() player: Player): Promise<PlayerStatistics> {
     return this.playerService.getPlayerStatistics(player.playerStatisticsId);
-  }*/
+  }
 
   @ResolveField((returns) => [GroupToPlayer])
   async groups(@Parent() player: Player): Promise<GroupToPlayer[]> {
