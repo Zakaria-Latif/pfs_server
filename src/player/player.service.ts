@@ -19,10 +19,14 @@ import { MessageService } from 'src/message/message.service';
 import { SearchMatchInput } from 'src/match/dto/search-match.input';
 import { SearchPlayerInput } from './dto/search-player.input';
 import { NotFoundError } from 'rxjs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class PlayerService {
-  constructor(@InjectRepository(Player) private playerRepository: Repository<Player>, 
+  constructor(
+    @InjectRepository(Player) private playerRepository: Repository<Player>,
+    @InjectRepository(PlayerStatistics)
+    private playerStatisticsRepository: Repository<PlayerStatistics>,
     @Inject(forwardRef(() => PlayerStatisticsService))
     private playerStatisticsService: PlayerStatisticsService,
     @Inject(forwardRef(() => GroupToPlayerService))
@@ -32,37 +36,55 @@ export class PlayerService {
     @Inject(forwardRef(() => MatchToPlayerService))
     private readonly matchToPlayerService: MatchToPlayerService,
     @Inject(forwardRef(() => MessageService))
-    private readonly MessageService: MessageService
-  ){}
+    private readonly MessageService: MessageService,
+  ) {}
 
-  async create(createPlayerInput: CreatePlayerInput): Promise<Player>{
-    const player = new Player();
-    player.username = createPlayerInput.username;
-    player.password = createPlayerInput.password;
-    player.email = createPlayerInput.email;
-    player.location = 'New York';
-    player.isVerified = false;
-    player.description = 'Lorem ipsum dolor sit amet';
+  async create(createPlayerInput: CreatePlayerInput): Promise<Player> {
+    //Find Latest ID Inserted
+    const queryBuilderStatistics =
+      this.playerStatisticsRepository.createQueryBuilder('player-statistics');
+    queryBuilderStatistics.select('MAX(player-statistics.id)', 'maxId');
+    const maxPlayerStatisticsId = await queryBuilderStatistics.getRawOne();
 
-    const playerStatistics = new PlayerStatistics();
-    playerStatistics.rate = 0;
-    playerStatistics.matchesNumber = 0;
-    playerStatistics.position = 'Defense';
+    const queryBuilder = this.playerRepository.createQueryBuilder('player');
+    queryBuilder.select('MAX(player.id)', 'maxId');
+    const maxPlayerId = await queryBuilder.getRawOne();
 
-    player.playerStatistics = playerStatistics;
-    return this.playerRepository.save(player);
-  };
+    const playerStats = this.playerStatisticsRepository.create({
+      id: maxPlayerStatisticsId.maxId + 1,
+      rate: 0,
+      matchesNumber: 0,
+      position: 'Attack',
+    });
+
+    createPlayerInput.password = await bcrypt.hash(
+      createPlayerInput.password,
+      12,
+    );
+    const player = this.playerRepository.create(createPlayerInput);
+    player.id = maxPlayerId.maxId + 1;
+
+    player.playerStatisticsId = playerStats.id;
+    playerStats.playerId = player.id;
+
+    const NewPlayer = this.playerRepository.save(player);
+    this.playerStatisticsRepository.save(playerStats);
+    return NewPlayer;
+  }
 
   async findAll(paginationInput: PaginationGroupInput): Promise<Player[]> {
     return this.playerRepository.find({
       take: paginationInput.take,
-      skip: paginationInput.skip
+      skip: paginationInput.skip,
     });
   }
 
-  async search(searchPlayerInput: SearchPlayerInput): Promise<Player[]>{
-    const query = this.playerRepository.createQueryBuilder('player')
-      .where('player.position = :position', { position: searchPlayerInput.position })
+  async search(searchPlayerInput: SearchPlayerInput): Promise<Player[]> {
+    const query = this.playerRepository
+      .createQueryBuilder('player')
+      .where('player.position = :position', {
+        position: searchPlayerInput.position,
+      })
       .andWhere('player.rate > :rate', { rate: searchPlayerInput.minRate })
       .getMany();
 
@@ -73,44 +95,48 @@ export class PlayerService {
     return this.playerRepository.findOneOrFail({ where: { id } });
   }
 
-  async update(id: number, updatePlayerInput: UpdatePlayerInput): Promise<Player> {
-    return null;
+  async update(updatePlayerInput: UpdatePlayerInput): Promise<Player> {
+    updatePlayerInput.password = await bcrypt.hash(
+      updatePlayerInput.password,
+      12,
+    );
+    return this.playerRepository.save(updatePlayerInput);
   }
 
   async remove(id: number): Promise<Player> {
-    const player = await this.playerRepository.findOneById(id);
-    if (!player) {
-      throw new NotFoundError(`Player with id ${id} not found`);
-    }
-    await this.playerRepository.remove(player);
+    const player = await this.playerRepository.findOne({ where: { id: id } });
+
+    await this.playerStatisticsRepository.delete({
+      id: player.playerStatisticsId,
+    });
+    await this.playerRepository.delete({ id });
+
     return player;
   }
 
-  async findPlayerByUsername(username: string): Promise<Player>{
+  async findPlayerByUsername(username: string): Promise<Player> {
     return this.playerRepository.findOne({
-      where: { username }
-    })
+      where: { username },
+    });
   }
-  
-  async getPlayerStatistics(statisticsId: number): Promise<PlayerStatistics>{
+
+  async getPlayerStatistics(statisticsId: number): Promise<PlayerStatistics> {
     return this.playerStatisticsService.findOne(statisticsId);
   }
 
-  async getGroupToPlayer(playerId: number): Promise<GroupToPlayer[]>{
+  async getGroupToPlayer(playerId: number): Promise<GroupToPlayer[]> {
     return this.groupToPlayerService.findByPlayerId(playerId);
   }
 
-  async getCreatedMatches(playerId: number): Promise<Match[]>{
+  async getCreatedMatches(playerId: number): Promise<Match[]> {
     return this.matchService.getMatchesByCreatorId(playerId);
   }
 
-  async getMatchToPlayers(playerId: number): Promise<MatchToPlayer[]>{
+  async getMatchToPlayers(playerId: number): Promise<MatchToPlayer[]> {
     return this.matchToPlayerService.findMatchToPlayerByPlayerId(playerId);
   }
 
-  async getMessages(playerId: number): Promise<Message[]>{
+  async getMessages(playerId: number): Promise<Message[]> {
     return this.MessageService.getMessagesBySenderId(playerId);
   }
-
-
 }

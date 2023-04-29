@@ -6,9 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerModule } from 'src/player/player.module';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([PlayerStatistics]), 
-  forwardRef(() => PlayerModule)],
+  imports: [
+    TypeOrmModule.forFeature([PlayerStatistics]),
+    forwardRef(() => PlayerModule),
+  ],
   providers: [PlayerStatisticsResolver, PlayerStatisticsService],
-  exports: [ PlayerStatisticsService ]
+  exports: [TypeOrmModule],
 })
 export class PlayerStatisticsModule {}

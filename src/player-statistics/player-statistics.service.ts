@@ -11,18 +11,24 @@ import { PlayerService } from 'src/player/player.service';
 
 @Injectable()
 export class PlayerStatisticsService {
-  constructor(@InjectRepository(PlayerStatistics) private playerStatisticsRepository: Repository<PlayerStatistics>,
+  constructor(
+    @InjectRepository(PlayerStatistics)
+    private playerStatisticsRepository: Repository<PlayerStatistics>,
     @Inject(forwardRef(() => PlayerService))
-    private readonly playerService: PlayerService
-  ){}
-  async create(createPlayerStatisticInput: CreatePlayerStatisticInput): Promise<PlayerStatistics> {
+    private readonly playerService: PlayerService,
+  ) {}
+  async create(
+    createPlayerStatisticInput: CreatePlayerStatisticInput,
+  ): Promise<PlayerStatistics> {
     return null;
   }
 
-  async findAll(paginationInput: PaginationGroupInput): Promise<PlayerStatistics[]> {
+  async findAll(
+    paginationInput: PaginationGroupInput,
+  ): Promise<PlayerStatistics[]> {
     return this.playerStatisticsRepository.find({
       take: paginationInput.take,
-      skip: paginationInput.skip
+      skip: paginationInput.skip,
     });
   }
 
@@ -30,16 +36,20 @@ export class PlayerStatisticsService {
     return this.playerStatisticsRepository.findOneOrFail({ where: { id } });
   }
 
-  async update(id: number, updatePlayerStatisticInput: UpdatePlayerStatisticInput): Promise<PlayerStatistics> {
-    return null;
+  async update(
+    updatePlayerStatisticInput: UpdatePlayerStatisticInput,
+  ): Promise<PlayerStatistics> {
+    await this.playerStatisticsRepository.save(updatePlayerStatisticInput);
+    return this.playerStatisticsRepository.findOneOrFail({
+      where: { id: updatePlayerStatisticInput.id },
+    });
   }
 
   async remove(id: number): Promise<PlayerStatistics> {
     return null;
   }
 
-  async getPlayer(playerId: number): Promise<Player>{
+  async getPlayer(playerId: number): Promise<Player> {
     return this.playerService.findOne(playerId);
   }
-
 }

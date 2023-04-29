@@ -162,11 +162,10 @@ type Mutation {
   createMatch(createMatchInput: CreateMatchInput!): Match!
   updateMatch(updateMatchInput: UpdateMatchInput!): Match!
   removeMatch(id: Int!): Match!
+  createPlayer(createPlayerInput: CreatePlayerInput!): Player!
   updatePlayer(updatePlayerInput: UpdatePlayerInput!): Player!
   removePlayer(id: Int!): Player!
-  createPlayerStatistic(createPlayerStatisticInput: CreatePlayerStatisticInput!): PlayerStatistics!
   updatePlayerStatistic(updatePlayerStatisticInput: UpdatePlayerStatisticInput!): PlayerStatistics!
-  removePlayerStatistic(id: Int!): PlayerStatistics!
   createGroupToPlayer(createGroupToPlayerInput: CreateGroupToPlayerInput!): GroupToPlayer!
   updateGroupToPlayer(updateGroupToPlayerInput: UpdateGroupToPlayerInput!): GroupToPlayer!
   removeGroupToPlayer(id: Int!): GroupToPlayer!
@@ -175,7 +174,7 @@ type Mutation {
   removeMatchToPlayer(id: Int!): MatchToPlayer!
   createMessage(createMessageInput: CreateMessageInput!): Message!
   updateMessage(updateMessageInput: UpdateMessageInput!): Message!
-  removeMessage(id: Int!): Message!
+  removeMessage(id: ID!): Message!
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
@@ -203,6 +202,14 @@ input UpdateMatchInput {
   id: Int!
 }
 
+input CreatePlayerInput {
+  username: String!
+  password: String!
+  email: String!
+  location: String
+  description: String
+}
+
 input UpdatePlayerInput {
   username: String
   password: String
@@ -212,14 +219,12 @@ input UpdatePlayerInput {
   id: Int!
 }
 
-input CreatePlayerStatisticInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 input UpdatePlayerStatisticInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  rate: Float
+  matchesNumber: Float
+  position: String
+  location: String
+  description: String
   id: Int!
 }
 
@@ -246,24 +251,26 @@ input UpdateMatchToPlayerInput {
 }
 
 input CreateMessageInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  message: String!
+  groupId: Float!
+  senderId: Float!
+  isRead: Boolean
 }
 
 input UpdateMessageInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  message: String
+  groupId: Float
+  senderId: Float
+  isRead: Boolean
   id: Int!
 }
 
 input CreateGroupInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
 }
 
 input UpdateGroupInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  name: String
   id: Int!
 }
 
@@ -271,4 +278,10 @@ input SignUpInput {
   email: String!
   username: String!
   password: String!
+}
+
+type Subscription {
+  messageCreated: Message!
+  messageUpdated: Message!
+  messageremoved: Message
 }
