@@ -39,7 +39,7 @@ export class MessageResolver {
     return this.pubSub.asyncIterator('messageCreated');
   }
 
-  @Query(() => [Message], { name: 'message' })
+  @Query(() => [Message], { name: 'messages' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
   ): Promise<Message[]> {
