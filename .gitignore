@@ -37,4 +37,4 @@ lerna-debug.log*
 # env var
 /src/config/config-dev.env
 /src/config/config-prod.env
-ormconfig.json
+ormconfig.js
