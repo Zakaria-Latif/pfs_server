@@ -133,9 +133,11 @@ type Query {
   match(id: Int!): Match!
   players(paginationInput: PaginationGroupInput!): [Player!]!
   player(id: Int!): Player!
+  playerStatistics(paginationInput: PaginationGroupInput!): [PlayerStatistics!]!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
   matchToPlayer(id: Int!): MatchToPlayer!
+  messages(paginationInput: PaginationGroupInput!): [Message!]!
   message(id: Int!): Message!
   groups(paginationInput: PaginationGroupInput!): [Group!]!
   group(id: Int!): Group!

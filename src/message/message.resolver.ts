@@ -44,7 +44,7 @@ export class MessageResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [Message], { name: 'message' })
+  @Query(() => [Message], { name: 'messages' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
   ): Promise<Message[]> {
