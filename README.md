@@ -23,6 +23,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | playerStatisticsId| Int        | The ID of the associated PlayerStatistics entity         |
 | playerStatistics  | PlayerStatistics | The associated PlayerStatistics entity           |
 | groups            | [GroupToPlayer] | An array of the player's GroupToPlayer entities     |
+| createdGroups            | [Group] | An array of the groups to whome the player is admin or creator     |
 | createdMatches    | [Match]    | An array of the player's created Match entities          |
 | matchToPlayers    | [MatchToPlayer] | An array of the player's MatchToPlayer entities     |
 | messages          | [Message]  | An array of the player's Message entities                |
@@ -118,6 +119,7 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 | --- | --- | --- |
 | id | Int | The ID of the group |
 | name | String | The name of the group |
+| creator | Player | the creator or admin of the group|
 | players | [GroupToPlayer] | The list of players in the group |
 | messages | [Message] | The list of messages sent in the group |
 | createdAt | Date | The timestamp representing when the group was created |
