@@ -6,6 +6,7 @@ import {
   Int,
   Parent,
   ResolveField,
+  Context,
 } from '@nestjs/graphql';
 import { PlayerService } from './player.service';
 import { Player } from './entities/player.entity';
@@ -20,11 +21,13 @@ import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.enti
 import { Message } from 'src/message/entities/message.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
+import { OwnershipGuard } from './guards/OwnershipGuard';
 
 @Resolver(() => Player)
 export class PlayerResolver {
   constructor(private readonly playerService: PlayerService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Player)
   async createPlayer(
     @Args('createPlayerInput') createPlayerInput: CreatePlayerInput,
@@ -32,19 +35,23 @@ export class PlayerResolver {
     return this.playerService.create(createPlayerInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Player], { name: 'players' })
   @UseGuards(JwtAuthGuard)
   async findAll(
-    @Args('paginationInput') paginationInput: PaginationGroupInput,
+    @Args('paginationInput') paginationInput: PaginationGroupInput
   ): Promise<Player[]> {
+    // console.log(context.req.user.id)
     return this.playerService.findAll(paginationInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => Player, { name: 'player' })
   async findOne(@Args('id', { type: () => Int }) id: number): Promise<Player> {
     return this.playerService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard, OwnershipGuard)
   @Mutation(() => Player, { name: 'updatePlayer' })
   async updatePlayer(
     @Args('updatePlayerInput') updatePlayerInput: UpdatePlayerInput,
@@ -52,6 +59,7 @@ export class PlayerResolver {
     return this.playerService.update(updatePlayerInput);
   }
 
+  @UseGuards(JwtAuthGuard, OwnershipGuard)
   @Mutation(() => Player, { name: 'removePlayer' })
   async removePlayer(
     @Args('id', { type: () => Int }) id: number,

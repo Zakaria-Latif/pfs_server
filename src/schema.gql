@@ -35,6 +35,8 @@ scalar DateTime
 type Group {
   id: Int!
   name: String!
+  creatorId: Int!
+  creator: Player!
   players: [GroupToPlayer!]!
   messages: [Message!]!
   createdAt: DateTime!
@@ -86,6 +88,7 @@ type Player {
   playerStatistics: PlayerStatistics
   groups: [GroupToPlayer!]!
   createdMatches: [Match!]!
+  createdGroups: [Group!]!
   matchToPlayers: [MatchToPlayer!]!
   messages: [Message!]!
   createdAt: DateTime!
@@ -134,6 +137,7 @@ type Query {
   groupToPlayer(id: Int!): GroupToPlayer!
   matchToPlayer(id: Int!): MatchToPlayer!
   message(id: Int!): Message!
+  groups(paginationInput: PaginationGroupInput!): [Group!]!
   group(id: Int!): Group!
   login(loginInput: LoginInput!): LoginResponse!
 }

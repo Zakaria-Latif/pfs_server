@@ -40,36 +40,23 @@ export class PlayerService {
   ) {}
 
   async create(createPlayerInput: CreatePlayerInput): Promise<Player> {
-    //Find Latest ID Inserted
-    const queryBuilderStatistics =
-      this.playerStatisticsRepository.createQueryBuilder('player-statistics');
-    queryBuilderStatistics.select('MAX(player-statistics.id)', 'maxId');
-    const maxPlayerStatisticsId = await queryBuilderStatistics.getRawOne();
+    const player = new Player();
+    player.username = createPlayerInput.username;
+    player.password = createPlayerInput.password;
+    player.email = createPlayerInput.email;
+    player.location = createPlayerInput.location;
+    player.isVerified = false;
+    player.description = createPlayerInput.description;
 
-    const queryBuilder = this.playerRepository.createQueryBuilder('player');
-    queryBuilder.select('MAX(player.id)', 'maxId');
-    const maxPlayerId = await queryBuilder.getRawOne();
+    const playerStatistics = new PlayerStatistics();
+    playerStatistics.rate = 0;
+    playerStatistics.matchesNumber = 0;
+    playerStatistics.position = 'Defense';
+    player.playerStatistics = playerStatistics;
 
-    const playerStats = this.playerStatisticsRepository.create({
-      id: maxPlayerStatisticsId.maxId + 1,
-      rate: 0,
-      matchesNumber: 0,
-      position: 'Attack',
-    });
-
-    createPlayerInput.password = await bcrypt.hash(
-      createPlayerInput.password,
-      12,
-    );
-    const player = this.playerRepository.create(createPlayerInput);
-    player.id = maxPlayerId.maxId + 1;
-
-    player.playerStatisticsId = playerStats.id;
-    playerStats.playerId = player.id;
-
-    const NewPlayer = this.playerRepository.save(player);
-    this.playerStatisticsRepository.save(playerStats);
-    return NewPlayer;
+    // const player=await this.playerRepository.save(player);
+    // console.log({id: player.id}); // do not delete this
+    return await this.playerRepository.save(player);
   }
 
   async findAll(paginationInput: PaginationGroupInput): Promise<Player[]> {
@@ -92,7 +79,7 @@ export class PlayerService {
   }
 
   async findOne(id: number): Promise<Player> {
-    return this.playerRepository.findOneOrFail({ where: { id } });
+    return this.playerRepository.findOne({ where: { id } });
   }
 
   async update(updatePlayerInput: UpdatePlayerInput): Promise<Player> {

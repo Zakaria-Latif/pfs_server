@@ -6,6 +6,7 @@ import { Message } from '../../message/entities/message.entity';
 import { PlayerStatistics } from '../../player-statistics/entities/player-statistic.entity';
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import { IsEmail } from 'class-validator';
+import { Group } from '../../group/entities/group.entity';
 
 @Entity()
 @ObjectType()
@@ -72,6 +73,11 @@ export class Player {
   @JoinColumn()
   @Field(() => [Match])
   createdMatches: Match[];
+
+  @OneToMany(() => Group, (group) => group.creator)
+  @JoinColumn()
+  @Field(() => [Group])
+  createdGroups: Group[];
 
   @OneToMany(() => MatchToPlayer, (matchToPlayer) => matchToPlayer.player)
   @JoinColumn()
