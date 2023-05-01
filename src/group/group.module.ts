@@ -8,10 +8,11 @@ import { GroupToPlayer } from 'src/group-to-player/entities/group-to-player.enti
 import { Message } from 'src/message/entities/message.entity';
 import { GroupToPlayerService } from 'src/group-to-player/group-to-player.service';
 import { GroupToPlayerModule } from 'src/group-to-player/group-to-player.module';
+import { PlayerModule } from 'src/player/player.module';
 
 @Module({
   imports: [ TypeOrmModule.forFeature([Group]) ,
-  forwardRef(() => GroupToPlayer), forwardRef(() => MessageModule), forwardRef(()=>GroupToPlayerModule)
+  forwardRef(() => GroupToPlayer), forwardRef(() => MessageModule), forwardRef(()=>GroupToPlayerModule), forwardRef(()=>PlayerModule)
 ],
   providers: [GroupResolver, GroupService],
   exports: [ GroupService ]

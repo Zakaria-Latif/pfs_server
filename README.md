@@ -8,26 +8,27 @@ Welcome to the documentation for our GraphQL API. This API allows you to perform
 
 _A Player is an entity that represents an individual who participates in sports matches and belongs to one or more groups. Players can be associated with matches through a MatchToPlayer entity, and can belong to groups through a GroupToPlayer entity. The Player entity contains information such as the player's name, age, gender, and any other relevant details._
 
-| Field Name         | Type             | Description                                       |
-| ------------------ | ---------------- | ------------------------------------------------- |
-| id                 | Int              | Unique identifier for the player                  |
-| username           | String           | The player's username                             |
-| password           | String           | The player's password                             |
-| email              | String           | The player's email                                |
-| location           | String           | The player's location                             |
-| isVerified         | Boolean          | Indicates if the player's email has been verified |
-| verificationToken  | String           | A token used for email verification               |
-| resetToken         | String           | A token used for password reset                   |
-| resetExpiration    | Date             | The expiration date for the reset token           |
-| description        | String           | A short description of the player                 |
-| playerStatisticsId | Int              | The ID of the associated PlayerStatistics entity  |
-| playerStatistics   | PlayerStatistics | The associated PlayerStatistics entity            |
-| groups             | [GroupToPlayer]  | An array of the player's GroupToPlayer entities   |
-| createdMatches     | [Match]          | An array of the player's created Match entities   |
-| matchToPlayers     | [MatchToPlayer]  | An array of the player's MatchToPlayer entities   |
-| messages           | [Message]        | An array of the player's Message entities         |
-| createdAt          | Date             | The date the player was created                   |
-| updatedAt          | Date             | The date the player was last updated              |
+| Field Name        | Type       | Description                                             |
+| ----------------- | ---------- | ------------------------------------------------------- |
+| id                | Int        | Unique identifier for the player                        |
+| username          | String     | The player's username                                   |
+| password          | String     | The player's password                                   |
+| email             | String     | The player's email                                      |
+| location          | String     | The player's location                                   |
+| isVerified        | Boolean    | Indicates if the player's email has been verified       |
+| verificationToken | String     | A token used for email verification                     |
+| resetToken        | String     | A token used for password reset                          |
+| resetExpiration   | Date       | The expiration date for the reset token                  |
+| description       | String     | A short description of the player                        |
+| playerStatisticsId| Int        | The ID of the associated PlayerStatistics entity         |
+| playerStatistics  | PlayerStatistics | The associated PlayerStatistics entity           |
+| groups            | [GroupToPlayer] | An array of the player's GroupToPlayer entities     |
+| createdGroups            | [Group] | An array of the groups to whome the player is admin or creator     |
+| createdMatches    | [Match]    | An array of the player's created Match entities          |
+| matchToPlayers    | [MatchToPlayer] | An array of the player's MatchToPlayer entities     |
+| messages          | [Message]  | An array of the player's Message entities                |
+| createdAt         | Date       | The date the player was created                          |
+| updatedAt         | Date       | The date the player was last updated                     |
 
 ### PlayerStatistics Entity:
 
@@ -111,16 +112,17 @@ _GroupToPlayer is an entity that represents the relationship between a Group and
 
 ## Group Entity:
 
-_A Group is an entity that represents a collection of players who are participating together in a game or a tournament. It contains a name attribute that identifies the group, and is associated with a collection of GroupToPlayer entities that map players to the group. It also has a collection of Message entities, which contain messages sent between the players within the group._
+*A Group is an entity that represents a collection of players who are participating together in a game or a tournament. It contains a name attribute that identifies the group, and is associated with a collection of GroupToPlayer entities that map players to the group. It also has a collection of Message entities, which contain messages sent between the players within the group.*
 
-| Field     | Type            | Description                                                |
-| --------- | --------------- | ---------------------------------------------------------- |
-| id        | Int             | The ID of the group                                        |
-| name      | String          | The name of the group                                      |
-| players   | [GroupToPlayer] | The list of players in the group                           |
-| messages  | [Message]       | The list of messages sent in the group                     |
-| createdAt | Date            | The timestamp representing when the group was created      |
-| updatedAt | Date            | The timestamp representing when the group was last updated |
+| Field | Type | Description |
+| --- | --- | --- |
+| id | Int | The ID of the group |
+| name | String | The name of the group |
+| creator | Player | the creator or admin of the group|
+| players | [GroupToPlayer] | The list of players in the group |
+| messages | [Message] | The list of messages sent in the group |
+| createdAt | Date | The timestamp representing when the group was created |
+| updatedAt | Date | The timestamp representing when the group was last updated |
 
 ## Authentication
 

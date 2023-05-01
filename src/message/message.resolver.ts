@@ -17,6 +17,8 @@ import { PaginationGroupInput } from 'src/group/dto/pagination-group.input';
 import { Player } from 'src/player/entities/player.entity';
 import { Group } from 'src/group/entities/group.entity';
 import { PubSub } from 'graphql-subscriptions';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 
 @Resolver(() => Message)
 export class MessageResolver {
@@ -25,6 +27,7 @@ export class MessageResolver {
     this.pubSub = new PubSub();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Message)
   async createMessage(
     @Args('createMessageInput') createMessageInput: CreateMessageInput,
@@ -34,11 +37,13 @@ export class MessageResolver {
     return message;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Subscription((returns) => Message)
   messageCreated() {
     return this.pubSub.asyncIterator('messageCreated');
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Message], { name: 'messages' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
@@ -46,11 +51,13 @@ export class MessageResolver {
     return this.messageService.findAll(paginationInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => Message, { name: 'message' })
   async findOne(@Args('id', { type: () => Int }) id: number): Promise<Message> {
     return this.messageService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Message)
   async updateMessage(
     @Args('updateMessageInput') updateMessageInput: UpdateMessageInput,
@@ -60,11 +67,13 @@ export class MessageResolver {
     return message;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Subscription((returns) => Message)
   messageUpdated() {
     return this.pubSub.asyncIterator('messageUpdated');
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Message)
   async removeMessage(@Args('id', { type: () => ID }) id: Message['id']) {
     const message = await this.messageService.remove(id);
@@ -72,6 +81,7 @@ export class MessageResolver {
     return message;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Subscription((returns) => Message, {
     nullable: true,
   })

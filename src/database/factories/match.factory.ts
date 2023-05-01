@@ -11,6 +11,6 @@ define(Match, (fak: typeof faker) => {
   match.playersNumber = faker.datatype.number({ max: 20 });
   match.prize = faker.name.fullName();
   match.duration = faker.datatype.number({ max: 20 });
-  match.creatorId = faker.datatype.number(20);
+  match.creatorId = faker.datatype.number({min: 1, max: 10});
   return match;
 });
