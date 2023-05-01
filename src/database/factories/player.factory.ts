@@ -5,7 +5,7 @@ import { Player } from '../../player/entities/player.entity';
 
 define(Player, (fak: typeof faker) => {
   const player = new Player();
-  player.id = faker.datatype.number({ max: 15 });
+  player.id = faker.datatype.number({ max: 10 });
   player.username = faker.name.firstName();
   player.password = faker.internet.password();
   player.email = faker.internet.email();
@@ -19,7 +19,7 @@ define(Player, (fak: typeof faker) => {
   player.updatedAt = faker.date.recent();
 
   const playerStats = new PlayerStatistics();
-  playerStats.id = faker.datatype.number({ max: 15 });
+  playerStats.id = faker.datatype.number({ min: 1, max: 10 });
   playerStats.rate = faker.datatype.number({ max: 10 });
   playerStats.matchesNumber = faker.datatype.number({ max: 30 });
   playerStats.position = faker.helpers.arrayElement([

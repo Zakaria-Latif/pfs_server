@@ -6,7 +6,7 @@ import { Player } from '../../player/entities/player.entity';
 
 define(PlayerStatistics, (fak: typeof faker) => {
   const playerStatistics = new PlayerStatistics();
-  playerStatistics.id = faker.datatype.number({ max: 15 });
+  playerStatistics.id = faker.datatype.number({ min: 1, max: 10 });
   playerStatistics.rate = faker.datatype.number({ min: 0, max: 10 });
   playerStatistics.matchesNumber = faker.datatype.number({ min: 0, max: 30 });
   playerStatistics.position = faker.helpers.arrayElement([
@@ -16,7 +16,7 @@ define(PlayerStatistics, (fak: typeof faker) => {
     'Forward',
   ]);
   playerStatistics.player = new Player();
-  playerStatistics.player.id = faker.datatype.number({ min: 1, max: 15 });
+  playerStatistics.player.id = faker.datatype.number({ min: 1, max: 10 });
   playerStatistics.playerId = playerStatistics.player.id;
   return playerStatistics;
 });

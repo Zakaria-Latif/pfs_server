@@ -71,4 +71,8 @@ export class MatchService {
   async getPlayers(matchId: number): Promise<MatchToPlayer[]>{
     return this.matchToPlayerService.findMatchToPlayerByMatchId(matchId);
   }
+
+  async findOneById(id: number): Promise<Match>{
+    return await this.matchRepository.findOne({where: {id}});
+  }
 }

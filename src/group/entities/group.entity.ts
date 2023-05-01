@@ -8,7 +8,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Player } from '../../player/entities/player.entity';
 
 @Entity()
 @ObjectType()
@@ -20,6 +23,15 @@ export class Group {
   @Column()
   @Field()
   name: string;
+
+  @Column()
+  @Field(type=>Int)
+  creatorId: number;
+
+  @ManyToOne(() => Player, player => player.createdGroups)
+  @JoinColumn({ name: 'creatorId' })
+  @Field(() => Player)
+  creator: Player;
 
   @OneToMany(() => GroupToPlayer, (groupToPlayer) => groupToPlayer.group)
   @Field(() => [GroupToPlayer])

@@ -7,37 +7,46 @@ import { PaginationGroupInput } from 'src/group/dto/pagination-group.input';
 import { Player } from 'src/player/entities/player.entity';
 import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
 import { SearchMatchInput } from './dto/search-match.input';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
+import { OwnershipGuard } from './guards/OwnershipGuard';
 
 @Resolver(() => Match)
 export class MatchResolver {
   constructor(private readonly matchService: MatchService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Match, {name: "createMatch"})
   async createMatch(@Args('createMatchInput') createMatchInput: CreateMatchInput):  Promise<Match> {
     return this.matchService.create(createMatchInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Match], { name: 'matches' })
   async findAll(@Args("paginationInput") paginationInput: PaginationGroupInput):  Promise<Match[]> {
     return this.matchService.findAll(paginationInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Match], { name: 'search' })
   async searchMatches(@Args("searchMatchInput") searchMatchInput: SearchMatchInput):  Promise<Match[]> {
     return this.matchService.search(searchMatchInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => Match, { name: 'match' })
   async findOne(@Args('id', { type: () => Int }) id: number):  Promise<Match> {
     return this.matchService.findOne(id);
   }
 
   //This is not in the docs yet
+  @UseGuards(JwtAuthGuard, OwnershipGuard)
   @Mutation(() => Match)
   async updateMatch(@Args('updateMatchInput') updateMatchInput: UpdateMatchInput):  Promise<Match> {
     return this.matchService.update(updateMatchInput.id, updateMatchInput);
   }
 
+  @UseGuards(JwtAuthGuard, OwnershipGuard)
   @Mutation(() => Match, { name: "removeMatch" })
   async removeMatch(@Args('id', { type: () => Int }) id: number):  Promise<Match> {
     return this.matchService.remove(id);

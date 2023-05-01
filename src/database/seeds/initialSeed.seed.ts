@@ -24,7 +24,7 @@ export default class InitialDatabaseSeed implements Seeder {
 
     //Generate Unique Value
 
-    const players = await factory(Player)().createMany(15);
+    const players = await factory(Player)().createMany(25);
 
     const playerStatistics = await factory(PlayerStatistics)()
       .map(async (playerStatistics) => {
@@ -39,7 +39,7 @@ export default class InitialDatabaseSeed implements Seeder {
         match.creator = players[Math.floor(Math.random() * players.length)];
         return match;
       })
-      .createMany(15);
+      .createMany(20);
 
     const matchToPlayers = await factory(MatchToPlayer)()
       .map(async function (matchToPlayers) {
@@ -49,7 +49,7 @@ export default class InitialDatabaseSeed implements Seeder {
           matchs[Math.floor(Math.random() * matchs.length)];
         return matchToPlayers;
       })
-      .createMany(15);
+      .createMany(25);
 
     const groups = await factory(Group)().createMany(15);
 
@@ -61,7 +61,7 @@ export default class InitialDatabaseSeed implements Seeder {
           groups[Math.floor(Math.random() * groups.length)];
         return groupToPlayers;
       })
-      .createMany(15);
+      .createMany(25);
 
     const messages = await factory(Message)()
       .map(async (messages) => {

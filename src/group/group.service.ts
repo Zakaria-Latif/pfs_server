@@ -9,6 +9,8 @@ import { GroupToPlayer } from 'src/group-to-player/entities/group-to-player.enti
 import { Message } from 'src/message/entities/message.entity';
 import { GroupToPlayerService } from 'src/group-to-player/group-to-player.service';
 import { MessageService } from 'src/message/message.service';
+import { PlayerService } from 'src/player/player.service';
+import { Player } from 'src/player/entities/player.entity';
 
 @Injectable()
 export class GroupService {
@@ -18,17 +20,22 @@ export class GroupService {
     private readonly groupToPlayerService: GroupToPlayerService,
     @Inject(forwardRef(() => MessageService))
     private readonly messageService: MessageService,
+    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,
   ) {}
   async create(createGroupInput: CreateGroupInput): Promise<Group> {
     const group = this.groupRepository.create(createGroupInput);
     return this.groupRepository.save(group);
   }
 
-  async findAll(paginationInput: PaginationGroupInput): Promise<Group[]> {
-    return this.groupRepository.find({
-      take: paginationInput.take,
-      skip: paginationInput.skip,
-    });
+  async findAll(paginationInput: PaginationGroupInput, userId: number): Promise<Group[]> {
+    return this.groupRepository.createQueryBuilder('group')
+    .leftJoin('group.players', 'players')
+    .leftJoin('players.player', 'player')
+    .where('player.id = :userId', { userId })
+    .take(paginationInput.take)
+    .skip(paginationInput.skip)
+    .getMany();
   }
 
   async findOne(id: number): Promise<Group> {
@@ -55,4 +62,10 @@ export class GroupService {
   async getMessages(groupId: number): Promise<Message[]> {
     return this.messageService.findByGroupId(groupId);
   }
+
+  async getCreator(creatorId: number): Promise<Player> {
+    return this.playerService.findOne(creatorId);
+  }
+
+
 }
