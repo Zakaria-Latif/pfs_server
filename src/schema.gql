@@ -133,7 +133,6 @@ type Query {
   match(id: Int!): Match!
   players(paginationInput: PaginationGroupInput!): [Player!]!
   player(id: Int!): Player!
-  playerStatistics(paginationInput: PaginationGroupInput!): [PlayerStatistics!]!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
   matchToPlayer(id: Int!): MatchToPlayer!
@@ -235,24 +234,28 @@ input UpdatePlayerStatisticInput {
 }
 
 input CreateGroupToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  playerId: Float!
+  groupId: Float!
 }
 
 input UpdateGroupToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  playerId: Float
+  groupId: Float
   id: Int!
 }
 
 input CreateMatchToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  rate: Float!
+  position: String!
+  playerId: Float!
+  matchId: Float!
 }
 
 input UpdateMatchToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  rate: Float
+  position: String
+  playerId: Float
+  matchId: Float
   id: Int!
 }
 
