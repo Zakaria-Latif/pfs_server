@@ -215,6 +215,52 @@ query {
 
 The player query takes a id parameter, which specifies the ID of the player to retrieve. The query returns a single player, including their username, rating, and any associated messages.
 
+### To retrieve a single player with Matchs and Groups, you can use the following GraphQL query:
+
+```
+query getPlayerMatchsGroups{
+  player(id:14) {
+    id
+    username,
+    email,
+    matchToPlayers{
+      match{
+        id
+        location
+        playersNumber
+      }
+    }
+    groupToPlayers{
+      group{
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+### To retrieve a single player with Created Matchs and Groups, you can use the following GraphQL query:
+
+```
+query getPlayerCreatedMatchsGroups{
+  player(id:7) {
+    id
+    username,
+    email,
+    createdMatches{
+      id
+      location
+      playersNumber
+    }
+    createdGroups{
+      id
+      name
+    }
+  }
+}
+```
+
 ### Creating players
 
 To create a new player, you can use the following GraphQL mutation:
@@ -273,8 +319,6 @@ mutation {
 ```
 
 The removePlayer mutation takes an id parameter, which specifies the ID of the player to delete. Upon successful deletion, the mutation returns the player's username.
-
-##Player Statistics Management
 
 ## playerStatistic Management
 
@@ -372,6 +416,28 @@ query {
 
 The match query takes an id parameter, which specifies the ID of the match to retrieve. The query returns a single match, including its name, location, ID, and creator information.
 
+### Retrieving ONe Match With Players
+
+To retrieve a single match With Players, you can use the following GraphQL query:
+
+```
+query getMatchPlayers{
+  match(id:2) {
+    id
+    name,
+    location,
+    time
+    players{
+      player{
+        id
+        username
+        email
+      }
+    }
+  }
+}
+```
+
 ### Searching for Matches
 
 To search for matches based on certain criteria, you can use the following GraphQL query:
@@ -459,6 +525,26 @@ query {
 ```
 
 The group query takes a id parameter, which specifies the ID of the group to retrieve. The query returns a single group, including their name.
+
+### Retrieving One Group With Players
+
+To retrieve a single group With Players, you can use the following GraphQL query:
+
+```
+query getGroupPlayers{
+  group(id:3) {
+    id
+    name,
+    players{
+      player{
+        id
+        username
+        email
+      }
+    }
+  }
+}
+```
 
 ### Creating Groups
 
@@ -653,3 +739,118 @@ subscription MessageRemoved{
 ```
 
 The MessageRemoved Subscription,returns the deleted message.
+
+## GroupToPlayer Management
+
+### Creating GroupToPlayers
+
+To create a new GroupToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation createGroupToPlayer{
+    createGroupToPlayer(createGroupToPlayerInput:{
+      playerId:1,
+      groupId:10
+    }){
+    	playerId
+      groupId
+  }
+  }
+```
+
+The createGroupToPlayer mutation takes a createGroupToPlayerInput object, which specifies the details of the new GroupToPlayer to create. Upon successful creation, the mutation returns the name of the new GroupToPlayer.
+
+### Updating GroupToPlayers
+
+To update a new GroupToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation udapteGroupToPlayer{
+    updateGroupToPlayer(updateGroupToPlayerInput:{
+      id:1,
+      playerId:1,
+      groupId:10
+    }){
+    	playerId
+      groupId
+  }
+  }
+```
+
+The updateGroupToPlayer mutation takes a updateGroupToPlayerInput object, which specifies the details of the GroupToPlayer to update. Upon successful update, the mutation returns the name of the new GroupToPlayer.
+
+### Deleting GroupToPlayers
+
+To delete a GroupToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation removeGroupToPlayer{
+    removeGroupToPlayer(id:16){
+    	playerId
+      groupId
+  }
+  }
+```
+
+The removeGroupToPlayere mutation takes an id parameter, which specifies the ID of the GroupToPlayer to delete. Upon successful deletion, the mutation returns the name of the deleted GroupToPlayer.
+
+## MatchToPlayer Management
+
+### Creating MatchToPlayers
+
+To create a new MatchToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation createMatchToPlayer{
+    createMatchToPlayer(createMatchToPlayerInput:{
+      rate:0,
+      position:"Attack",
+      playerId:1,
+      matchId:10
+    }){
+    	id
+    	matchId
+    	playerId
+  }
+  }
+```
+
+The createMatchToPlayer mutation takes a createMatchToPlayerInput object, which specifies the details of the new MatchToPlayer to create. Upon successful creation, the mutation returns the name of the new MatchToPlayer.
+
+### Updating MatchToPlayers
+
+To update a new MatchToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation updateMatchToPlayer{
+    updateMatchToPlayer(updateMatchToPlayerInput:{
+      id:1,
+      rate:0,
+      position:"Attack",
+      playerId:1,
+      matchId:14
+    }){
+    	id
+    	matchId
+    	playerId
+  }
+  }
+```
+
+The updateMatchToPlayer mutation takes a updateMatchToPlayerInput object, which specifies the details of the MatchToPlayer to update. Upon successful update, the mutation returns the name of the new MatchToPlayer.
+
+### Deleting MatchToPlayers
+
+To delete a MatchToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation removeMatchToPlayer{
+    removeMatchToPlayer(id:16){
+    	id
+    	matchId
+    	playerId
+  }
+  }
+```
+
+The removeMatchToPlayere mutation takes an id parameter, which specifies the ID of the MatchToPlayer to delete. Upon successful deletion, the mutation returns the name of the deleted MatchToPlayer.
