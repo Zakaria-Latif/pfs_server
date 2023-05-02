@@ -12,56 +12,74 @@ import { PlayerService } from 'src/player/player.service';
 
 @Injectable()
 export class GroupToPlayerService {
-  constructor(@InjectRepository(GroupToPlayer) private groupToPlayerRepository: Repository<GroupToPlayer>,
-  @Inject(forwardRef(() => PlayerService))
-  private readonly playerService: PlayerService,
-  @Inject(forwardRef(() => GroupService))
-  private readonly groupService: GroupService,
-  ){}
-  async create(createGroupToPlayerInput: CreateGroupToPlayerInput):  Promise<GroupToPlayer> {
-    return null;
+  constructor(
+    @InjectRepository(GroupToPlayer)
+    private groupToPlayerRepository: Repository<GroupToPlayer>,
+    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,
+    @Inject(forwardRef(() => GroupService))
+    private readonly groupService: GroupService,
+  ) {}
+  async create(
+    createGroupToPlayerInput: CreateGroupToPlayerInput,
+  ): Promise<GroupToPlayer> {
+    const groupToPlayer = this.groupToPlayerRepository.create(
+      createGroupToPlayerInput,
+    );
+    return this.groupToPlayerRepository.save(groupToPlayer);
   }
 
-  async findAll(paginationInput: PaginationGroupInput):  Promise<GroupToPlayer[]> {
+  async findAll(
+    paginationInput: PaginationGroupInput,
+  ): Promise<GroupToPlayer[]> {
     return this.groupToPlayerRepository.find({
       take: paginationInput.take,
-      skip: paginationInput.skip
+      skip: paginationInput.skip,
     });
   }
 
-  async findOne(id: number):  Promise<GroupToPlayer> {
-      return this.groupToPlayerRepository.findOneOrFail({ where: { id } });;
+  async findOne(id: number): Promise<GroupToPlayer> {
+    return this.groupToPlayerRepository.findOneOrFail({ where: { id } });
   }
 
-  async update(id: number, updateGroupToPlayerInput: UpdateGroupToPlayerInput):  Promise<GroupToPlayer> {
-    return null;
+  async update(
+    UpdateGroupToPlayerInput: UpdateGroupToPlayerInput,
+  ): Promise<GroupToPlayer> {
+    await this.groupToPlayerRepository.save(UpdateGroupToPlayerInput);
+    return this.groupToPlayerRepository.findOneOrFail({
+      where: { id: UpdateGroupToPlayerInput.id },
+    });
   }
 
-  async remove(id: number):  Promise<GroupToPlayer> {
-    return null;
+  async remove(id: number): Promise<GroupToPlayer> {
+    const groupToPlayer = await this.groupToPlayerRepository.findOne({
+      where: { id: id },
+    });
+    await this.groupToPlayerRepository.delete({ id });
+    return groupToPlayer;
   }
 
-  async findByPlayerId(playerId: number):  Promise<GroupToPlayer[]>{
+  async findByPlayerId(playerId: number): Promise<GroupToPlayer[]> {
     return this.groupToPlayerRepository.find({
       where: {
-        playerId
-      }
-    })
+        playerId,
+      },
+    });
   }
 
-  async getPlayer(playerId: number): Promise<Player>{
+  async getPlayer(playerId: number): Promise<Player> {
     return this.playerService.findOne(playerId);
   }
 
-  async getGroup(groupId: number): Promise<Group>{
+  async getGroup(groupId: number): Promise<Group> {
     return this.groupService.findOne(groupId);
   }
 
-  async findByGroupId(groupId: number): Promise<GroupToPlayer[]>{
+  async findByGroupId(groupId: number): Promise<GroupToPlayer[]> {
     return this.groupToPlayerRepository.find({
       where: {
-        groupId
-      }
-    })
+        groupId,
+      },
+    });
   }
 }
