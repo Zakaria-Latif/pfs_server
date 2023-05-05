@@ -22,6 +22,8 @@ import { Message } from 'src/message/entities/message.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { OwnershipGuard } from './guards/OwnershipGuard';
+import { Request } from 'src/request/entities/request.entity';
+import { Invitation } from 'src/invitation/entities/invitation.entity';
 
 @Resolver(() => Player)
 export class PlayerResolver {
@@ -86,8 +88,23 @@ export class PlayerResolver {
     return this.playerService.getMatchToPlayers(player.id);
   }
 
+  @ResolveField((returns) => [GroupToPlayer])
+  async groupToPlayers(@Parent() player: Player): Promise<GroupToPlayer[]> {
+    return this.playerService.getGroupToPlayer(player.id);
+  }
+
   @ResolveField((returns) => [Message])
   async messages(@Parent() player: Player): Promise<Message[]> {
     return this.playerService.getMessages(player.id);
+  }
+
+  @ResolveField((returns) => [Request])
+  async getPlayerRequests(@Parent() player: Player): Promise<Request[]> {
+    return this.playerService.getPlayerRequests(player.id);
+  }
+
+  @ResolveField((returns) => [Invitation])
+  async getPlayerInvitations(@Parent() player: Player): Promise<Invitation[]> {
+    return this.playerService.getPlayerInvitations(player.id);
   }
 }

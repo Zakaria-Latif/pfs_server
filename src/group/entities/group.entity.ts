@@ -1,6 +1,8 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { GroupToPlayer } from '../../group-to-player/entities/group-to-player.entity';
 import { Message } from '../../message/entities/message.entity';
+import { Notification } from '../../notification/entities/notification.entity';
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -25,10 +27,10 @@ export class Group {
   name: string;
 
   @Column()
-  @Field(type=>Int)
+  @Field((type) => Int)
   creatorId: number;
 
-  @ManyToOne(() => Player, player => player.createdGroups)
+  @ManyToOne(() => Player, (player) => player.createdGroups)
   @JoinColumn({ name: 'creatorId' })
   @Field(() => Player)
   creator: Player;

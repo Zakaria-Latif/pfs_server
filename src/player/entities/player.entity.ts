@@ -4,9 +4,22 @@ import { MatchToPlayer } from '../../match-to-player/entities/match-to-player.en
 import { Match } from '../../match/entities/match.entity';
 import { Message } from '../../message/entities/message.entity';
 import { PlayerStatistics } from '../../player-statistics/entities/player-statistic.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Column, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToMany,
+  Column,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 import { IsEmail } from 'class-validator';
 import { Group } from '../../group/entities/group.entity';
+import { Notification } from '../../notification/entities/notification.entity';
+import { Request } from '../../request/entities/request.entity';
+import { Invitation } from '../../invitation/entities/invitation.entity';
 
 @Entity()
 @ObjectType()
@@ -53,14 +66,17 @@ export class Player {
   description: string;
 
   @Column({ nullable: true })
-  @Field(type=>Int)
+  @Field((type) => Int)
   playerStatisticsId?: number;
 
-  @OneToOne(() => PlayerStatistics, (playerStatistics) => playerStatistics.player, {
-    nullable: true,
-    cascade: true,
-  })
-  //@JoinColumn()
+  @OneToOne(
+    () => PlayerStatistics,
+    (playerStatistics) => playerStatistics.player,
+    {
+      nullable: true,
+      cascade: true,
+    },
+  )
   @Field(() => PlayerStatistics, { nullable: true })
   playerStatistics?: PlayerStatistics;
 
@@ -88,6 +104,15 @@ export class Player {
   @JoinColumn()
   @Field(() => [Message])
   messages: Message[];
+
+  @OneToMany(() => Notification, (notification) => notification.recipient)
+  notifications: Notification[];
+
+  @OneToMany(() => Request, (request) => request.creator)
+  requests: Request[];
+
+  @OneToMany(() => Invitation, (invitation) => invitation.recipient)
+  invitations: Invitation[];
 
   @Column({ default: () => 'now()' })
   @Field()

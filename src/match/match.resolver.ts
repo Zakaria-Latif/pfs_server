@@ -18,6 +18,8 @@ import { SearchMatchInput } from './dto/search-match.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { OwnershipGuard } from './guards/OwnershipGuard';
+import { Request } from 'src/request/entities/request.entity';
+import { Invitation } from 'src/invitation/entities/invitation.entity';
 
 @Resolver(() => Match)
 export class MatchResolver {
@@ -77,5 +79,15 @@ export class MatchResolver {
   @ResolveField((returns) => [MatchToPlayer])
   async players(@Parent() match: Match): Promise<MatchToPlayer[]> {
     return this.matchService.getPlayers(match.id);
+  }
+
+  @ResolveField((returns) => [Request])
+  async getPlayerRequests(@Parent() match: Match): Promise<Request[]> {
+    return this.matchService.getPlayerRequests(match.id);
+  }
+
+  @ResolveField((returns) => [Invitation])
+  async getPlayerInvitations(@Parent() match: Match): Promise<Invitation[]> {
+    return this.matchService.getPlayerInvitations(match.id);
   }
 }

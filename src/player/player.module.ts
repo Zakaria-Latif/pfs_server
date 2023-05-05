@@ -10,6 +10,9 @@ import { MatchToPlayerModule } from 'src/match-to-player/match-to-player.module'
 import { MessageModule } from 'src/message/message.module';
 import { PlayerStatisticsRepository } from 'src/player-statistics/player-statistics.repository';
 import { PlayerStatisticsService } from 'src/player-statistics/player-statistics.service';
+import { NotificationModule } from 'src/notification/notification.module';
+import { RequestModule } from 'src/request/request.module';
+import { InvitationModule } from 'src/invitation/invitation.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { PlayerStatisticsService } from 'src/player-statistics/player-statistics
     forwardRef(() => MatchModule),
     MatchToPlayerModule,
     MessageModule,
+    NotificationModule,
+    forwardRef(() => RequestModule),
+    forwardRef(() => InvitationModule),
   ],
   providers: [
     PlayerResolver,

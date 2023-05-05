@@ -1,15 +1,17 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CreateMatchToPlayerInput {
   @Field()
   @IsNumber()
-  rate: number;
+  @IsOptional()
+  rate: number = 0;
 
   @Field()
   @IsString()
-  position: string;
+  @IsOptional()
+  position: string = 'Attack';
 
   @Field()
   @IsNumber()
