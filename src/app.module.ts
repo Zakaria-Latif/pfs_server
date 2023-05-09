@@ -33,6 +33,8 @@ import { RequestModule } from './request/request.module';
 import { Notification } from './notification/entities/notification.entity';
 import { Request } from './request/entities/request.entity';
 import { Invitation } from './invitation/entities/invitation.entity';
+import { CalendarModule } from './calendar/calendar.module';
+import { Calendar } from './calendar/entities/calendar.entity';
 
 @Module({
   imports: [
@@ -76,6 +78,7 @@ import { Invitation } from './invitation/entities/invitation.entity';
           Notification,
           Request,
           Invitation,
+          Calendar,
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
       }),
@@ -92,6 +95,7 @@ import { Invitation } from './invitation/entities/invitation.entity';
     NotificationModule,
     InvitationModule,
     RequestModule,
+    CalendarModule,
   ],
   providers: [PlayerRepository],
 })

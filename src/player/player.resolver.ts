@@ -24,6 +24,7 @@ import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { OwnershipGuard } from './guards/OwnershipGuard';
 import { Request } from 'src/request/entities/request.entity';
 import { Invitation } from 'src/invitation/entities/invitation.entity';
+import { Calendar } from 'src/calendar/entities/calendar.entity';
 
 @Resolver(() => Player)
 export class PlayerResolver {
@@ -106,5 +107,10 @@ export class PlayerResolver {
   @ResolveField((returns) => [Invitation])
   async getPlayerInvitations(@Parent() player: Player): Promise<Invitation[]> {
     return this.playerService.getPlayerInvitations(player.id);
+  }
+
+  @ResolveField((returns) => [Calendar])
+  async getPlayerCalendar(@Parent() player: Player): Promise<Calendar> {
+    return this.playerService.getPlayerCalendar(player.id);
   }
 }

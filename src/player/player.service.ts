@@ -22,6 +22,8 @@ import { RequestService } from 'src/request/request.service';
 import { InvitationService } from 'src/invitation/invitation.service';
 import { Request } from 'src/request/entities/request.entity';
 import { Invitation } from 'src/invitation/entities/invitation.entity';
+import { Calendar } from 'src/calendar/entities/calendar.entity';
+import { CalendarService } from 'src/calendar/calendar.service';
 
 @Injectable()
 export class PlayerService {
@@ -43,6 +45,8 @@ export class PlayerService {
     private readonly requestService: RequestService,
     @Inject(forwardRef(() => InvitationService))
     private readonly invitationService: InvitationService,
+    @Inject(forwardRef(() => CalendarService))
+    private readonly calendarService: CalendarService,
   ) {}
 
   async create(createPlayerInput: CreatePlayerInput): Promise<Player> {
@@ -139,5 +143,9 @@ export class PlayerService {
 
   async getPlayerInvitations(playerId: number): Promise<Invitation[]> {
     return this.invitationService.findAllByRecipientId(playerId);
+  }
+
+  async getPlayerCalendar(playerId: number): Promise<Calendar> {
+    return this.calendarService.findOneByPlayerId(playerId);
   }
 }

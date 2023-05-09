@@ -20,6 +20,7 @@ import { Group } from '../../group/entities/group.entity';
 import { Notification } from '../../notification/entities/notification.entity';
 import { Request } from '../../request/entities/request.entity';
 import { Invitation } from '../../invitation/entities/invitation.entity';
+import { Calendar } from '../../calendar/entities/calendar.entity';
 
 @Entity()
 @ObjectType()
@@ -106,13 +107,20 @@ export class Player {
   messages: Message[];
 
   @OneToMany(() => Notification, (notification) => notification.recipient)
+  @Field(() => [Notification])
   notifications: Notification[];
 
   @OneToMany(() => Request, (request) => request.creator)
+  @Field(() => [Request])
   requests: Request[];
 
   @OneToMany(() => Invitation, (invitation) => invitation.recipient)
+  @Field(() => [Invitation])
   invitations: Invitation[];
+
+  @OneToOne(() => Calendar)
+  @Field(() => Calendar)
+  calendar: Calendar;
 
   @Column({ default: () => 'now()' })
   @Field()

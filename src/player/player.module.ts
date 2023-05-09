@@ -13,6 +13,7 @@ import { PlayerStatisticsService } from 'src/player-statistics/player-statistics
 import { NotificationModule } from 'src/notification/notification.module';
 import { RequestModule } from 'src/request/request.module';
 import { InvitationModule } from 'src/invitation/invitation.module';
+import { CalendarModule } from 'src/calendar/calendar.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { InvitationModule } from 'src/invitation/invitation.module';
     NotificationModule,
     forwardRef(() => RequestModule),
     forwardRef(() => InvitationModule),
+    forwardRef(() => CalendarModule),
   ],
   providers: [
     PlayerResolver,
