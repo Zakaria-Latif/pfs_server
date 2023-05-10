@@ -17,7 +17,7 @@ export class MatchService {
   constructor(@InjectRepository(Match) private matchRepository: Repository<Match>, 
     @Inject(forwardRef(() => PlayerService))
     private readonly playerService: PlayerService,
-    @Inject(forwardRef(() => PlayerService))
+    @Inject(forwardRef(() => MatchToPlayerService))
     private readonly matchToPlayerService: MatchToPlayerService
   ){}
   

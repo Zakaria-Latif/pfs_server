@@ -4,9 +4,11 @@ import { MatchResolver } from './match.resolver';
 import { Match } from './entities/match.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerModule } from 'src/player/player.module';
+import { MatchToPlayerModule } from 'src/match-to-player/match-to-player.module';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([Match]) , forwardRef(()=>PlayerModule) ],
+  imports: [ TypeOrmModule.forFeature([Match]) , forwardRef(()=>PlayerModule), 
+    forwardRef(()=>forwardRef(()=>MatchToPlayerModule)) ],
   providers: [MatchResolver, MatchService],
   exports: [ MatchService ]
 })
