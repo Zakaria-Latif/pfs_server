@@ -4,6 +4,8 @@ import { MatchResolver } from './match.resolver';
 import { Match } from './entities/match.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerModule } from 'src/player/player.module';
+import { MatchToPlayerModule } from 'src/match-to-player/match-to-player.module';
+
 import { InvitationModule } from 'src/invitation/invitation.module';
 import { RequestModule } from 'src/request/request.module';
 
@@ -13,6 +15,7 @@ import { RequestModule } from 'src/request/request.module';
     forwardRef(() => PlayerModule),
     forwardRef(() => RequestModule),
     forwardRef(() => InvitationModule),
+    forwardRef(()=>MatchToPlayerModule)
   ],
   providers: [MatchResolver, MatchService],
   exports: [MatchService],

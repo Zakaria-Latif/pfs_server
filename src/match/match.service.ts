@@ -22,14 +22,15 @@ export class MatchService {
   constructor(
     @InjectRepository(Match) private matchRepository: Repository<Match>,
     @Inject(forwardRef(() => PlayerService))
-    private readonly playerService: PlayerService,
-    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,*
+    @Inject(forwardRef(() => MatchToPlayerService))
     private readonly matchToPlayerService: MatchToPlayerService,
     @Inject(forwardRef(() => RequestService))
     private readonly requestService: RequestService,
     @Inject(forwardRef(() => InvitationService))
     private readonly invitationService: InvitationService,
-  ) {}
+  ){}
+  
 
   async create(createMatchInput: CreateMatchInput): Promise<Match> {
     let match = await this.matchRepository.create(createMatchInput);
