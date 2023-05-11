@@ -51,7 +51,12 @@ export default class InitialDatabaseSeed implements Seeder {
       })
       .createMany(25);
 
-    const groups = await factory(Group)().createMany(15);
+    const groups = await factory(Group)()
+      .map(async (group) => {
+        group.creator = players[Math.floor(Math.random() * players.length)];
+        return group;
+      })
+      .createMany(15);
 
     const groupToPlayers = await factory(GroupToPlayer)()
       .map(async (groupToPlayers) => {
