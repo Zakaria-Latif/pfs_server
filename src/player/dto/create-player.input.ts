@@ -18,6 +18,10 @@ export class CreatePlayerInput {
 
   @Field({ nullable: true })
   @IsString()
+  image?: string;
+
+  @Field({ nullable: true })
+  @IsString()
   location?: string;
 
   @Field({ nullable: true })

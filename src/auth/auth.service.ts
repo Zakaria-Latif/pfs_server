@@ -22,8 +22,11 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException("This user does not exist");
     }
-
     const isMatch = await bcrypt.compare(loginInput.password, user.password);
+
+    // TODO: why isMatch always = false ??
+    const p = await bcrypt.hash(loginInput.password, 12)
+    console.log(isMatch, loginInput.password, user.password, p)
     if (isMatch) {
       const token = this.jwtService.sign({ username: user.username, sub: user.id }, 
         { expiresIn: '24h' , secret: process.env.JWT_SECRET});

@@ -73,12 +73,57 @@ type PlayerStatistics {
   updatedAt: DateTime!
 }
 
+type Notification {
+  id: Int!
+  type: String!
+  title: String!
+  message: String!
+  isRead: Boolean!
+  recipientId: Int!
+  recipient: Player!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Request {
+  id: Int!
+  matchId: Int!
+  match: Match!
+  creatorId: Int!
+  creator: Player!
+  isAccepted: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  recipient: Player!
+}
+
+type Invitation {
+  id: Int!
+  matchId: Int!
+  match: Match!
+  recipientId: Int!
+  recipient: Player!
+  creatorId: Int!
+  creator: Player!
+  isAccepted: Boolean!
+}
+
+type Calendar {
+  """The ID of the Calendar"""
+  id: Int!
+  playerId: Int!
+  player: Player!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Player {
   id: Int!
   username: String!
   password: String!
   email: String!
   location: String
+  image: String
   isVerified: Boolean!
   verificationToken: String
   resetToken: String
@@ -91,8 +136,16 @@ type Player {
   createdGroups: [Group!]!
   matchToPlayers: [MatchToPlayer!]!
   messages: [Message!]!
+  notifications: [Notification!]!
+  requests: [Request!]!
+  invitations: [Invitation!]!
+  calendar: Calendar!
   createdAt: DateTime!
   updatedAt: DateTime!
+  groupToPlayers: [GroupToPlayer!]!
+  getPlayerRequests: [Request!]!
+  getPlayerInvitations: [Invitation!]!
+  getPlayerCalendar: [Calendar!]!
 }
 
 type MatchToPlayer {
@@ -120,6 +173,8 @@ type Match {
   players: [MatchToPlayer!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  getPlayerRequests: [Request!]!
+  getPlayerInvitations: [Invitation!]!
 }
 
 type LoginResponse {
@@ -135,9 +190,22 @@ type Query {
   player(id: Int!): Player!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
+  requests: [Request!]!
+  request(id: Int!): Request!
+  requestsByCreatorId(id: Int!): [Request!]!
+  requestsByMatchId(id: Int!): [Request!]!
+  invitations: [Invitation!]!
+  invitation(id: Int!): Invitation
+  invitationsByRecipientId(id: Int!): [Invitation!]!
+  invitationByMatchId(id: Int!): [Invitation!]!
   matchToPlayer(id: Int!): MatchToPlayer!
   messages(paginationInput: PaginationGroupInput!): [Message!]!
   message(id: Int!): Message!
+  getNotificationsByRecipient(recipientId: Int!): [Notification!]!
+  getUnreadNotificationsByRecipient(recipientId: Int!): [Notification!]!
+  calendars: [Calendar!]!
+  calendar(Id: Int!): Calendar!
+  calendarByPlayerId(playerId: Int!): Calendar!
   groups(paginationInput: PaginationGroupInput!): [Group!]!
   group(id: Int!): Group!
   login(loginInput: LoginInput!): LoginResponse!
@@ -174,12 +242,28 @@ type Mutation {
   createGroupToPlayer(createGroupToPlayerInput: CreateGroupToPlayerInput!): GroupToPlayer!
   updateGroupToPlayer(updateGroupToPlayerInput: UpdateGroupToPlayerInput!): GroupToPlayer!
   removeGroupToPlayer(id: Int!): GroupToPlayer!
+  createRequest(createRequestInput: CreateRequestInput!): Request!
+  updateRequest(updateRequestInput: UpdateRequestInput!): Request!
+  removeRequest(id: Int!): Request!
+  acceptMatchRequest(id: Int!): Request!
+  refuseMatchRequest(id: Int!): Request!
+  createInvitation(createInvitationInput: CreateInvitationInput!): Invitation!
+  updateInvitation(updateInvitationInput: UpdateInvitationInput!): Invitation!
+  removeInvitation(id: Int!): Invitation!
+  acceptInvitation(id: Int!): Invitation!
+  refuseInvitation(id: Int!): Invitation!
   createMatchToPlayer(createMatchToPlayerInput: CreateMatchToPlayerInput!): MatchToPlayer!
   updateMatchToPlayer(updateMatchToPlayerInput: UpdateMatchToPlayerInput!): MatchToPlayer!
   removeMatchToPlayer(id: Int!): MatchToPlayer!
   createMessage(createMessageInput: CreateMessageInput!): Message!
   updateMessage(updateMessageInput: UpdateMessageInput!): Message!
   removeMessage(id: ID!): Message!
+  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
+  markNotificationAsRead(notificationId: Int!): Notification!
+  deleteNotification(notificationId: Int!): Notification!
+  createCalendar(createCalendarInput: CreateCalendarInput!): Calendar!
+  updateCalendar(updateCalendarInput: UpdateCalendarInput!): Calendar!
+  removeCalendar(Id: Int!): Calendar!
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
@@ -211,6 +295,7 @@ input CreatePlayerInput {
   username: String!
   password: String!
   email: String!
+  image: String
   location: String
   description: String
 }
@@ -219,6 +304,7 @@ input UpdatePlayerInput {
   username: String
   password: String
   email: String
+  image: String
   location: String
   description: String
   id: Int!
@@ -234,24 +320,50 @@ input UpdatePlayerStatisticInput {
 }
 
 input CreateGroupToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  playerId: Float!
+  groupId: Float!
 }
 
 input UpdateGroupToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  playerId: Float
+  groupId: Float
+  id: Int!
+}
+
+input CreateRequestInput {
+  matchId: Int!
+  creatorId: Int!
+}
+
+input UpdateRequestInput {
+  matchId: Int
+  creatorId: Int
+  id: Int!
+}
+
+input CreateInvitationInput {
+  matchId: Int!
+  recipientId: Int!
+}
+
+input UpdateInvitationInput {
+  matchId: Int
+  recipientId: Int
   id: Int!
 }
 
 input CreateMatchToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  rate: Float! = 0
+  position: String! = "Attack"
+  playerId: Float!
+  matchId: Float!
 }
 
 input UpdateMatchToPlayerInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  rate: Float = 0
+  position: String = "Attack"
+  playerId: Float
+  matchId: Float
   id: Int!
 }
 
@@ -267,6 +379,22 @@ input UpdateMessageInput {
   groupId: Float
   senderId: Float
   isRead: Boolean
+  id: Int!
+}
+
+input CreateNotificationInput {
+  type: String!
+  title: String!
+  message: String!
+  recipientId: Float!
+}
+
+input CreateCalendarInput {
+  playerId: Float!
+}
+
+input UpdateCalendarInput {
+  playerId: Float
   id: Int!
 }
 
@@ -289,4 +417,5 @@ type Subscription {
   messageCreated: Message!
   messageUpdated: Message!
   messageremoved: Message
+  notificationCreated: Notification!
 }

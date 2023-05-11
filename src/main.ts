@@ -23,14 +23,15 @@ async function bootstrap() {
   
     // Access-Control
     const whitelist = [
-      'http://localhost:5000',
-      'http://localhost:3000',
-      'http://localhost:8081',
-      'http://127.0.1.8:8081',
-      'http://192.168.1.5:3000',
-      'http://192.168.1.5:8081',
-      'http://192.168.1.8:8081',
-      'http://192.168.1.8:8080',
+      "http://localhost:5000",
+      "http://localhost:3000",
+      "http://localhost:8081",
+      "http://127.0.1.8:8081",
+      "http://192.168.1.5:3000",
+      "http://192.168.1.5:8081",
+      "http://192.168.1.8:8081",
+      "http://192.168.1.8:8080",
+      "http://10.0.2.2:8081",
       undefined,
   ];
   app.enableCors({

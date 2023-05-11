@@ -6,10 +6,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerModule } from 'src/player/player.module';
 import { MatchToPlayerModule } from 'src/match-to-player/match-to-player.module';
 
+import { InvitationModule } from 'src/invitation/invitation.module';
+import { RequestModule } from 'src/request/request.module';
+
 @Module({
-  imports: [ TypeOrmModule.forFeature([Match]) , forwardRef(()=>PlayerModule), 
-    forwardRef(()=>forwardRef(()=>MatchToPlayerModule)) ],
+  imports: [
+    TypeOrmModule.forFeature([Match]),
+    forwardRef(() => PlayerModule),
+    forwardRef(() => RequestModule),
+    forwardRef(() => InvitationModule),
+    forwardRef(()=>MatchToPlayerModule)
+  ],
   providers: [MatchResolver, MatchService],
-  exports: [ MatchService ]
+  exports: [MatchService],
 })
 export class MatchModule {}

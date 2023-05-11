@@ -21,14 +21,20 @@ import { MatchToPlayerModule } from './match-to-player/match-to-player.module';
 import { MatchToPlayer } from './match-to-player/entities/match-to-player.entity';
 import * as morgan from 'morgan';
 import { AuthModule } from './auth/auth.module';
-
-import { faker } from '@faker-js/faker';
 import { Player } from './player/entities/player.entity';
 import { PlayerStatistics } from './player-statistics/entities/player-statistic.entity';
 import { Match } from './match/entities/match.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlayerRepository } from './player/player.repository';
+import { NotificationModule } from './notification/notification.module';
+import { InvitationModule } from './invitation/invitation.module';
+import { RequestModule } from './request/request.module';
+import { Notification } from './notification/entities/notification.entity';
+import { Request } from './request/entities/request.entity';
+import { Invitation } from './invitation/entities/invitation.entity';
+import { CalendarModule } from './calendar/calendar.module';
+import { Calendar } from './calendar/entities/calendar.entity';
 
 @Module({
   imports: [
@@ -69,6 +75,10 @@ import { PlayerRepository } from './player/player.repository';
           Message,
           Player,
           PlayerStatistics,
+          Notification,
+          Request,
+          Invitation,
+          Calendar,
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
       }),
@@ -82,6 +92,10 @@ import { PlayerRepository } from './player/player.repository';
     MessageModule,
     MatchToPlayerModule,
     AuthModule,
+    NotificationModule,
+    InvitationModule,
+    RequestModule,
+    CalendarModule,
   ],
   providers: [PlayerRepository],
 })
@@ -95,19 +109,20 @@ export class AppModule implements NestModule, OnModuleInit {
     console.log('Morgan initialized');
   }
 
-  async onModuleInit() {
-    /*const players = generatePlayers(10);
-    const playerStatistics = generatePlayerStatistics(10);
-    const matches = generateMatches(10);
 
-    for (let p of players ) {
-      try {
-        await this.playerRepository.save(p)
-        console.log(p)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    console.log('App module initialized');*/
+  async onModuleInit() {
+    // const players = generatePlayers(10);
+    // const playerStatistics = generatePlayerStatistics(10);
+    // const matches = generateMatches(10);
+
+    // for (let p of players ) {
+    //   try {
+    //     await this.playerRepository.save(p)
+    //     console.log(p)
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }
+    console.log('App module initialized');
   }
 }

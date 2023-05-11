@@ -215,6 +215,52 @@ query {
 
 The player query takes a id parameter, which specifies the ID of the player to retrieve. The query returns a single player, including their username, rating, and any associated messages.
 
+### To retrieve a single player with Matchs and Groups, you can use the following GraphQL query:
+
+```
+query getPlayerMatchsGroups{
+  player(id:14) {
+    id
+    username,
+    email,
+    matchToPlayers{
+      match{
+        id
+        location
+        playersNumber
+      }
+    }
+    groupToPlayers{
+      group{
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+### To retrieve a single player with Created Matchs and Groups, you can use the following GraphQL query:
+
+```
+query getPlayerCreatedMatchsGroups{
+  player(id:7) {
+    id
+    username,
+    email,
+    createdMatches{
+      id
+      location
+      playersNumber
+    }
+    createdGroups{
+      id
+      name
+    }
+  }
+}
+```
+
 ### Creating players
 
 To create a new player, you can use the following GraphQL mutation:
@@ -273,8 +319,6 @@ mutation {
 ```
 
 The removePlayer mutation takes an id parameter, which specifies the ID of the player to delete. Upon successful deletion, the mutation returns the player's username.
-
-##Player Statistics Management
 
 ## playerStatistic Management
 
@@ -372,6 +416,28 @@ query {
 
 The match query takes an id parameter, which specifies the ID of the match to retrieve. The query returns a single match, including its name, location, ID, and creator information.
 
+### Retrieving ONe Match With Players
+
+To retrieve a single match With Players, you can use the following GraphQL query:
+
+```
+query getMatchPlayers{
+  match(id:2) {
+    id
+    name,
+    location,
+    time
+    players{
+      player{
+        id
+        username
+        email
+      }
+    }
+  }
+}
+```
+
 ### Searching for Matches
 
 To search for matches based on certain criteria, you can use the following GraphQL query:
@@ -459,6 +525,26 @@ query {
 ```
 
 The group query takes a id parameter, which specifies the ID of the group to retrieve. The query returns a single group, including their name.
+
+### Retrieving One Group With Players
+
+To retrieve a single group With Players, you can use the following GraphQL query:
+
+```
+query getGroupPlayers{
+  group(id:3) {
+    id
+    name,
+    players{
+      player{
+        id
+        username
+        email
+      }
+    }
+  }
+}
+```
 
 ### Creating Groups
 
@@ -653,3 +739,661 @@ subscription MessageRemoved{
 ```
 
 The MessageRemoved Subscription,returns the deleted message.
+
+## GroupToPlayer Management
+
+### Creating GroupToPlayers
+
+To create a new GroupToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation createGroupToPlayer{
+    createGroupToPlayer(createGroupToPlayerInput:{
+      playerId:1,
+      groupId:10
+    }){
+    	playerId
+      groupId
+  }
+  }
+```
+
+The createGroupToPlayer mutation takes a createGroupToPlayerInput object, which specifies the details of the new GroupToPlayer to create. Upon successful creation, the mutation returns the name of the new GroupToPlayer.
+
+### Updating GroupToPlayers
+
+To update a new GroupToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation udapteGroupToPlayer{
+    updateGroupToPlayer(updateGroupToPlayerInput:{
+      id:1,
+      playerId:1,
+      groupId:10
+    }){
+    	playerId
+      groupId
+  }
+  }
+```
+
+The updateGroupToPlayer mutation takes a updateGroupToPlayerInput object, which specifies the details of the GroupToPlayer to update. Upon successful update, the mutation returns the name of the new GroupToPlayer.
+
+### Deleting GroupToPlayers
+
+To delete a GroupToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation removeGroupToPlayer{
+    removeGroupToPlayer(id:16){
+    	playerId
+      groupId
+  }
+  }
+```
+
+The removeGroupToPlayere mutation takes an id parameter, which specifies the ID of the GroupToPlayer to delete. Upon successful deletion, the mutation returns the name of the deleted GroupToPlayer.
+
+## MatchToPlayer Management
+
+### Creating MatchToPlayers
+
+To create a new MatchToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation createMatchToPlayer{
+    createMatchToPlayer(createMatchToPlayerInput:{
+      rate:0,
+      position:"Attack",
+      playerId:1,
+      matchId:10
+    }){
+    	id
+    	matchId
+    	playerId
+  }
+  }
+```
+
+The createMatchToPlayer mutation takes a createMatchToPlayerInput object, which specifies the details of the new MatchToPlayer to create. Upon successful creation, the mutation returns the name of the new MatchToPlayer.
+
+### Updating MatchToPlayers
+
+To update a new MatchToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation updateMatchToPlayer{
+    updateMatchToPlayer(updateMatchToPlayerInput:{
+      id:1,
+      rate:0,
+      position:"Attack",
+      playerId:1,
+      matchId:14
+    }){
+    	id
+    	matchId
+    	playerId
+  }
+  }
+```
+
+The updateMatchToPlayer mutation takes a updateMatchToPlayerInput object, which specifies the details of the MatchToPlayer to update. Upon successful update, the mutation returns the name of the new MatchToPlayer.
+
+### Deleting MatchToPlayers
+
+To delete a MatchToPlayer, you can use the following GraphQL mutation:
+
+```
+mutation removeMatchToPlayer{
+    removeMatchToPlayer(id:16){
+    	id
+    	matchId
+    	playerId
+  }
+  }
+```
+
+The removeMatchToPlayere mutation takes an id parameter, which specifies the ID of the MatchToPlayer to delete. Upon successful deletion, the mutation returns the name of the deleted MatchToPlayer.
+
+## Notification Management
+
+### Retrieving Notifications
+
+To retrieve a list of Notifications By Recipient id, you can use the following GraphQL query:
+
+```
+query {
+  getNotificationsByRecipient(recipientId: 2) {
+    id
+    type
+    title
+    message
+    isRead
+    recipientId
+  }
+}
+```
+
+The Notifications query takes an recipient id,returns a list of Notifications, including their content.
+
+### Retrieving Unread Notifications
+
+To retrieve a list of Unread Notifications By Recipient id, you can use the following GraphQL query:
+
+```
+query {
+  getUnreadNotificationsByRecipient(recipientId: 1) {
+    id
+    type
+    title
+    message
+    isRead
+  }
+}
+```
+
+The Notifications query takes an recipient id,returns a list of Notifications, including their content.
+### Creating Notifications
+
+To create a new Notification, you can use the following GraphQL mutation:
+
+```
+mutation {
+  createNotification(createNotificationInput: {
+    type: "MESSAGE",
+    title: "Notification Title",
+    message: "Notification Message",
+    recipientId: 2
+  }) {
+    id
+    type
+    message
+    recipient{
+      id
+      username
+      email
+    }
+  }
+}
+```
+
+The createNotification mutation takes a createNotificationInput object, which specifies the details of the new Notification to create. Upon successful creation, the mutation returns the content of the new Notification.
+
+### Created Notifications Subscription
+
+To subscribe to a created Notification, you can use the following GraphQL Subscription:
+
+```
+subscription {
+  notificationCreated{
+    id
+    title
+    message
+    isRead
+    type
+    recipient{
+      id
+      username
+      email
+    }
+  }
+}
+```
+
+The NotificationAdded Subscription,returns the created Notification.
+
+### Deleting Notifications
+
+To delete a Notification, you can use the following GraphQL mutation:
+
+```
+mutation {
+  deleteNotification(notificationId: 3) {
+    id
+    type
+    title
+    message
+    isRead
+    recipient {
+      id
+      username
+    }
+  }
+}
+```
+
+The deleteNotification mutation takes an id parameter, which specifies the ID of the Notification to delete. Upon successful deletion, the mutation returns the content of the deleted Notification.
+
+## Request Management
+
+### Retrieving One Request
+
+To retrieve one Request, you can use the following GraphQL query:
+
+```
+query {
+  request(id:6){ 
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+
+```
+
+The Request query takes a id parameter, which specifies the ID of the Request to retrieve. The query returns a single Request, including their content.
+
+### Creating Requests
+
+To create a new Request, you can use the following GraphQL mutation:
+
+```
+mutation {
+  createRequest(
+    createRequestInput: {
+      creatorId: 1
+      matchId: 1
+    }
+  ) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      name
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+```
+
+The createRequest mutation takes a createRequestInput object, which specifies the details of the new Request to create. Upon successful creation, the mutation returns the content of the new Request.
+
+### Updating Requests
+
+To update a new Request, you can use the following GraphQL mutation:
+
+```
+mutation {
+  updateRequest(
+    updateRequestInput: {
+      id: 1
+     	creatorId: 3
+      matchId: 3
+    }
+  ) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      name
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+```
+
+The updateRequest mutation takes a updateRequestInput object, which specifies the details of the Request to update. Upon successful update, the mutation returns the content of the new Request.
+
+### Deleting Requests
+
+To delete a Request, you can use the following GraphQL mutation:
+
+```
+mutation {
+  removeRequest(id: 1) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      name
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+```
+
+The removeRequeste mutation takes an id parameter, which specifies the ID of the Request to delete. Upon successful deletion, the mutation returns the content of the deleted Request.
+
+### Retrieving Requests By Creator Id
+
+To retrieve a list of Requests By Creator Id, you can use the following GraphQL query:
+
+```
+query {
+  requestsByCreatorId(id: 2) {
+    id
+    isAccepted
+    match {
+      id
+      name
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+```
+
+### Retrieving Requests By Match Id
+
+To retrieve a list of Requests By Match Id, you can use the following GraphQL query:
+
+```
+query {
+  requestsByMatchId(id: 2) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+```
+### Accepting Match Request
+
+To accept a match Request, you can use the following GraphQL query:
+
+```
+mutation {
+  acceptMatchRequest(id: 5) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+  ```
+
+### Refusing Match Request
+
+To refuse a match Request, you can use the following GraphQL query:
+
+```
+mutation {
+  refuseMatchRequest(id: 5) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      name
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+  ```
+  
+  ## Invitation Management
+
+### Retrieving One Invitation
+
+To retrieve one Invitation, you can use the following GraphQL query:
+
+```
+query {
+  invitation(id:6){ 
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+
+```
+
+The Invitation query takes a id parameter, which specifies the ID of the Invitation to retrieve. The query returns a single Invitation, including their content.
+
+### Creating Invitations
+
+To create a new Invitation, you can use the following GraphQL mutation:
+
+```
+mutation {
+  createInvitation(
+    createInvitationInput: {
+      matchId:3,
+      recipientId:3,
+    }
+  ) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      name
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+
+```
+
+The createInvitation mutation takes a createInvitationInput object, which specifies the details of the new Invitation to create. Upon successful creation, the mutation returns the content of the new Invitation.
+
+### Updating Invitations
+
+To update a new Invitation, you can use the following GraphQL mutation:
+
+```
+mutation {
+  updateInvitation(
+    updateInvitationInput: {
+      id: 1
+      matchId:2
+      recipientId:2
+    }
+  ) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+
+```
+
+The updateInvitation mutation takes a updateInvitationInput object, which specifies the details of the Invitation to update. Upon successful update, the mutation returns the content of the new Invitation.
+
+### Deleting Invitations
+
+To delete a Invitation, you can use the following GraphQL mutation:
+
+```
+mutation {
+  removeInvitation(id: 1) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+
+```
+
+The removeInvitatione mutation takes an id parameter, which specifies the ID of the Invitation to delete. Upon successful deletion, the mutation returns the content of the deleted Invitation.
+
+### Retrieving Invitations By Recipient Id
+
+To retrieve a list of Invitations By Recipient Id, you can use the following GraphQL query:
+
+```
+query {
+  invitationsByRecipientId(id: 3) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+      playersNumber
+    }
+  }
+}
+
+```
+
+### Retrieving Invitations By Match Id
+
+To retrieve a list of Invitations By Match Id, you can use the following GraphQL query:
+
+```
+query {
+  invitationByMatchId(id: 3) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+
+```
+### Accepting Match Invitation
+
+To accept a match Invitation, you can use the following GraphQL query:
+
+```
+mutation {
+  acceptInvitation(id: 9) {
+    id
+    isAccepted
+    match {
+      id
+      name
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+  ```
+
+### Refusing Match Invitation
+
+To refuse a match Invitation, you can use the following GraphQL query:
+
+```
+mutation {
+  refuseInvitation(id: 7) {
+    id
+    isAccepted
+    match {
+      id
+      name
+      playersNumber
+    }
+    recipient {
+      id
+      username
+    }
+  }
+}
+  ```

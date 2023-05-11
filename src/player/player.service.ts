@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationGroupInput } from 'src/group/dto/pagination-group.input';
 import { PlayerStatisticsService } from 'src/player-statistics/player-statistics.service';
-import { Parent, ResolveField } from '@nestjs/graphql';
 import { PlayerStatistics } from 'src/player-statistics/entities/player-statistic.entity';
 import { GroupToPlayer } from 'src/group-to-player/entities/group-to-player.entity';
 import { GroupToPlayerService } from 'src/group-to-player/group-to-player.service';
@@ -16,10 +15,15 @@ import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.enti
 import { MatchToPlayerService } from 'src/match-to-player/match-to-player.service';
 import { Message } from 'src/message/entities/message.entity';
 import { MessageService } from 'src/message/message.service';
-import { SearchMatchInput } from 'src/match/dto/search-match.input';
 import { SearchPlayerInput } from './dto/search-player.input';
-import { NotFoundError } from 'rxjs';
 import * as bcrypt from 'bcrypt';
+import { NotificationService } from 'src/notification/notification.service';
+import { RequestService } from 'src/request/request.service';
+import { InvitationService } from 'src/invitation/invitation.service';
+import { Request } from 'src/request/entities/request.entity';
+import { Invitation } from 'src/invitation/entities/invitation.entity';
+import { Calendar } from 'src/calendar/entities/calendar.entity';
+import { CalendarService } from 'src/calendar/calendar.service';
 
 @Injectable()
 export class PlayerService {
@@ -37,6 +41,12 @@ export class PlayerService {
     private readonly matchToPlayerService: MatchToPlayerService,
     @Inject(forwardRef(() => MessageService))
     private readonly MessageService: MessageService,
+    @Inject(forwardRef(() => RequestService))
+    private readonly requestService: RequestService,
+    @Inject(forwardRef(() => InvitationService))
+    private readonly invitationService: InvitationService,
+    @Inject(forwardRef(() => CalendarService))
+    private readonly calendarService: CalendarService,
   ) {}
 
   async create(createPlayerInput: CreatePlayerInput): Promise<Player> {
@@ -125,5 +135,17 @@ export class PlayerService {
 
   async getMessages(playerId: number): Promise<Message[]> {
     return this.MessageService.getMessagesBySenderId(playerId);
+  }
+
+  async getPlayerRequests(playerId: number): Promise<Request[]> {
+    return this.requestService.findAllByCreatorId(playerId);
+  }
+
+  async getPlayerInvitations(playerId: number): Promise<Invitation[]> {
+    return this.invitationService.findAllByRecipientId(playerId);
+  }
+
+  async getPlayerCalendar(playerId: number): Promise<Calendar> {
+    return this.calendarService.findOneByPlayerId(playerId);
   }
 }

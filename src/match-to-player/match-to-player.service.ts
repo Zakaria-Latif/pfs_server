@@ -12,21 +12,30 @@ import { Match } from 'src/match/entities/match.entity';
 
 @Injectable()
 export class MatchToPlayerService {
-  constructor(@InjectRepository(MatchToPlayer) private matchToPlayerRepository: Repository<MatchToPlayer>,
-  @Inject(forwardRef(() => PlayerService))
-  private readonly playerService: PlayerService,
-  @Inject(forwardRef(() => MatchService))
-  private readonly matchService: MatchService,
-  ){}
-  
-  async create(createMatchToPlayerInput: CreateMatchToPlayerInput): Promise<MatchToPlayer> {
-    return null;
+  constructor(
+    @InjectRepository(MatchToPlayer)
+    private matchToPlayerRepository: Repository<MatchToPlayer>,
+    @Inject(forwardRef(() => PlayerService))
+    private readonly playerService: PlayerService,
+    @Inject(forwardRef(() => MatchService))
+    private readonly matchService: MatchService,
+  ) {}
+
+  async create(
+    createMatchToPlayerInput: CreateMatchToPlayerInput,
+  ): Promise<MatchToPlayer> {
+    const matchToPlayer = this.matchToPlayerRepository.create(
+      createMatchToPlayerInput,
+    );
+    return this.matchToPlayerRepository.save(matchToPlayer);
   }
 
-  async findAll(paginationInput: PaginationGroupInput): Promise<MatchToPlayer[]> {
+  async findAll(
+    paginationInput: PaginationGroupInput,
+  ): Promise<MatchToPlayer[]> {
     return this.matchToPlayerRepository.find({
       take: paginationInput.take,
-      skip: paginationInput.skip
+      skip: paginationInput.skip,
     });
   }
 
@@ -34,34 +43,45 @@ export class MatchToPlayerService {
     return this.matchToPlayerRepository.findOneOrFail({ where: { id } });
   }
 
-  async update(id: number, updateMatchToPlayerInput: UpdateMatchToPlayerInput): Promise<MatchToPlayer> {
-    return null;
+  async update(
+    updateMatchToPlayerInput: UpdateMatchToPlayerInput,
+  ): Promise<MatchToPlayer> {
+    await this.matchToPlayerRepository.save(updateMatchToPlayerInput);
+    return this.matchToPlayerRepository.findOneOrFail({
+      where: { id: updateMatchToPlayerInput.id },
+    });
   }
 
   async remove(id: number): Promise<MatchToPlayer> {
-    return null;
+    const matchToPlayer = await this.matchToPlayerRepository.findOne({
+      where: { id: id },
+    });
+    await this.matchToPlayerRepository.delete({ id });
+    return matchToPlayer;
   }
 
-  async findMatchToPlayerByPlayerId(playerId: number): Promise<MatchToPlayer[]>{
+  async findMatchToPlayerByPlayerId(
+    playerId: number,
+  ): Promise<MatchToPlayer[]> {
     return this.matchToPlayerRepository.find({
       where: {
-        playerId
-      }
-    })
+        playerId,
+      },
+    });
   }
-  async findMatchToPlayerByMatchId(matchId: number): Promise<MatchToPlayer[]>{
+  async findMatchToPlayerByMatchId(matchId: number): Promise<MatchToPlayer[]> {
     return this.matchToPlayerRepository.find({
       where: {
-        matchId
-      }
-    })
+        matchId,
+      },
+    });
   }
 
-  async getPlayer(playerId: number): Promise<Player>{
+  async getPlayer(playerId: number): Promise<Player> {
     return this.playerService.findOne(playerId);
   }
 
-  async getMatch(matchId: number): Promise<Match>{
+  async getMatch(matchId: number): Promise<Match> {
     return this.matchService.findOne(matchId);
   }
 }
