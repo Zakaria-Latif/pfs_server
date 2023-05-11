@@ -79,6 +79,7 @@ type Player {
   password: String!
   email: String!
   location: String
+  image: String
   isVerified: Boolean!
   verificationToken: String
   resetToken: String
@@ -211,6 +212,7 @@ input CreatePlayerInput {
   username: String!
   password: String!
   email: String!
+  image: String
   location: String
   description: String
 }
@@ -219,6 +221,7 @@ input UpdatePlayerInput {
   username: String
   password: String
   email: String
+  image: String
   location: String
   description: String
   id: Int!
