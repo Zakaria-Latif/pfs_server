@@ -46,6 +46,10 @@ export class Player {
   @Field({ nullable: true })
   location?: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  image: string;
+
   @Column({ default: false })
   @Field()
   isVerified: boolean;

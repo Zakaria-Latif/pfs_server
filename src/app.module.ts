@@ -109,5 +109,20 @@ export class AppModule implements NestModule, OnModuleInit {
     console.log('Morgan initialized');
   }
 
-  async onModuleInit() {}
+
+  async onModuleInit() {
+    // const players = generatePlayers(10);
+    // const playerStatistics = generatePlayerStatistics(10);
+    // const matches = generateMatches(10);
+
+    // for (let p of players ) {
+    //   try {
+    //     await this.playerRepository.save(p)
+    //     console.log(p)
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }
+    console.log('App module initialized');
+  }
 }

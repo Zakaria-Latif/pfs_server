@@ -33,7 +33,7 @@ export class MatchResolver {
     return this.matchService.create(createMatchInput);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Query(() => [Match], { name: 'matches' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
