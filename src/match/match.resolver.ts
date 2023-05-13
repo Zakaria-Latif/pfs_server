@@ -54,7 +54,7 @@ export class MatchResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [Match], { name: 'search' })
+  @Query(() => [Match], { name: 'searchMatches' })
   async searchMatches(
     @Args('searchMatchInput') searchMatchInput: SearchMatchInput,
   ): Promise<Match[]> {

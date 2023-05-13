@@ -185,9 +185,10 @@ type LoginResponse {
 type Query {
   matches(paginationInput: PaginationGroupInput!): [Match!]!
   myMatches(paginationInput: PaginationGroupInput!): [Match!]!
-  search(searchMatchInput: SearchMatchInput!): [Match!]!
+  searchMatches(searchMatchInput: SearchMatchInput!): [Match!]!
   match(id: Int!): Match!
   players(paginationInput: PaginationGroupInput!): [Player!]!
+  searchPlayers(searchPlayerInput: SearchPlayerInput!): [Player!]!
   player(id: Int!): Player!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
@@ -221,10 +222,17 @@ input PaginationGroupInput {
 }
 
 input SearchMatchInput {
+  searchTerm: String!
   minDuration: Float!
   maxDuration: Float!
   dateFrom: DateTime!
   dateTo: DateTime!
+}
+
+input SearchPlayerInput {
+  position: String!
+  searchTerm: String!
+  minRate: Float!
 }
 
 input LoginInput {

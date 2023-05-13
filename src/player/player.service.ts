@@ -77,15 +77,25 @@ export class PlayerService {
   }
 
   async search(searchPlayerInput: SearchPlayerInput): Promise<Player[]> {
-    const query = this.playerRepository
-      .createQueryBuilder('player')
-      .where('player.position = :position', {
-        position: searchPlayerInput.position,
-      })
-      .andWhere('player.rate > :rate', { rate: searchPlayerInput.minRate })
-      .getMany();
+    // const query = this.playerRepository
+    //   .createQueryBuilder('player')
+    //   .where('player.playerStatistics.position = :position', {
+    //     position: searchPlayerInput.position,
+    //   })
+    //   .andWhere('player.playerStatistics.rate > :rate', {
+    //     rate: searchPlayerInput.minRate,
+    //   })
+    //   .getMany();
 
-    return query;
+    // return query;
+    const players = await this.playerRepository
+    .createQueryBuilder('player')
+    .innerJoin('player.playerStatistics', 'playerStatistics')
+    .where('playerStatistics.position = :position', { position: searchPlayerInput.position })
+    .andWhere('playerStatistics.rate > :rate', { rate: searchPlayerInput.minRate })
+    .getMany();
+
+    return players;
   }
 
   async findOne(id: number): Promise<Player> {

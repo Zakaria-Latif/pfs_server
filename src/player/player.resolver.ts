@@ -25,6 +25,7 @@ import { OwnershipGuard } from './guards/OwnershipGuard';
 import { Request } from 'src/request/entities/request.entity';
 import { Invitation } from 'src/invitation/entities/invitation.entity';
 import { Calendar } from 'src/calendar/entities/calendar.entity';
+import { SearchPlayerInput } from './dto/search-player.input';
 
 @Resolver(() => Player)
 export class PlayerResolver {
@@ -46,6 +47,14 @@ export class PlayerResolver {
   ): Promise<Player[]> {
     console.log({id: context.req.user.id});
     return this.playerService.findAll(paginationInput);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [Player], { name: 'searchPlayers' })
+  async searchPlayers(
+    @Args('searchPlayerInput') searchPlayerInput: SearchPlayerInput,
+  ): Promise<Player[]> {
+    return this.playerService.search(searchPlayerInput);
   }
 
   @UseGuards(JwtAuthGuard)

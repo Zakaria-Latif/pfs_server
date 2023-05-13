@@ -2,6 +2,9 @@ import { Field, Float, InputType } from "@nestjs/graphql";
 
 @InputType()
 export class SearchMatchInput {
+  @Field()
+  searchTerm: string;
+  
   @Field(() => Float)
   minDuration: number;
 
