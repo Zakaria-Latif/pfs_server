@@ -184,6 +184,7 @@ type LoginResponse {
 
 type Query {
   matches(paginationInput: PaginationGroupInput!): [Match!]!
+  myMatches(paginationInput: PaginationGroupInput!): [Match!]!
   search(searchMatchInput: SearchMatchInput!): [Match!]!
   match(id: Int!): Match!
   players(paginationInput: PaginationGroupInput!): [Player!]!
@@ -263,7 +264,7 @@ type Mutation {
   deleteNotification(notificationId: Int!): Notification!
   createCalendar(createCalendarInput: CreateCalendarInput!): Calendar!
   updateCalendar(updateCalendarInput: UpdateCalendarInput!): Calendar!
-  removeCalendar(Id: Int!): Calendar!
+  removeCalendar(id: Int!): Calendar!
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!

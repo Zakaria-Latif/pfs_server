@@ -19,10 +19,11 @@ import { Invitation } from 'src/invitation/entities/invitation.entity';
 
 @Injectable()
 export class MatchService {
+  
   constructor(
     @InjectRepository(Match) private matchRepository: Repository<Match>,
     @Inject(forwardRef(() => PlayerService))
-    private readonly playerService: PlayerService,*
+    private readonly playerService: PlayerService,
     @Inject(forwardRef(() => MatchToPlayerService))
     private readonly matchToPlayerService: MatchToPlayerService,
     @Inject(forwardRef(() => RequestService))
@@ -50,6 +51,16 @@ export class MatchService {
     return this.matchRepository.find({
       skip: paginationInput.skip,
       take: paginationInput.take,
+    });
+  }
+
+  myMatches(paginationInput: PaginationGroupInput, creatorId: number ): Match[] | PromiseLike<Match[]> {
+    return this.matchRepository.find({
+      skip: paginationInput.skip,
+      take: paginationInput.take,
+      where: {
+        creatorId
+      }
     });
   }
 
