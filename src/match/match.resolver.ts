@@ -6,6 +6,7 @@ import {
   Int,
   ResolveField,
   Parent,
+  Context,
 } from '@nestjs/graphql';
 import { MatchService } from './match.service';
 import { Match } from './entities/match.entity';
@@ -33,7 +34,7 @@ export class MatchResolver {
     return this.matchService.create(createMatchInput);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Match], { name: 'matches' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
@@ -42,7 +43,18 @@ export class MatchResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [Match], { name: 'search' })
+  @Query(() => [Match], { name: 'myMatches' })
+  async myMatches(
+    @Args('paginationInput') paginationInput: PaginationGroupInput,
+    @Context() context: any
+  ): Promise<Match[]> {
+    console.log(context.req.user.id);
+    let creatorId: number= context.req.user.id ? 5: context.req.user.id; // this line is just for testing
+    return this.matchService.myMatches(paginationInput,  creatorId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [Match], { name: 'searchMatches' })
   async searchMatches(
     @Args('searchMatchInput') searchMatchInput: SearchMatchInput,
   ): Promise<Match[]> {

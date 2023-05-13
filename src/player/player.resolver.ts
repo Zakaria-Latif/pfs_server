@@ -19,12 +19,13 @@ import { Match } from 'src/match/entities/match.entity';
 import { MatchService } from 'src/match/match.service';
 import { MatchToPlayer } from 'src/match-to-player/entities/match-to-player.entity';
 import { Message } from 'src/message/entities/message.entity';
-import { UseGuards } from '@nestjs/common';
+import { ExecutionContext, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { OwnershipGuard } from './guards/OwnershipGuard';
 import { Request } from 'src/request/entities/request.entity';
 import { Invitation } from 'src/invitation/entities/invitation.entity';
 import { Calendar } from 'src/calendar/entities/calendar.entity';
+import { SearchPlayerInput } from './dto/search-player.input';
 
 @Resolver(() => Player)
 export class PlayerResolver {
@@ -38,13 +39,22 @@ export class PlayerResolver {
     return this.playerService.create(createPlayerInput);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Player], { name: 'players' })
   async findAll(
     @Args('paginationInput') paginationInput: PaginationGroupInput,
+    @Context() context: any,
   ): Promise<Player[]> {
-    // console.log(context.req.user.id)
+    console.log({id: context.req.user.id});
     return this.playerService.findAll(paginationInput);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [Player], { name: 'searchPlayers' })
+  async searchPlayers(
+    @Args('searchPlayerInput') searchPlayerInput: SearchPlayerInput,
+  ): Promise<Player[]> {
+    return this.playerService.search(searchPlayerInput);
   }
 
   @UseGuards(JwtAuthGuard)

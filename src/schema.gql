@@ -184,9 +184,11 @@ type LoginResponse {
 
 type Query {
   matches(paginationInput: PaginationGroupInput!): [Match!]!
-  search(searchMatchInput: SearchMatchInput!): [Match!]!
+  myMatches(paginationInput: PaginationGroupInput!): [Match!]!
+  searchMatches(searchMatchInput: SearchMatchInput!): [Match!]!
   match(id: Int!): Match!
   players(paginationInput: PaginationGroupInput!): [Player!]!
+  searchPlayers(searchPlayerInput: SearchPlayerInput!): [Player!]!
   player(id: Int!): Player!
   playerStatistic(id: Int!): PlayerStatistics!
   groupToPlayer(id: Int!): GroupToPlayer!
@@ -220,10 +222,17 @@ input PaginationGroupInput {
 }
 
 input SearchMatchInput {
+  searchTerm: String!
   minDuration: Float!
   maxDuration: Float!
   dateFrom: DateTime!
   dateTo: DateTime!
+}
+
+input SearchPlayerInput {
+  position: String!
+  searchTerm: String!
+  minRate: Float!
 }
 
 input LoginInput {
@@ -263,7 +272,7 @@ type Mutation {
   deleteNotification(notificationId: Int!): Notification!
   createCalendar(createCalendarInput: CreateCalendarInput!): Calendar!
   updateCalendar(updateCalendarInput: UpdateCalendarInput!): Calendar!
-  removeCalendar(Id: Int!): Calendar!
+  removeCalendar(id: Int!): Calendar!
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
