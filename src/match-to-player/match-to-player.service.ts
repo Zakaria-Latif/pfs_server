@@ -84,4 +84,12 @@ export class MatchToPlayerService {
   async getMatch(matchId: number): Promise<Match> {
     return this.matchService.findOne(matchId);
   }
+
+  async getPlayedMatch(matchId: number): Promise<Match> {
+    return this.matchService.getPlayedMatch(matchId);
+  }
+
+  async getPlannedMatch(matchId: number): Promise<Match> {
+    return this.matchService.getPlannedMatchs(matchId);
+  }
 }

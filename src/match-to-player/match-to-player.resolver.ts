@@ -72,4 +72,14 @@ export class MatchToPlayerResolver {
   async match(@Parent() matchToPlayer: MatchToPlayer): Promise<Match> {
     return this.matchToPlayerService.getMatch(matchToPlayer.matchId);
   }
+
+  @ResolveField((returns) => Match)
+  async playedMatch(@Parent() matchToPlayer: MatchToPlayer): Promise<Match> {
+    return this.matchToPlayerService.getPlayedMatch(matchToPlayer.matchId);
+  }
+
+  @ResolveField((returns) => Match)
+  async plannedMatch(@Parent() matchToPlayer: MatchToPlayer): Promise<Match> {
+    return this.matchToPlayerService.getPlannedMatch(matchToPlayer.matchId);
+  }
 }
