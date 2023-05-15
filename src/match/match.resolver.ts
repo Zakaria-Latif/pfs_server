@@ -58,6 +58,7 @@ export class MatchResolver {
   async searchMatches(
     @Args('searchMatchInput') searchMatchInput: SearchMatchInput,
   ): Promise<Match[]> {
+    console.log(searchMatchInput);
     return this.matchService.search(searchMatchInput);
   }
 
@@ -65,6 +66,12 @@ export class MatchResolver {
   @Query(() => Match, { name: 'match' })
   async findOne(@Args('id', { type: () => Int }) id: number): Promise<Match> {
     return this.matchService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [Player], { name: 'members' })
+  async members(@Args('id', { type: () => Int }) id: number): Promise<Player[]> {
+    return this.matchService.members(id);
   }
 
   @UseGuards(JwtAuthGuard, OwnershipGuard)

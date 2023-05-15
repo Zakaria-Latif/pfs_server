@@ -65,7 +65,7 @@ export class MatchService {
   }
 
   async search(searchMatchInput: SearchMatchInput): Promise<Match[]> {
-    const query = this.matchRepository
+      const query = this.matchRepository
       .createQueryBuilder('match')
       .where('match.duration BETWEEN :min AND :max', {
         min: searchMatchInput.minDuration,
@@ -74,8 +74,11 @@ export class MatchService {
       .andWhere('match.time BETWEEN :startDate AND :endDate', {
         startDate: searchMatchInput.dateFrom,
         endDate: searchMatchInput.dateTo,
-      });
+      })
+      .andWhere('match.name LIKE :name', { name: `%${searchMatchInput.searchTerm}%` })
+      .orWhere('match.location LIKE :location', { location: `%${searchMatchInput.searchTerm}%` });
     return await query.getMany();
+
   }
 
   async findOne(id: number): Promise<Match> {
@@ -121,5 +124,11 @@ export class MatchService {
 
   async getPlayerInvitations(matchId: number): Promise<Invitation[]> {
     return this.invitationService.findAllByMatchId(matchId);
+  }
+
+  async members(id: number): Promise<Player[]> {
+    const matchToPlayers = await this.matchToPlayerService.findMatchToPlayerByMatchId(id);
+    const playerIds = matchToPlayers.map(matchToPlayer => matchToPlayer.playerId);
+    return this.playerService.findPlayersByIds(playerIds);
   }
 }

@@ -11,9 +11,9 @@ export class SearchMatchInput {
   @Field(() => Float)
   maxDuration: number;
 
-  @Field(()=>Date)
-  dateFrom: Date;
+  @Field()
+  dateFrom: string;
 
-  @Field(()=>Date)
-  dateTo: Date;
+  @Field()
+  dateTo: string;
 }

@@ -187,6 +187,7 @@ type Query {
   myMatches(paginationInput: PaginationGroupInput!): [Match!]!
   searchMatches(searchMatchInput: SearchMatchInput!): [Match!]!
   match(id: Int!): Match!
+  members(id: Int!): [Player!]!
   players(paginationInput: PaginationGroupInput!): [Player!]!
   searchPlayers(searchPlayerInput: SearchPlayerInput!): [Player!]!
   player(id: Int!): Player!
@@ -225,8 +226,8 @@ input SearchMatchInput {
   searchTerm: String!
   minDuration: Float!
   maxDuration: Float!
-  dateFrom: DateTime!
-  dateTo: DateTime!
+  dateFrom: String!
+  dateTo: String!
 }
 
 input SearchPlayerInput {

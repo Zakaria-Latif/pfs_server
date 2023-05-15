@@ -54,6 +54,7 @@ export class PlayerResolver {
   async searchPlayers(
     @Args('searchPlayerInput') searchPlayerInput: SearchPlayerInput,
   ): Promise<Player[]> {
+    console.log(searchPlayerInput);
     return this.playerService.search(searchPlayerInput);
   }
 
