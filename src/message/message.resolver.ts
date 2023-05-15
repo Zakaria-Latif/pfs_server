@@ -43,13 +43,13 @@ export class MessageResolver {
     return this.pubSub.asyncIterator('messageCreated');
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Query(() => [Message], { name: 'messages' })
-  async findAll(
-    @Args('paginationInput') paginationInput: PaginationGroupInput,
-  ): Promise<Message[]> {
-    return this.messageService.findAll(paginationInput);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Query(() => [Message], { name: 'messages' })
+  // async findAll(
+  //   @Args('paginationInput') paginationInput: PaginationGroupInput,
+  // ): Promise<Message[]> {
+  //   return this.messageService.findAll(paginationInput);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => Message, { name: 'message' })

@@ -30,13 +30,13 @@ export class MatchToPlayerResolver {
     return this.matchToPlayerService.create(createMatchToPlayerInput);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Query(() => [MatchToPlayer], { name: 'matchToPlayer' })
-  async findAll(
-    @Args('paginationInput') paginationInput: PaginationGroupInput,
-  ): Promise<MatchToPlayer[]> {
-    return this.matchToPlayerService.findAll(paginationInput);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Query(() => [MatchToPlayer], { name: 'matchToPlayer' })
+  // async findAll(
+  //   @Args('paginationInput') paginationInput: PaginationGroupInput,
+  // ): Promise<MatchToPlayer[]> {
+  //   return this.matchToPlayerService.findAll(paginationInput);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => MatchToPlayer, { name: 'matchToPlayer' })

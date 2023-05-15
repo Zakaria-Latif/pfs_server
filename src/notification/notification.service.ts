@@ -41,7 +41,11 @@ export class NotificationService {
 
   async getNotificationsByRecipient(
     recipientId: number,
+    connectedPlayerId: number
   ): Promise<Notification[]> {
+    if(connectedPlayerId!==recipientId){
+      throw new BadRequestException("You don't have permission to get the notifications of this player");
+    }
     return await this.notificationRepository.find({
       where: { recipient: { id: recipientId } },
     });
@@ -49,7 +53,11 @@ export class NotificationService {
 
   async getUnreadNotificationsByRecipient(
     recipientId: number,
+    connectedPlayerId: number
   ): Promise<Notification[]> {
+    if(connectedPlayerId!==recipientId){
+      throw new BadRequestException("You don't have permission to get the notifications of this player");
+    }
     return await this.notificationRepository.find({
       where: { recipient: { id: recipientId }, isRead: false },
     });

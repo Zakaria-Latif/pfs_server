@@ -29,14 +29,14 @@ export class GroupToPlayerService {
     return this.groupToPlayerRepository.save(groupToPlayer);
   }
 
-  async findAll(
-    paginationInput: PaginationGroupInput,
-  ): Promise<GroupToPlayer[]> {
-    return this.groupToPlayerRepository.find({
-      take: paginationInput.take,
-      skip: paginationInput.skip,
-    });
-  }
+  // async findAll(
+  //   paginationInput: PaginationGroupInput,
+  // ): Promise<GroupToPlayer[]> {
+  //   return this.groupToPlayerRepository.find({
+  //     take: paginationInput.take,
+  //     skip: paginationInput.skip,
+  //   });
+  // }
 
   async findOne(id: number): Promise<GroupToPlayer> {
     return this.groupToPlayerRepository.findOneOrFail({ where: { id } });
