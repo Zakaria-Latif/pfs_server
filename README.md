@@ -229,6 +229,16 @@ query getPlayerMatchsGroups{
         location
         playersNumber
       }
+      playedMatch{
+        id
+        location
+        time
+      }
+      plannedMatch{
+        id 
+        location
+        time
+      }
     }
     groupToPlayers{
       group{
@@ -1482,3 +1492,122 @@ mutation {
   }
 }
   ```
+
+## Calendar Management
+
+### Retrieving One Calendar
+
+To retrieve one Calendar, you can use the following GraphQL query:
+
+```
+query {
+  calendar(Id: 9) {
+    id
+    player{
+      username
+      matchToPlayers{
+        match{
+          location
+          time
+        }
+      }
+    }
+  }
+}
+```
+
+The Calendar query takes a id parameter, which specifies the ID of the Calendar to retrieve. The query returns a single Calendar, including their name.
+
+
+### Retrieving One Calendar By Player Id
+
+To retrieve one Calendar, you can use the following GraphQL query:
+
+```
+query {
+  calendarByPlayerId(playerId: 9) {
+    id
+    player{
+      username
+      matchToPlayers{
+        match{
+          location
+          time
+        }
+      }
+    }
+  }
+}
+```
+
+The Calendar query takes a id parameter, which specifies the ID of the Calendar to retrieve. The query returns a single Calendar, including their name.
+
+### Creating Calendars
+
+To create a new Calendar, you can use the following GraphQL mutation:
+
+```
+mutation {
+  createCalendar(createCalendarInput:{playerId:10}) {
+   	id
+		playerId
+    player{
+      username
+      matchToPlayers{
+        match{
+          location
+          time
+        }
+      }
+    }
+  }
+}
+```
+
+The createCalendar mutation takes a createCalendarInput object, which specifies the details of the new Calendar to create. Upon successful creation, the mutation returns the name of the new Calendar.
+
+### Updating Calendars
+
+To update a new Calendar, you can use the following GraphQL mutation:
+
+```
+mutation {
+  updateCalendar(updateCalendarInput:{id:1,playerId:10}) {
+   	id
+    player{
+      username
+      matchToPlayers{
+        match{
+          location
+          time
+        }
+      }
+    }
+  }
+}
+```
+
+The updateCalendar mutation takes a updateCalendarInput object, which specifies the details of the Calendar to update. Upon successful update, the mutation returns the name of the new Calendar.
+
+### Deleting Calendars
+
+To delete a Calendar, you can use the following GraphQL mutation:
+
+```
+mutation {
+  removeCalendar(id:1) {
+   	id
+    player{
+      username
+      matchToPlayers{
+        match{
+          location
+          time
+        }
+      }
+    }
+  }
+}
+```
+
+The removeCalendare mutation takes an id parameter, which specifies the ID of the Calendar to delete. Upon successful deletion, the mutation returns the name of the deleted Calendar.

@@ -2,7 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateMatchInput } from './dto/create-match.input';
 import { UpdateMatchInput } from './dto/update-match.input';
 import { Match } from './entities/match.entity';
-import { Repository } from 'typeorm';
+import { LessThan, MoreThan,Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationGroupInput } from 'src/group/dto/pagination-group.input';
 import { Player } from 'src/player/entities/player.entity';
@@ -126,9 +126,30 @@ export class MatchService {
     return this.invitationService.findAllByMatchId(matchId);
   }
 
+
   async members(id: number): Promise<Player[]> {
     const matchToPlayers = await this.matchToPlayerService.findMatchToPlayerByMatchId(id);
     const playerIds = matchToPlayers.map(matchToPlayer => matchToPlayer.playerId);
     return this.playerService.findPlayersByIds(playerIds);
+
+  async getPlayedMatch(id: number): Promise<Match> {
+    const today = new Date();
+    const match = await this.matchRepository
+      .createQueryBuilder('match')
+      .where({ id: id, time: LessThan(today) })
+      .getOne();
+
+    return match;
+}
+
+  async getPlannedMatchs(id: number): Promise<Match> {
+    const today = new Date();
+    const match = await this.matchRepository
+      .createQueryBuilder('match')
+      .where({ id: id, time: MoreThan(today) })
+      .getOne();
+
+    return match;
+
   }
 }

@@ -158,6 +158,8 @@ type MatchToPlayer {
   match: Match!
   createdAt: DateTime!
   updatedAt: DateTime!
+  playedMatch: Match!
+  plannedMatch: Match!
 }
 
 type Match {
