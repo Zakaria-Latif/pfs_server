@@ -132,6 +132,8 @@ export class MatchService {
     const playerIds = matchToPlayers.map(matchToPlayer => matchToPlayer.playerId);
     return this.playerService.findPlayersByIds(playerIds);
 
+  }
+
   async getPlayedMatch(id: number): Promise<Match> {
     const today = new Date();
     const match = await this.matchRepository

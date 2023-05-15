@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateInvitationInput } from './dto/create-invitation.input';
@@ -29,8 +29,12 @@ export class InvitationService {
     private readonly matchToPlayerService: MatchToPlayerService,
   ) {}
 
-  async findAll(): Promise<Invitation[]> {
-    return this.invitationRepository.find();
+  async findAll(connectedPlayerId: number): Promise<Invitation[]> {
+    return this.invitationRepository.find({
+      where: {
+        recipientId: connectedPlayerId
+      }
+    });
   }
 
   async findOne(id: number): Promise<Invitation> {
@@ -51,12 +55,21 @@ export class InvitationService {
     const match = await this.matchService.findOne(
       createInvitationInput.matchId,
     );
+    if(!match){
+      throw new BadRequestException("The match does not exist maybe it has been deleted");
+    }
 
     const recipient = await this.playerService.findOne(
       createInvitationInput.recipientId,
     );
-
+    if(!recipient){
+      throw new BadRequestException("The player you are sending the invitaton to does not exist");
+    }
+    
     const creator = await this.playerService.findOne(match.creatorId);
+    if(!creator){
+      throw new BadRequestException("Your id is not valid to send this invitation");
+    }
 
     const invitation = new Invitation();
     invitation.matchId = createInvitationInput.matchId;
@@ -73,7 +86,6 @@ export class InvitationService {
     createNotificationInput.type = RequestType.INVITATION;
 
     await this.notificationService.createNotification(createNotificationInput);
-
     return createdInvitation;
   }
 
@@ -95,16 +107,28 @@ export class InvitationService {
     return invitation;
   }
 
-  async acceptInvitation(id: number): Promise<Invitation> {
+  async acceptInvitation(id: number, connectedPlayerId: number): Promise<Invitation> {
     const invitation = await this.invitationRepository.findOne({
       where: { id: id },
       relations: ['match', 'recipient'],
     });
+    if(connectedPlayerId!==invitation.recipientId){
+      throw new BadRequestException("You cannot accept this invitation, it's not meant for you");
+    }
+
     if (!invitation) {
-      throw new Error('Invitation not found');
+      throw new BadRequestException("This invitaton does not exist");
+
     }
     invitation.isAccepted = true;
     await this.invitationRepository.save(invitation);
+
+    // Checking if the player is already in the match
+    const matchToPlayer=this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(invitation.matchId, 
+      invitation.matchId);
+    if(matchToPlayer){
+      throw new BadRequestException("Whoops this player is already in the match");
+    }
 
     //Create MatchToPlayer
     const match = invitation.match;

@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from 'src/group/entities/group.entity';
 import { Match } from 'src/match/entities/match.entity';
@@ -41,7 +41,11 @@ export class NotificationService {
 
   async getNotificationsByRecipient(
     recipientId: number,
+    connectedPlayerId: number
   ): Promise<Notification[]> {
+    if(connectedPlayerId!==recipientId){
+      throw new BadRequestException("You don't have permission to get the notifications of this player");
+    }
     return await this.notificationRepository.find({
       where: { recipient: { id: recipientId } },
     });
@@ -49,27 +53,36 @@ export class NotificationService {
 
   async getUnreadNotificationsByRecipient(
     recipientId: number,
+    connectedPlayerId: number
   ): Promise<Notification[]> {
+    if(connectedPlayerId!==recipientId){
+      throw new BadRequestException("You don't have permission to get the notifications of this player");
+    }
     return await this.notificationRepository.find({
       where: { recipient: { id: recipientId }, isRead: false },
     });
   }
 
-  async markNotificationAsRead(notificationId: number): Promise<Notification> {
+  async markNotificationAsRead(notificationId: number, connectedPlayerId: number): Promise<Notification> {
     const notification = await this.notificationRepository.findOne({
       where: { id: notificationId },
     });
-    if (notification) {
+    if (notification && notification.recipientId===connectedPlayerId) {
       notification.isRead = true;
       await this.notificationRepository.save(notification);
+    }else{
+      throw new BadRequestException("This request does not exist or you don't have permission to read it");
     }
     return notification;
   }
 
-  async deleteNotification(notificationId: number): Promise<Notification> {
+  async deleteNotification(notificationId: number, connectedPlayerId: number): Promise<Notification> {
     const notification = await this.notificationRepository.findOne({
       where: { id: notificationId },
     });
+    if(notification.recipientId!==connectedPlayerId){
+      throw new UnauthorizedException("You are not allowed delete this notification");
+    }
     await this.notificationRepository.delete(notificationId);
     return notification;
   }
