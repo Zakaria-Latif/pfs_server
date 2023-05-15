@@ -2,9 +2,9 @@
 
 Welcome to the documentation for our GraphQL API. This API allows you to perform various operations related to player, matches, messages... management, including user authentication.
 
-## Before we deep dive into the docs here are the entities the API exposes:
+## Before we deep dive into the docs here are the entities the API exposes
 
-### Player Entity:
+### Player Entity
 
 _A Player is an entity that represents an individual who participates in sports matches and belongs to one or more groups. Players can be associated with matches through a MatchToPlayer entity, and can belong to groups through a GroupToPlayer entity. The Player entity contains information such as the player's name, age, gender, and any other relevant details._
 
@@ -30,7 +30,7 @@ _A Player is an entity that represents an individual who participates in sports 
 | createdAt         | Date       | The date the player was created                          |
 | updatedAt         | Date       | The date the player was last updated                     |
 
-### PlayerStatistics Entity:
+### PlayerStatistics Entity
 
 _PlayerStatistics refers to the statistical data that is collected and associated with a particular player in a sports game or competition. It can include data points such as goals scored, assists, minutes played, shots taken, and other relevant metrics. PlayerStatistics are used to evaluate the performance of players and to make informed decisions about strategies and team compositions._
 
@@ -45,7 +45,7 @@ _PlayerStatistics refers to the statistical data that is collected and associate
 | createdAt     | Date   | The date the player statistics were created                     |
 | updatedAt     | Date   | The date the player statistics were last updated                |
 
-### Match Entity:
+### Match Entity
 
 _Match refers to a scheduled game or competition between two teams or individuals. In our system, it is represented by the Match entity which includes details such as the date and time of the match, the location, and the participating teams/players. The Match entity is related to other entities in our system such as Player and MatchToPlayer to record details such as the players who participated in the match and their performance statistics._
 
@@ -64,7 +64,7 @@ _Match refers to a scheduled game or competition between two teams or individual
 | createdAt     | Date            | The date the match was created                      |
 | updatedAt     | Date            | The date the match was last updated                 |
 
-### Message Entity:
+### Message Entity
 
 _A message represents a single communication sent by a user within a group. It contains the content of the message, the user who sent it, and the group it was sent to. Messages are associated with a group using a many-to-one relationship._
 
@@ -80,7 +80,7 @@ _A message represents a single communication sent by a user within a group. It c
 | createdAt  | Date    | The timestamp when the message was created      |
 | updatedAt  | Date    | The timestamp when the message was last updated |
 
-### MatchToPlayer Entity:
+### MatchToPlayer Entity
 
 _This entity represents the relationship between a `Match` and a `Player`, with additional data such as the player's position and rating for that particular match._
 
@@ -96,7 +96,7 @@ _This entity represents the relationship between a `Match` and a `Player`, with 
 | createdAt  | Date   | The timestamp when the match-to-player was created |
 | updatedAt  | Date   | The timestamp when the match-to-player was updated |
 
-### GroupToPlayer Entity:
+### GroupToPlayer Entity
 
 _GroupToPlayer is an entity that represents the relationship between a Group and a Player. It stores the ID of the Group and Player entities as foreign keys, as well as the timestamps for when the GroupToPlayer entity was created and last updated. The GroupToPlayer entity has a one-to-many relationship with the Group entity and a many-to-one relationship with the Player entity._
 
@@ -110,9 +110,9 @@ _GroupToPlayer is an entity that represents the relationship between a Group and
 | createdAt  | Date   | The timestamp representing when the GroupToPlayer was created      |
 | updatedAt  | Date   | The timestamp representing when the GroupToPlayer was last updated |
 
-## Group Entity:
+## Group Entity
 
-*A Group is an entity that represents a collection of players who are participating together in a game or a tournament. It contains a name attribute that identifies the group, and is associated with a collection of GroupToPlayer entities that map players to the group. It also has a collection of Message entities, which contain messages sent between the players within the group.*
+_A Group is an entity that represents a collection of players who are participating together in a game or a tournament. It contains a name attribute that identifies the group, and is associated with a collection of GroupToPlayer entities that map players to the group. It also has a collection of Message entities, which contain messages sent between the players within the group._
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -194,7 +194,7 @@ query {
 
 The players query takes a paginationInput object, which specifies how many players to retrieve and where to start. The query returns a list of players, including their ID, username, and rating.
 
-### To retrieve a single player, you can use the following GraphQL query:
+### To retrieve a single player, you can use the following GraphQL query
 
 ```
 query {
@@ -215,7 +215,7 @@ query {
 
 The player query takes a id parameter, which specifies the ID of the player to retrieve. The query returns a single player, including their username, rating, and any associated messages.
 
-### To retrieve a single player with Matchs and Groups, you can use the following GraphQL query:
+### To retrieve a single player with Matchs and Groups, you can use the following GraphQL query
 
 ```
 query getPlayerMatchsGroups{
@@ -240,7 +240,7 @@ query getPlayerMatchsGroups{
 }
 ```
 
-### To retrieve a single player with Created Matchs and Groups, you can use the following GraphQL query:
+### To retrieve a single player with Created Matchs and Groups, you can use the following GraphQL query
 
 ```
 query getPlayerCreatedMatchsGroups{
@@ -267,7 +267,7 @@ To create a new player, you can use the following GraphQL mutation:
 
 ```
 mutation createPlayer{
-  	 createPlayer(createPlayerInput:{
+    createPlayer(createPlayerInput:{
       username:"user",
       password:"123456",
       email:"user@user.com",
@@ -290,7 +290,7 @@ To update a new player, you can use the following GraphQL mutation:
 
 ```
 mutation updatePlayer{
-  	updatePlayer(updatePlayerInput:{
+   updatePlayer(updatePlayerInput:{
       id:4760,
       username:"edit Name",
       email:"edit@email.com",
@@ -298,8 +298,8 @@ mutation updatePlayer{
       location:"Lcoation Edit",
       description:"Description Edit"
     }){
-			id
-    	username
+   id
+     username
   }
 }
 ```
@@ -339,7 +339,7 @@ query {
 
 The playerStatistics query takes a paginationInput object, which specifies how many playerStatistics to retrieve and where to start. The query returns a list of playerStatistics.
 
-### To retrieve a single playerStatistic, you can use the following GraphQL query:
+### To retrieve a single playerStatistic, you can use the following GraphQL query
 
 ```
 query {
@@ -360,14 +360,14 @@ To update a new playerStatistic, you can use the following GraphQL mutation:
 
 ```
 mutation updateStatistics{
-  	updatePlayerStatistic(updatePlayerStatisticInput:{
+   updatePlayerStatistic(updatePlayerStatisticInput:{
       id:6859,
       rate:1,
       matchesNumber:1,
       position:"Defender"
     }){
-			id
-    	rate
+   id
+     rate
     matchesNumber
   }
 }
@@ -393,7 +393,7 @@ query {
 
 The matches query takes a paginationInput object, which specifies how many matches to retrieve and where to start. The query returns a list of matches, including their name, location, and time.
 
-### To retrieve a single match, you can use the following GraphQL query:
+### To retrieve a single match, you can use the following GraphQL query
 
 ```
 query {
@@ -438,26 +438,94 @@ query getMatchPlayers{
 }
 ```
 
-### Searching for Matches
-
-To search for matches based on certain criteria, you can use the following GraphQL query:
+Or to get the player u can use this query:
 
 ```
-query {
-  search(searchMatchInput: {
-    minDuration: 2,
-    maxDuration: 10,
-    dateFrom: "2023-06-16T10:12:01.000Z",
-    dateTo: "2024-02-16T10:31:00.000Z"
-  }) {
-    location,
-    name,
-    id
+query members{
+  members(id: 9){
+    username,
+    id,
+    location
   }
 }
 ```
 
-The search query takes a searchMatchInput object, which specifies the criteria to search for matches based on. The query returns a list of matches that match the specified criteria.
+to get you matches(the matches you are created):
+
+```
+query myMatches{
+  myMatches(paginationInput:{skip: 1, take:16}){
+    id,
+    name,
+    location,
+    time,
+    duration,
+    creator{
+      username
+    },
+    players{
+      player{
+        username,
+      }
+    }
+    }
+}
+
+
+```
+
+### Searching for Matches & Players
+
+To search for matches|players based on certain criteria, you can use the following GraphQL queries:
+
+```
+query searchMatches{
+  searchMatches(searchMatchInput: {
+    minDuration: 0,
+    maxDuration: 2,
+    dateFrom: "2020-01-05T07:54:03.000Z",
+    dateTo: "2025-01-05T07:54:03.000Z",
+    searchTerm: "Lenojslsk"
+  }){
+    id,
+    name,
+    location,
+    time,
+    duration,
+    creator{
+      username
+    },
+    players{
+      player{
+        username,
+      }
+    }
+  }
+}
+
+
+
+query searchPlayer{
+  searchPlayers(searchPlayerInput: {
+    position: "Defender",
+    searchTerm: "leno",
+    minRate: 1
+  }){
+     id,
+    username,
+    location,
+    description,
+    createdAt,
+    playerStatistics{
+      rate,
+      matchesNumber,
+      position,
+      
+    }
+  }
+    
+}
+```
 
 ### Creating Matches
 
@@ -552,11 +620,11 @@ To create a new group, you can use the following GraphQL mutation:
 
 ```
 mutation createGroup{
-  	createGroup(createGroupInput:{
+   createGroup(createGroupInput:{
       name:"La Clique Celitics Glazco"
     }){
-			id
-    	name
+   id
+     name
     createdAt
     updatedAt
   }
@@ -571,12 +639,12 @@ To update a new group, you can use the following GraphQL mutation:
 
 ```
 mutation updateGroup{
-  	updateGroup(updateGroupInput:{
+   updateGroup(updateGroupInput:{
       id:16,
       name:"La Clique Celtic Edit",
     }){
-			id
-    	name
+   id
+     name
   }
 }
 ```
@@ -589,7 +657,7 @@ To delete a group, you can use the following GraphQL mutation:
 
 ```
 mutation removeGroupe{
-  	removeGroup(id: 16){
+   removeGroup(id: 16){
     id
     name
   }
@@ -636,14 +704,14 @@ To create a new message, you can use the following GraphQL mutation:
 
 ```
 mutation createMessage{
-  	createMessage(createMessageInput:{
+   createMessage(createMessageInput:{
       message:"Hello World",
       groupId:2,
       senderId:3108,
       isRead:false
     }){
-			id
-    	message
+   id
+     message
   }
 }
 ```
@@ -674,15 +742,15 @@ To update a new message, you can use the following GraphQL mutation:
 
 ```
 mutation updateMessage{
-  	updateMessage(updateMessageInput:{
+   updateMessage(updateMessageInput:{
       id:50,
       message:"Hello World Edit last",
       groupId:1,
       senderId:3948,
       isRead:true
     }){
-			id
-    	message
+   id
+     message
   }
 }
 ```
@@ -713,7 +781,7 @@ To delete a message, you can use the following GraphQL mutation:
 
 ```
 mutation removeMessage{
-  	removeMessage(id: 54){
+   removeMessage(id: 54){
     id
     message
   }
@@ -752,7 +820,7 @@ mutation createGroupToPlayer{
       playerId:1,
       groupId:10
     }){
-    	playerId
+     playerId
       groupId
   }
   }
@@ -771,7 +839,7 @@ mutation udapteGroupToPlayer{
       playerId:1,
       groupId:10
     }){
-    	playerId
+     playerId
       groupId
   }
   }
@@ -786,7 +854,7 @@ To delete a GroupToPlayer, you can use the following GraphQL mutation:
 ```
 mutation removeGroupToPlayer{
     removeGroupToPlayer(id:16){
-    	playerId
+     playerId
       groupId
   }
   }
@@ -808,9 +876,9 @@ mutation createMatchToPlayer{
       playerId:1,
       matchId:10
     }){
-    	id
-    	matchId
-    	playerId
+     id
+     matchId
+     playerId
   }
   }
 ```
@@ -830,9 +898,9 @@ mutation updateMatchToPlayer{
       playerId:1,
       matchId:14
     }){
-    	id
-    	matchId
-    	playerId
+     id
+     matchId
+     playerId
   }
   }
 ```
@@ -846,9 +914,9 @@ To delete a MatchToPlayer, you can use the following GraphQL mutation:
 ```
 mutation removeMatchToPlayer{
     removeMatchToPlayer(id:16){
-    	id
-    	matchId
-    	playerId
+     id
+     matchId
+     playerId
   }
   }
 ```
@@ -893,6 +961,7 @@ query {
 ```
 
 The Notifications query takes an recipient id,returns a list of Notifications, including their content.
+
 ### Creating Notifications
 
 To create a new Notification, you can use the following GraphQL mutation:
@@ -961,8 +1030,22 @@ mutation {
   }
 }
 ```
-
 The deleteNotification mutation takes an id parameter, which specifies the ID of the Notification to delete. Upon successful deletion, the mutation returns the content of the deleted Notification.
+
+## Mark a notification as read:
+
+```
+mutation markNotificationAsRead{
+  markNotificationAsRead(notificationId: 2){
+    id,
+    type,
+    title,
+    message,
+    recipientId,
+    isRead
+  }
+}
+```
 
 ## Request Management
 
@@ -1037,7 +1120,7 @@ mutation {
   updateRequest(
     updateRequestInput: {
       id: 1
-     	creatorId: 3
+      creatorId: 3
       matchId: 3
     }
   ) {
@@ -1131,6 +1214,7 @@ query {
   }
 }
 ```
+
 ### Accepting Match Request
 
 To accept a match Request, you can use the following GraphQL query:
@@ -1182,7 +1266,7 @@ mutation {
 }
   ```
   
-  ## Invitation Management
+## Invitation Management
 
 ### Retrieving One Invitation
 
@@ -1354,6 +1438,7 @@ query {
 }
 
 ```
+
 ### Accepting Match Invitation
 
 To accept a match Invitation, you can use the following GraphQL query:

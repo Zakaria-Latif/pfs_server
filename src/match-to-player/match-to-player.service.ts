@@ -77,6 +77,17 @@ export class MatchToPlayerService {
     });
   }
 
+  async findMatchToPlayerByMatchIdAndPlayerId(matchId: number, playerId: number): Promise<MatchToPlayer[]> {
+    return this.matchToPlayerRepository.find({
+      where: {
+        matchId,
+        playerId
+      },
+    });
+  }
+
+  
+
   async getPlayer(playerId: number): Promise<Player> {
     return this.playerService.findOne(playerId);
   }
