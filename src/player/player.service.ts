@@ -27,6 +27,7 @@ import { CalendarService } from 'src/calendar/calendar.service';
 
 @Injectable()
 export class PlayerService {
+  
   constructor(
     @InjectRepository(Player) private playerRepository: Repository<Player>,
     @InjectRepository(PlayerStatistics)
@@ -77,22 +78,12 @@ export class PlayerService {
   }
 
   async search(searchPlayerInput: SearchPlayerInput): Promise<Player[]> {
-    // const query = this.playerRepository
-    //   .createQueryBuilder('player')
-    //   .where('player.playerStatistics.position = :position', {
-    //     position: searchPlayerInput.position,
-    //   })
-    //   .andWhere('player.playerStatistics.rate > :rate', {
-    //     rate: searchPlayerInput.minRate,
-    //   })
-    //   .getMany();
-
-    // return query;
     const players = await this.playerRepository
     .createQueryBuilder('player')
     .innerJoin('player.playerStatistics', 'playerStatistics')
     .where('playerStatistics.position = :position', { position: searchPlayerInput.position })
     .andWhere('playerStatistics.rate > :rate', { rate: searchPlayerInput.minRate })
+    .andWhere('player.username LIKE :username', { username: `%${searchPlayerInput.searchTerm}%` })
     .getMany();
 
     return players;
@@ -157,5 +148,13 @@ export class PlayerService {
 
   async getPlayerCalendar(playerId: number): Promise<Calendar> {
     return this.calendarService.findOneByPlayerId(playerId);
+  }
+
+  async findPlayersByIds(playerIds: number[]): Promise<Player[]> {
+    let players: Array<Player>=[]
+    for(let playerId of playerIds){
+      this.findOne(playerId).then(p=>players.push(p));
+    }
+    return players;
   }
 }
