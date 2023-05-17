@@ -45,6 +45,10 @@ export class InvitationService {
     return this.invitationRepository.find({ where: { recipientId } });
   }
 
+  async findAllByCreatorId(creatorId: number): Promise<Invitation[]> {
+    return this.invitationRepository.find({ where: { creatorId } });
+  }
+  
   async findAllByMatchId(matchId: number): Promise<Invitation[]> {
     return this.invitationRepository.find({ where: { matchId } });
   }

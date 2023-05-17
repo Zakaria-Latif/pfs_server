@@ -45,6 +45,13 @@ export class InvitationResolver {
     return this.invitationService.findAllByRecipientId(id);
   }
 
+  @Query(() => [Invitation])
+  async invitationsByCreatorId(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Invitation[]> {
+    return this.invitationService.findAllByCreatorId(id);
+  }
+  
   @UseGuards(JwtAuthGuard)
   @Query(() => [Invitation])
   async invitationByMatchId(

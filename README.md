@@ -1427,6 +1427,29 @@ query {
 
 ```
 
+### Retrieving Invitations By Creator Id
+
+To retrieve a list of Invitations By Creator Id, you can use the following GraphQL query:
+
+```
+query {
+  invitationsByCreatortId(id: 3) {
+    id
+    isAccepted
+    creator {
+      id
+      username
+    }
+    match {
+      id
+      location
+      playersNumber
+    }
+  }
+}
+
+```
+
 ### Retrieving Invitations By Match Id
 
 To retrieve a list of Invitations By Match Id, you can use the following GraphQL query:
