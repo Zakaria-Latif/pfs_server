@@ -175,8 +175,8 @@ type Match {
   players: [MatchToPlayer!]!
   createdAt: DateTime!
   updatedAt: DateTime!
-  getPlayerRequests: [Request!]!
-  getPlayerInvitations: [Invitation!]!
+  requests: [Request!]!
+  invitations: [Invitation!]!
 }
 
 type LoginResponse {
@@ -202,9 +202,9 @@ type Query {
   invitations: [Invitation!]!
   invitation(id: Int!): Invitation
   invitationsByRecipientId(id: Int!): [Invitation!]!
+  invitationsByCreatorId(id: Int!): [Invitation!]!
   invitationByMatchId(id: Int!): [Invitation!]!
   matchToPlayer(id: Int!): MatchToPlayer!
-  messages(paginationInput: PaginationGroupInput!): [Message!]!
   message(id: Int!): Message!
   getNotificationsByRecipient(recipientId: Int!): [Notification!]!
   getUnreadNotificationsByRecipient(recipientId: Int!): [Notification!]!
@@ -259,7 +259,7 @@ type Mutation {
   removeRequest(id: Int!): Request!
   acceptMatchRequest(id: Int!): Request!
   refuseMatchRequest(id: Int!): Request!
-  createInvitation(createInvitationInput: CreateInvitationInput!): Invitation!
+  createInvitation(matchId: Float!): Invitation!
   updateInvitation(updateInvitationInput: UpdateInvitationInput!): Invitation!
   removeInvitation(id: Int!): Invitation!
   acceptInvitation(id: Int!): Invitation!
@@ -285,7 +285,7 @@ type Mutation {
 input CreateMatchInput {
   location: String!
   name: String!
-  time: DateTime!
+  time: String!
   playersNumber: Int!
   prize: String!
   duration: Float!
@@ -295,7 +295,7 @@ input CreateMatchInput {
 input UpdateMatchInput {
   location: String
   name: String
-  time: DateTime
+  time: String
   playersNumber: Int
   prize: String
   duration: Float
@@ -351,11 +351,6 @@ input UpdateRequestInput {
   matchId: Int
   creatorId: Int
   id: Int!
-}
-
-input CreateInvitationInput {
-  matchId: Int!
-  recipientId: Int!
 }
 
 input UpdateInvitationInput {

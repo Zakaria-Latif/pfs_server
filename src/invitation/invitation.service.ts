@@ -53,39 +53,40 @@ export class InvitationService {
     return this.invitationRepository.find({ where: { matchId } });
   }
 
-  async create(
-    createInvitationInput: CreateInvitationInput,
-  ): Promise<Invitation> {
+  async create(matchId: number, connectedPlayerId: number): Promise<Invitation> {
     const match = await this.matchService.findOne(
-      createInvitationInput.matchId,
+      matchId,
     );
     if(!match){
       throw new BadRequestException("The match does not exist maybe it has been deleted");
     }
 
     const recipient = await this.playerService.findOne(
-      createInvitationInput.recipientId,
+      match.creatorId
     );
     if(!recipient){
       throw new BadRequestException("The player you are sending the invitaton to does not exist");
     }
-    
-    const creator = await this.playerService.findOne(match.creatorId);
+
+    const creator = await this.playerService.findOne(
+      connectedPlayerId
+    );
     if(!creator){
-      throw new BadRequestException("Your id is not valid to send this invitation");
+      throw new BadRequestException("The player you are sending the invitaton to does not exist");
     }
+    
 
     const invitation = new Invitation();
-    invitation.matchId = createInvitationInput.matchId;
-    invitation.recipientId = createInvitationInput.recipientId;
-    invitation.creatorId = match.creatorId;
+    invitation.matchId = matchId;
+    invitation.recipientId = match.creatorId;
+    invitation.creatorId = connectedPlayerId;
 
     const createdInvitation = await this.invitationRepository.save(invitation);
 
     // Create a notification to inform the recipient about the new invitation
     const createNotificationInput = new CreateNotificationInput();
     createNotificationInput.title = 'Match Invitation';
-    createNotificationInput.message = `${creator.username} sent a match Invitation for ${match.name}`;
+    createNotificationInput.message = `${creator.username} sent a match invitation for ${match.name}`;
     createNotificationInput.recipientId = recipient.id;
     createNotificationInput.type = RequestType.INVITATION;
 

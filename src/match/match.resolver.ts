@@ -31,6 +31,7 @@ export class MatchResolver {
   async createMatch(
     @Args('createMatchInput') createMatchInput: CreateMatchInput,
   ): Promise<Match> {
+    console.log(createMatchInput);
     return this.matchService.create(createMatchInput);
   }
 
@@ -101,12 +102,12 @@ export class MatchResolver {
   }
 
   @ResolveField((returns) => [Request])
-  async getPlayerRequests(@Parent() match: Match): Promise<Request[]> {
+  async requests(@Parent() match: Match): Promise<Request[]> {
     return this.matchService.getPlayerRequests(match.id);
   }
 
   @ResolveField((returns) => [Invitation])
-  async getPlayerInvitations(@Parent() match: Match): Promise<Invitation[]> {
+  async invitations(@Parent() match: Match): Promise<Invitation[]> {
     return this.matchService.getPlayerInvitations(match.id);
   }
 }

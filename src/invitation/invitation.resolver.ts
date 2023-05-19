@@ -63,9 +63,10 @@ export class InvitationResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Invitation)
   async createInvitation(
-    @Args('createInvitationInput') createInvitationInput: CreateInvitationInput,
+    @Args('matchId') matchId: number,
+    @Context() context: any
   ): Promise<Invitation> {
-    return this.invitationService.create(createInvitationInput);
+    return this.invitationService.create(matchId, context.req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

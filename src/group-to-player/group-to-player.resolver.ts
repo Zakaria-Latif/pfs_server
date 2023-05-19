@@ -31,13 +31,13 @@ export class GroupToPlayerResolver {
     return this.groupToPlayerService.create(createGroupToPlayerInput);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Query(() => [GroupToPlayer], { name: 'groupToPlayer' })
-  async findAll(
-    @Args('paginationInput') paginationInput: PaginationGroupInput,
-  ): Promise<GroupToPlayer[]> {
-    return this.groupToPlayerService.findAll(paginationInput);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Query(() => [GroupToPlayer], { name: 'groupToPlayer' })
+  // async findAll(
+  //   @Args('paginationInput') paginationInput: PaginationGroupInput,
+  // ): Promise<GroupToPlayer[]> {
+  //   return this.groupToPlayerService.findAll(paginationInput);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => GroupToPlayer, { name: 'groupToPlayer' })
