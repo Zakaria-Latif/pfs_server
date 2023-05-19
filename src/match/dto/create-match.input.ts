@@ -9,7 +9,7 @@ export class CreateMatchInput {
   name: string;
 
   @Field()
-  time: Date;
+  time: string;
 
   @Field(() => Int)
   playersNumber: number;
