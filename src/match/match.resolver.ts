@@ -30,9 +30,9 @@ export class MatchResolver {
   @Mutation(() => Match, { name: 'createMatch' })
   async createMatch(
     @Args('createMatchInput') createMatchInput: CreateMatchInput,
+    @Context() context: any
   ): Promise<Match> {
-    console.log(createMatchInput);
-    return this.matchService.create(createMatchInput);
+    return this.matchService.create(createMatchInput, context.req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -50,8 +50,7 @@ export class MatchResolver {
     @Context() context: any
   ): Promise<Match[]> {
     console.log(context.req.user.id);
-    let creatorId: number= context.req.user.id ? 5: context.req.user.id; // this line is just for testing
-    return this.matchService.myMatches(paginationInput,  creatorId);
+    return this.matchService.myMatches(paginationInput,  context.req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -206,8 +206,8 @@ type Query {
   invitationByMatchId(id: Int!): [Invitation!]!
   matchToPlayer(id: Int!): MatchToPlayer!
   message(id: Int!): Message!
-  getNotificationsByRecipient(recipientId: Int!): [Notification!]!
-  getUnreadNotificationsByRecipient(recipientId: Int!): [Notification!]!
+  getMyNotifications: [Notification!]!
+  getUnreadNotifications: [Notification!]!
   calendars: [Calendar!]!
   calendar(Id: Int!): Calendar!
   calendarByPlayerId(playerId: Int!): Calendar!
@@ -259,7 +259,7 @@ type Mutation {
   removeRequest(id: Int!): Request!
   acceptMatchRequest(id: Int!): Request!
   refuseMatchRequest(id: Int!): Request!
-  createInvitation(matchId: Float!): Invitation!
+  createInvitation(matchId: Int!): Invitation!
   updateInvitation(updateInvitationInput: UpdateInvitationInput!): Invitation!
   removeInvitation(id: Int!): Invitation!
   acceptInvitation(id: Int!): Invitation!
@@ -289,7 +289,6 @@ input CreateMatchInput {
   playersNumber: Int!
   prize: String!
   duration: Float!
-  creatorId: Int!
 }
 
 input UpdateMatchInput {
@@ -299,7 +298,6 @@ input UpdateMatchInput {
   playersNumber: Int
   prize: String
   duration: Float
-  creatorId: Int
   id: Int!
 }
 
@@ -355,7 +353,6 @@ input UpdateRequestInput {
 
 input UpdateInvitationInput {
   matchId: Int
-  recipientId: Int
   id: Int!
 }
 

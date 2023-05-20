@@ -4,10 +4,6 @@ import { IsNumber } from 'class-validator';
 @InputType()
 export class CreateInvitationInput {
   @Field(() => Int)
-  @IsNumber()
+  // @IsNumber()
   matchId: number;
-
-  @Field(() => Int)
-  @IsNumber()
-  recipientId: number;
 }
