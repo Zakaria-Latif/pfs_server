@@ -19,7 +19,4 @@ export class CreateMatchInput {
 
   @Field(() => Float)
   duration: number;
-
-  @Field(() => Int)
-  creatorId: number;
 }

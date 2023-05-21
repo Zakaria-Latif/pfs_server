@@ -33,14 +33,15 @@ export class MatchService {
   ){}
   
 
-  async create(createMatchInput: CreateMatchInput): Promise<Match> {
-    let match = await this.matchRepository.create(createMatchInput);
+  async create(createMatchInput: CreateMatchInput, creatorId: number): Promise<Match> {
+    let match = await this.matchRepository.create({...createMatchInput, creatorId});
     match = await this.matchRepository.save(match);
+    console.log(match);
 
     //create Match To Player
     const createMatchToPlayerInput = new CreateMatchToPlayerInput();
     createMatchToPlayerInput.matchId = match.id;
-    createMatchToPlayerInput.playerId = createMatchInput.creatorId;
+    createMatchToPlayerInput.playerId = creatorId;
 
     await this.matchToPlayerService.create(createMatchToPlayerInput);
 

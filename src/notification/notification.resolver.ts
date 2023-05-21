@@ -40,23 +40,14 @@ export class NotificationResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [Notification])
-  async getNotificationsByRecipient(
-    @Args('recipientId', { type: () => Int }) recipientId: number,
-    @Context() context: any 
-  ): Promise<Notification[]> {
-    return this.notificationService.getNotificationsByRecipient(recipientId,  context.req.user.id);
+  async getMyNotifications(@Context() context: any): Promise<Notification[]> {
+    return this.notificationService.getMyNotifications(context.req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [Notification])
-  async getUnreadNotificationsByRecipient(
-    @Args('recipientId', { type: () => Int }) recipientId: number,
-    @Context() context: any
-  ): Promise<Notification[]> {
-    return this.notificationService.getUnreadNotificationsByRecipient(
-      recipientId,
-      context.req.user.id
-    );
+  async getUnreadNotifications(@Context() context: any): Promise<Notification[]> {
+    return this.notificationService.getUnreadNotifications(context.req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
