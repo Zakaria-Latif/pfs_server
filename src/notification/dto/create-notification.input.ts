@@ -16,4 +16,7 @@ export class CreateNotificationInput {
 
   @Field()
   recipientId: number;
+
+  @Field()
+  entityId: number;
 }
