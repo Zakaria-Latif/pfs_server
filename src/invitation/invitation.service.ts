@@ -54,6 +54,17 @@ export class InvitationService {
   }
 
   async create(matchId: number, connectedPlayerId: number): Promise<Invitation> {
+    // Check if the invitation has already been sent
+    const alreadyMadeInvitation=await this.invitationRepository.find({
+      where: {
+        creatorId: connectedPlayerId,
+        matchId: matchId
+      }
+    });
+    if(alreadyMadeInvitation){
+      throw new BadRequestException("You have already sent an invitation, please just wait the admin will review your request:)");
+    }
+
     const match = await this.matchService.findOne(
       matchId,
     );
