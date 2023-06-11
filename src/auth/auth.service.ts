@@ -54,7 +54,7 @@ export class AuthService {
       email: signupInput.email,
       username: signupInput.username,
       password: await bcrypt.hash(signupInput.password, 12),
-      image: signupInput.image,
+      image: signupInput?.image,
     });
     return {
       accessToken: this.jwtService.sign({ username: player.username, sub: player.id }, 
