@@ -58,10 +58,10 @@ export class InvitationService {
     const alreadyMadeInvitation=await this.invitationRepository.find({
       where: {
         creatorId: connectedPlayerId,
-        matchId: matchId
+        matchId
       }
     });
-    if(alreadyMadeInvitation){
+    if(alreadyMadeInvitation.length){
       throw new BadRequestException("You have already sent an invitation, please just wait the admin will review your request:)");
     }
 
@@ -82,9 +82,7 @@ export class InvitationService {
       throw new BadRequestException("You are already the creator of this match, no need to join, you are already in");
     }
 
-    const creator = await this.playerService.findOne(
-      connectedPlayerId
-    );
+    const creator = await this.playerService.findOne(connectedPlayerId);
     
     if(!creator){
       throw new BadRequestException("The player you are sending the invitaton to does not exist");
@@ -145,8 +143,7 @@ export class InvitationService {
     await this.invitationRepository.save(invitation);
 
     // Checking if the player is already in the match
-    const matchToPlayer=this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(invitation.matchId, 
-      invitation.matchId);
+    const matchToPlayer=this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(invitation.matchId, connectedPlayerId);
     if(matchToPlayer){
       throw new BadRequestException("Whoops this player is already in the match");
     }
