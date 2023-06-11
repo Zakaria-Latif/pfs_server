@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { OnModuleInit, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { OnModuleInit, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
 import { MatchService } from './match/match.service';
 import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
@@ -35,6 +35,8 @@ import { Request } from './request/entities/request.entity';
 import { Invitation } from './invitation/entities/invitation.entity';
 import { CalendarModule } from './calendar/calendar.module';
 import { Calendar } from './calendar/entities/calendar.entity';
+
+import { CsrfMiddleware } from './middlewares/csrf.middleware';
 
 @Module({
   imports: [
@@ -105,7 +107,8 @@ export class AppModule implements NestModule, OnModuleInit {
   ) {}
 
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(morgan('dev')).forRoutes('*');
+    consumer.apply(morgan('dev')).forRoutes('*')
+    .apply(CsrfMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
     console.log('Morgan initialized');
   }
 
