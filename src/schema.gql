@@ -417,6 +417,7 @@ input SignUpInput {
   email: String!
   username: String!
   password: String!
+  image: String
 }
 
 type Subscription {

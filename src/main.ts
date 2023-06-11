@@ -32,6 +32,7 @@ async function bootstrap() {
       "http://192.168.1.8:8081",
       "http://192.168.1.8:8080",
       "http://10.0.2.2:8081",
+      "https://sports-z.netlify.app",
       undefined,
   ];
   app.enableCors({

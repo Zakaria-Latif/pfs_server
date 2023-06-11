@@ -8,4 +8,6 @@ export class SignUpInput {
   username: string;
   @Field()
   password: string;
+  @Field({ nullable: true })
+  image: string;
 }
