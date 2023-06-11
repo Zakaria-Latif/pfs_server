@@ -49,10 +49,13 @@ export class MatchService {
   }
 
   async findAll(paginationInput: PaginationGroupInput): Promise<Match[]> {
-    return this.matchRepository.find({
-      skip: paginationInput.skip,
-      take: paginationInput.take,
-    });
+    // return this.matchRepository.find({
+    //   skip: paginationInput.skip,
+    //   take: paginationInput.take,
+    // });
+    
+    // For testing
+    return this.matchRepository.find();
   }
 
   myMatches(paginationInput: PaginationGroupInput, creatorId: number ): Match[] | PromiseLike<Match[]> {
