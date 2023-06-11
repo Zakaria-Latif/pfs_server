@@ -57,6 +57,6 @@ export class Notification {
   //approve/deny the request/inviation
   //This entityId is the id of a request or invitation
   @Column()
-  @Field((type) => Int, { defaultValue: -1 })
+  @Field((type) => Int, { defaultValue: 0 })
   entityId: number;
 }
