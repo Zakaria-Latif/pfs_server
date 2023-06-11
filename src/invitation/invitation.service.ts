@@ -54,6 +54,17 @@ export class InvitationService {
   }
 
   async create(matchId: number, connectedPlayerId: number): Promise<Invitation> {
+    // Check if the invitation has already been sent
+    const alreadyMadeInvitation=await this.invitationRepository.find({
+      where: {
+        creatorId: connectedPlayerId,
+        matchId: matchId
+      }
+    });
+    if(alreadyMadeInvitation){
+      throw new BadRequestException("You have already sent an invitation, please just wait the admin will review your request:)");
+    }
+
     const match = await this.matchService.findOne(
       matchId,
     );
@@ -67,10 +78,14 @@ export class InvitationService {
     if(!recipient){
       throw new BadRequestException("The player you are sending the invitaton to does not exist");
     }
+    if(match.creatorId===connectedPlayerId){
+      throw new BadRequestException("You are already the creator of this match, no need to join, you are already in");
+    }
 
     const creator = await this.playerService.findOne(
       connectedPlayerId
     );
+    
     if(!creator){
       throw new BadRequestException("The player you are sending the invitaton to does not exist");
     }
@@ -89,6 +104,7 @@ export class InvitationService {
     createNotificationInput.message = `${creator.username} sent a match invitation for ${match.name}`;
     createNotificationInput.recipientId = recipient.id;
     createNotificationInput.type = RequestType.INVITATION;
+    createNotificationInput.entityId=createdInvitation.id;
 
     await this.notificationService.createNotification(createNotificationInput);
     return createdInvitation;

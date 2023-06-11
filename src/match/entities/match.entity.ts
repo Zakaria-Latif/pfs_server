@@ -12,6 +12,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { Invitation } from 'src/invitation/entities/invitation.entity';
 
 @Entity()
 @ObjectType()
@@ -56,6 +57,10 @@ export class Match {
   @OneToMany(() => MatchToPlayer, (matchToPlayer) => matchToPlayer.match)
   @Field(() => [MatchToPlayer])
   players: MatchToPlayer[];
+
+  // @OneToMany(() => Invitation, (invitation)=>invitation.match)
+  // @Field(() => [Invitation])
+  // invitations: Invitation[];
 
   @CreateDateColumn()
   @Field(() => Date)

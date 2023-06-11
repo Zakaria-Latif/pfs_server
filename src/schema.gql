@@ -83,6 +83,7 @@ type Notification {
   recipient: Player!
   createdAt: DateTime!
   updatedAt: DateTime!
+  entityId: Int!
 }
 
 type Request {
@@ -391,6 +392,7 @@ input CreateNotificationInput {
   title: String!
   message: String!
   recipientId: Float!
+  entityId: Float!
 }
 
 input CreateCalendarInput {

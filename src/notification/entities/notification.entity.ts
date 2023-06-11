@@ -51,4 +51,12 @@ export class Notification {
   @Column({ default: () => 'now()' })
   @Field()
   updatedAt: Date;
+
+  //This field was introduced to let player accept/refuse or approve/deny the request/inviation
+  //Without this field the user will not be able accept/refuse or 
+  //approve/deny the request/inviation
+  //This entityId is the id of a request or invitation
+  @Column()
+  @Field((type) => Int, { defaultValue: -1 })
+  entityId: number;
 }
