@@ -9,6 +9,7 @@ import {
   Context,
   CONTEXT,
   Field,
+  Float,
 } from '@nestjs/graphql';
 import { Invitation } from './entities/invitation.entity';
 import { InvitationService } from './invitation.service';
@@ -64,7 +65,7 @@ export class InvitationResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Invitation)
   async createInvitation(
-    @Args('matchId', { type: () => Int }) matchId: number,
+    @Args('matchId', { type: () => Int! }) matchId: number,
     @Context() context: any
   ): Promise<Invitation> {
     return this.invitationService.create(matchId, context.req.user.id);
