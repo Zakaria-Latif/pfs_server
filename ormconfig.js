@@ -1,12 +1,14 @@
 module.exports = {
   type: 'mysql',
-  host: 'localhost',
+  host: 'db4free.net',
   port: 3306,
-  username: 'root',
-  password: 'root',
-  database: 'pfs',
+  username: 'reda123',
+  password: 'Reda12345',
+  database: 'myredatestdb',
   synchronize: true,
   entities: ['src/**/entities/*.entity{.ts,.js}'],
   seeds: ['src/database/seeds/**/*{.ts,.js}'],
   factories: ['src/database/factories/**/*{.ts,.js}'],
 };
+
+
