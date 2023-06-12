@@ -50,7 +50,7 @@ export class RequestResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => Request, {name: "createRequest"})
+  @Mutation(() => Request, { name: 'createRequest' })
   async createRequest(
     @Args('createRequestInput') createRequestInput: CreateRequestInput,
   ): Promise<Request> {
@@ -77,7 +77,7 @@ export class RequestResolver {
   @Mutation(() => Request)
   async acceptMatchRequest(
     @Args('id', { type: () => Int }) id: number,
-    @Context() context: any
+    @Context() context: any,
   ): Promise<Request> {
     return this.requestService.acceptMatchRequest(id, context.req.user.id);
   }
@@ -86,8 +86,9 @@ export class RequestResolver {
   @Mutation(() => Request)
   async refuseMatchRequest(
     @Args('id', { type: () => Int }) id: number,
+    @Context() context: any,
   ): Promise<Request> {
-    return this.requestService.refuseMatchRequest(id);
+    return this.requestService.refuseMatchRequest(id, context.req.user.id);
   }
 
   @ResolveField(() => Player)

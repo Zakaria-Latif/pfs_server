@@ -2,12 +2,15 @@ import { faker } from '@faker-js/faker';
 import { define } from 'typeorm-seeding';
 import { PlayerStatistics } from '../../player-statistics/entities/player-statistic.entity';
 import { Player } from '../../player/entities/player.entity';
+import * as bcrypt from 'bcrypt';
 
 define(Player, (fak: typeof faker) => {
   const player = new Player();
   player.id = faker.datatype.number({ max: 10 });
   player.username = faker.name.firstName();
   player.password = faker.internet.password();
+  console.log(`  Password for Player ${player.username} Is ${player.password}`);
+  player.password = bcrypt.hashSync(player.password, 10); // Crypt the password using bcrypt
   player.email = faker.internet.email();
   player.location = faker.address.streetAddress();
   player.isVerified = faker.datatype.boolean();

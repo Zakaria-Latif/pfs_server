@@ -7,11 +7,16 @@ import { MatchToPlayer } from '../../match-to-player/entities/match-to-player.en
 import { Group } from '../../group/entities/group.entity';
 import { GroupToPlayer } from '../../group-to-player/entities/group-to-player.entity';
 import { Message } from '../../message/entities/message.entity';
+import { Request } from '../../request/entities/request.entity';
+import { Notification } from '../../notification/entities/notification.entity';
+import { Invitation } from '../../invitation/entities/invitation.entity';
 
 export default class InitialDatabaseSeed implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {
     //Generate Unique Value
     const usedNumbers = [];
+    const usedNumbers2 = [];
+    const usedNumbers3 = [];
 
     function getRandomNumber(max, usedNumbers) {
       let randomNumber;
@@ -74,6 +79,61 @@ export default class InitialDatabaseSeed implements Seeder {
         messages.sender = players[Math.floor(Math.random() * players.length)];
         return messages;
       })
-      .createMany(50);
+      .createMany(100);
+
+    const requests = await factory(Request)()
+      .map(async (request) => {
+        request.match = matchs[Math.floor(Math.random() * matchs.length)];
+        request.creator = players[Math.floor(Math.random() * players.length)];
+        return request;
+      })
+      .createMany(100);
+
+    const requestsNotifications = await factory(Notification)()
+      .map(async (notification) => {
+        notification.title = 'Match Request';
+        notification.type = 'Request';
+        const randomRequest =
+          requests[getRandomNumber(requests.length, usedNumbers2)];
+        notification.entityId = randomRequest.id;
+        notification.message = `${randomRequest.creator.username} sent a match request for ${randomRequest.match.name}`;
+        notification.recipient = randomRequest.match.creator;
+        return notification;
+      })
+      .createMany(100);
+
+    const invitations = await factory(Invitation)()
+      .map(async (invitation) => {
+        invitation.match = matchs[Math.floor(Math.random() * matchs.length)];
+        invitation.creator =
+          players[Math.floor(Math.random() * players.length)];
+        invitation.recipient =
+          players[Math.floor(Math.random() * players.length)];
+        return invitation;
+      })
+      .createMany(100);
+
+    const invitationNotifications = await factory(Notification)()
+      .map(async (notification) => {
+        notification.title = 'Match Invitation';
+        notification.type = 'Invitation';
+        const randomInvitation =
+          invitations[getRandomNumber(invitations.length, usedNumbers3)];
+        notification.entityId = randomInvitation.id;
+        notification.message = `${randomInvitation.creator.username} sent a match invitation for ${randomInvitation.match.name}`;
+        notification.recipient =
+          players[Math.floor(Math.random() * players.length)];
+        return notification;
+      })
+      .createMany(100);
+
+    const notifications = await factory(Notification)()
+      .map(async (notifications) => {
+        notifications.type = 'Message';
+        notifications.recipient =
+          players[Math.floor(Math.random() * players.length)];
+        return notifications;
+      })
+      .createMany(100);
   }
 }
