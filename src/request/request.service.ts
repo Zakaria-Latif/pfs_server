@@ -1,4 +1,10 @@
-import { BadRequestException, Inject, Injectable, UnauthorizedException, forwardRef } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRequestInput } from './dto/create-request.input';
@@ -47,19 +53,26 @@ export class RequestService {
 
   async create(createRequestInput: CreateRequestInput): Promise<Request> {
     // Checking if a request has already made by the player for the match
-    const request=await this.requestRepository.find({where: {
-      matchId: createRequestInput.matchId,
-      creatorId: createRequestInput.creatorId
-    }});
-    if(request){
-      throw new BadRequestException("Whoops you have already made a request to join, plz be patient");
+    const request = await this.requestRepository.find({
+      where: {
+        matchId: createRequestInput.matchId,
+        creatorId: createRequestInput.creatorId,
+      },
+    });
+    if (request) {
+      throw new BadRequestException(
+        'Whoops you have already made a request to join, plz be patient',
+      );
     }
 
     // Checking if the player is already in the match
-    const matchToPlayer=this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(createRequestInput.matchId, 
-      createRequestInput.matchId);
-    if(matchToPlayer){
-      throw new BadRequestException("Whoops you are already in the match");
+    const matchToPlayer =
+      this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(
+        createRequestInput.matchId,
+        createRequestInput.matchId,
+      );
+    if (matchToPlayer) {
+      throw new BadRequestException('Whoops you are already in the match');
     }
 
     const player = await this.playerService.findOne(
@@ -104,17 +117,24 @@ export class RequestService {
     return request;
   }
 
-  async acceptMatchRequest(id: number, connectedPlayerId: number): Promise<Request> {
+  async acceptMatchRequest(
+    id: number,
+    connectedPlayerId: number,
+  ): Promise<Request> {
     //Update Request
     const request = await this.requestRepository.findOne({
       where: { id: id },
       relations: ['match', 'creator'],
     });
-    if(!request){
-      throw new BadRequestException("This request does not exist please verify the id");
+    if (!request) {
+      throw new BadRequestException(
+        'This request does not exist please verify the id',
+      );
     }
-    if(request.creatorId!==connectedPlayerId){
-      throw new UnauthorizedException("You cannot accept this request, you are not the owner");
+    if (request.creatorId !== connectedPlayerId) {
+      throw new UnauthorizedException(
+        'You cannot accept this request, you are not the owner',
+      );
     }
 
     request.isAccepted = true;
@@ -131,6 +151,15 @@ export class RequestService {
 
     await this.matchToPlayerService.create(createMatchToPlayer);
 
+    //Mark Old Notification as read
+    const notification = await this.notificationService.getNotificationByEntity(
+      request.id,
+    );
+    await this.notificationService.markNotificationAsRead(
+      notification.id,
+      connectedPlayerId,
+    );
+
     // Create a notification to inform the player that the request has been accepted
     const createNotificationInput = new CreateNotificationInput();
     createNotificationInput.title = 'Request Accepted';
@@ -138,22 +167,33 @@ export class RequestService {
     createNotificationInput.recipientId = player.id;
     createNotificationInput.type = RequestType.MESSAGE;
 
-    const notification = await this.notificationService.createNotification(
-      createNotificationInput,
-    );
+    await this.notificationService.createNotification(createNotificationInput);
     return request;
   }
 
-  async refuseMatchRequest(id: number): Promise<Request> {
+  async refuseMatchRequest(
+    id: number,
+    connectedPlayerId: number,
+  ): Promise<Request> {
     const request = await this.requestRepository.findOne({ where: { id: id } });
-    if(!request){
-      throw new BadRequestException("This request does not exist or it has already been accepted or deleted");
+    if (!request) {
+      throw new BadRequestException(
+        'This request does not exist or it has already been accepted or deleted',
+      );
     }
     const match = await this.matchService.findOne(request.matchId);
     const player = await this.playerService.findOne(request.creatorId);
     const matchCreator = await this.playerService.findOne(match.creatorId);
 
-    
+    //Mark Old Notification as read
+    const notification = await this.notificationService.getNotificationByEntity(
+      request.id,
+    );
+    await this.notificationService.markNotificationAsRead(
+      notification.id,
+      connectedPlayerId,
+    );
+
     // Create a notification to inform the player that the request has been refused
     const createNotificationInput = new CreateNotificationInput();
     createNotificationInput.title = 'Request Refused';

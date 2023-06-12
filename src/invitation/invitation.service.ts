@@ -1,4 +1,9 @@
-import { Injectable, Inject, forwardRef, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  forwardRef,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateInvitationInput } from './dto/create-invitation.input';
@@ -32,8 +37,8 @@ export class InvitationService {
   async findAll(connectedPlayerId: number): Promise<Invitation[]> {
     return this.invitationRepository.find({
       where: {
-        recipientId: connectedPlayerId
-      }
+        recipientId: connectedPlayerId,
+      },
     });
   }
 
@@ -48,64 +53,84 @@ export class InvitationService {
   async findAllByCreatorId(creatorId: number): Promise<Invitation[]> {
     return this.invitationRepository.find({ where: { creatorId } });
   }
-  
+
   async findAllByMatchId(matchId: number): Promise<Invitation[]> {
     return this.invitationRepository.find({ where: { matchId } });
   }
 
-  async create(matchId: number, connectedPlayerId: number): Promise<Invitation> {
+  async create(
+    matchId: number,
+    connectedPlayerId: number,
+  ): Promise<Invitation> {
     // Check if the invitation has already been sent
-    const alreadyMadeInvitation=await this.invitationRepository.find({
+    const alreadyMadeInvitation = await this.invitationRepository.find({
       where: {
         creatorId: connectedPlayerId,
-        matchId
-      }
+        matchId,
+      },
     });
-    if(alreadyMadeInvitation.length){
-      throw new BadRequestException("You have already sent an invitation, please just wait the admin will review your request:)");
+    if (alreadyMadeInvitation.length) {
+      throw new BadRequestException(
+        'You have already sent an invitation, please just wait the admin will review your request:)',
+      );
     }
 
-    const match = await this.matchService.findOne(
-      matchId,
-    );
-    if(!match){
-      throw new BadRequestException("The match does not exist maybe it has been deleted");
+    const match = await this.matchService.findOne(matchId);
+    if (!match) {
+      throw new BadRequestException(
+        'The match does not exist maybe it has been deleted',
+      );
     }
 
-    const recipient = await this.playerService.findOne(
-      match.creatorId
-    );
-    if(!recipient){
-      throw new BadRequestException("The player you are sending the invitaton to does not exist");
+    const recipient = await this.playerService.findOne(match.creatorId);
+    if (!recipient) {
+      throw new BadRequestException(
+        'The player you are sending the invitaton to does not exist',
+      );
     }
-    if(match.creatorId===connectedPlayerId){
-      throw new BadRequestException("You are already the creator of this match, no need to join, you are already in");
+    if (match.creatorId === connectedPlayerId) {
+      throw new BadRequestException(
+        'You are already the creator of this match, no need to join, you are already in',
+      );
     }
 
     const creator = await this.playerService.findOne(connectedPlayerId);
-    
-    if(!creator){
-      throw new BadRequestException("The player you are sending the invitaton to does not exist");
+
+    if (!creator) {
+      throw new BadRequestException(
+        'The player you are sending the invitaton to does not exist',
+      );
     }
-    
 
-    const invitation = new Invitation();
-    invitation.matchId = matchId;
-    invitation.recipientId = match.creatorId;
-    invitation.creatorId = connectedPlayerId;
+    //Check Players Number
+    const matchToPlayers =
+      await this.matchToPlayerService.findMatchToPlayerByMatchId(match.id);
 
-    const createdInvitation = await this.invitationRepository.save(invitation);
+    if (matchToPlayers.length < match.playersNumber) {
+      const invitation = new Invitation();
+      invitation.matchId = matchId;
+      invitation.recipientId = match.creatorId;
+      invitation.creatorId = connectedPlayerId;
 
-    // Create a notification to inform the recipient about the new invitation
-    const createNotificationInput = new CreateNotificationInput();
-    createNotificationInput.title = 'Match Invitation';
-    createNotificationInput.message = `${creator.username} sent a match invitation for ${match.name}`;
-    createNotificationInput.recipientId = recipient.id;
-    createNotificationInput.type = RequestType.INVITATION;
-    createNotificationInput.entityId=createdInvitation.id;
+      const createdInvitation = await this.invitationRepository.save(
+        invitation,
+      );
 
-    await this.notificationService.createNotification(createNotificationInput);
-    return createdInvitation;
+      // Create a notification to inform the recipient about the new invitation
+      const createNotificationInput = new CreateNotificationInput();
+      createNotificationInput.title = 'Match Invitation';
+      createNotificationInput.message = `${creator.username} sent a match invitation for ${match.name}`;
+      createNotificationInput.recipientId = recipient.id;
+      createNotificationInput.type = RequestType.INVITATION;
+      createNotificationInput.entityId = createdInvitation.id;
+
+      await this.notificationService.createNotification(
+        createNotificationInput,
+      );
+      return createdInvitation;
+    } else {
+      throw new Error('Maximum number of players reached for the match.');
+    }
   }
 
   async update(
@@ -126,26 +151,36 @@ export class InvitationService {
     return invitation;
   }
 
-  async acceptInvitation(id: number, connectedPlayerId: number): Promise<Invitation> {
+  async acceptInvitation(
+    id: number,
+    connectedPlayerId: number,
+  ): Promise<Invitation> {
     const invitation = await this.invitationRepository.findOne({
       where: { id: id },
       relations: ['match', 'recipient'],
     });
-    if(connectedPlayerId!==invitation.recipientId){
-      throw new BadRequestException("You cannot accept this invitation, it's not meant for you");
+    if (connectedPlayerId !== invitation.recipientId) {
+      throw new BadRequestException(
+        "You cannot accept this invitation, it's not meant for you",
+      );
     }
 
     if (!invitation) {
-      throw new BadRequestException("This invitaton does not exist");
-
+      throw new BadRequestException('This invitaton does not exist');
     }
     invitation.isAccepted = true;
     await this.invitationRepository.save(invitation);
 
     // Checking if the player is already in the match
-    const matchToPlayer=await this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(invitation.matchId, invitation.creatorId);
-    if(matchToPlayer.length){
-      throw new BadRequestException("Whoops this player is already in the match");
+    const matchToPlayer =
+      await this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(
+        invitation.matchId,
+        invitation.creatorId,
+      );
+    if (matchToPlayer.length) {
+      throw new BadRequestException(
+        'Whoops this player is already in the match',
+      );
     }
 
     //Create MatchToPlayer
@@ -159,20 +194,32 @@ export class InvitationService {
 
     await this.matchToPlayerService.create(matchToPlayerinput);
 
+    //Mark Old Notification as read
+    const notification = await this.notificationService.getNotificationByEntity(
+      invitation.id,
+    );
+    await this.notificationService.markNotificationAsRead(
+      notification.id,
+      connectedPlayerId,
+    );
+
     // Create a notification to inform the recipient that the invitation has been accepted
     const createNotificationInput = new CreateNotificationInput();
     createNotificationInput.title = 'Invitation Accepted';
     createNotificationInput.message = `Your invitation for match ${match.name} has been accepted by ${recipient.username}`;
     createNotificationInput.recipientId = match.creatorId;
     createNotificationInput.type = RequestType.MESSAGE;
-    createNotificationInput.entityId=invitation.id;
+    createNotificationInput.entityId = invitation.id;
 
     await this.notificationService.createNotification(createNotificationInput);
 
     return invitation;
   }
 
-  async refuseInvitation(id: number): Promise<Invitation> {
+  async refuseInvitation(
+    id: number,
+    connectedPlayerId: number,
+  ): Promise<Invitation> {
     const invitation = await this.invitationRepository.findOne({
       where: { id: id },
       relations: ['match', 'recipient'],
@@ -184,13 +231,22 @@ export class InvitationService {
     const match = invitation.match;
     const recipient = invitation.recipient;
 
+    //Mark Old Notification as read
+    const notification = await this.notificationService.getNotificationByEntity(
+      invitation.id,
+    );
+    await this.notificationService.markNotificationAsRead(
+      notification.id,
+      connectedPlayerId,
+    );
+
     // Create a notification to inform the recipient that the invitation has been refused
     const createNotificationInput = new CreateNotificationInput();
     createNotificationInput.title = 'Invitation Refused';
     createNotificationInput.message = `Your invitation for match ${match.name} has been refused by ${recipient.username}`;
     createNotificationInput.recipientId = match.creatorId;
     createNotificationInput.type = RequestType.MESSAGE;
-    createNotificationInput.entityId=invitation.id;
+    createNotificationInput.entityId = invitation.id;
 
     await this.notificationService.createNotification(createNotificationInput);
 

@@ -26,7 +26,6 @@ export class InvitationResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [Invitation])
-
   async invitations(@Context() context: any): Promise<Invitation[]> {
     return this.invitationService.findAll(context.req.user.id);
   }
@@ -53,7 +52,7 @@ export class InvitationResolver {
   ): Promise<Invitation[]> {
     return this.invitationService.findAllByCreatorId(id);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Query(() => [Invitation])
   async invitationByMatchId(
@@ -66,7 +65,7 @@ export class InvitationResolver {
   @Mutation(() => Invitation)
   async createInvitation(
     @Args('matchId', { type: () => Int }) matchId: number,
-    @Context() context: any
+    @Context() context: any,
   ): Promise<Invitation> {
     return this.invitationService.create(matchId, context.req.user.id);
   }
@@ -91,7 +90,7 @@ export class InvitationResolver {
   @Mutation(() => Invitation)
   async acceptInvitation(
     @Args('id', { type: () => Int }) id: number,
-    @Context() context: any
+    @Context() context: any,
   ): Promise<Invitation> {
     return this.invitationService.acceptInvitation(id, context.req.user.id);
   }
@@ -100,8 +99,9 @@ export class InvitationResolver {
   @Mutation(() => Invitation)
   async refuseInvitation(
     @Args('id', { type: () => Int }) id: number,
+    @Context() context: any,
   ): Promise<Invitation> {
-    return this.invitationService.refuseInvitation(id);
+    return this.invitationService.refuseInvitation(id, context.req.user.id);
   }
 
   @ResolveField(() => Player)
