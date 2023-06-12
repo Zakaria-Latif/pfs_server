@@ -42,6 +42,7 @@ export class NotificationService {
   async getMyNotifications(connectedPlayerId: number): Promise<Notification[]> {
     return await this.notificationRepository.find({
       where: { recipient: { id: connectedPlayerId } },
+      order: { updatedAt: 'DESC' },
     });
   }
 

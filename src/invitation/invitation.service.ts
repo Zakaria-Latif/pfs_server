@@ -143,8 +143,8 @@ export class InvitationService {
     await this.invitationRepository.save(invitation);
 
     // Checking if the player is already in the match
-    const matchToPlayer=this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(invitation.matchId, connectedPlayerId);
-    if(matchToPlayer){
+    const matchToPlayer=await this.matchToPlayerService.findMatchToPlayerByMatchIdAndPlayerId(invitation.matchId, invitation.creatorId);
+    if(matchToPlayer.length){
       throw new BadRequestException("Whoops this player is already in the match");
     }
 
@@ -154,8 +154,8 @@ export class InvitationService {
 
     const matchToPlayerinput = new CreateMatchToPlayerInput();
 
-    matchToPlayerinput.matchId = match.id;
-    matchToPlayerinput.playerId = recipient.id;
+    matchToPlayerinput.matchId = invitation.matchId;
+    matchToPlayerinput.playerId = invitation.creatorId;
 
     await this.matchToPlayerService.create(matchToPlayerinput);
 
@@ -165,6 +165,7 @@ export class InvitationService {
     createNotificationInput.message = `Your invitation for match ${match.name} has been accepted by ${recipient.username}`;
     createNotificationInput.recipientId = match.creatorId;
     createNotificationInput.type = RequestType.MESSAGE;
+    createNotificationInput.entityId=invitation.id;
 
     await this.notificationService.createNotification(createNotificationInput);
 
@@ -189,6 +190,7 @@ export class InvitationService {
     createNotificationInput.message = `Your invitation for match ${match.name} has been refused by ${recipient.username}`;
     createNotificationInput.recipientId = match.creatorId;
     createNotificationInput.type = RequestType.MESSAGE;
+    createNotificationInput.entityId=invitation.id;
 
     await this.notificationService.createNotification(createNotificationInput);
 
