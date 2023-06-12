@@ -26,10 +26,12 @@ import { Request } from 'src/request/entities/request.entity';
 import { Invitation } from 'src/invitation/entities/invitation.entity';
 import { Calendar } from 'src/calendar/entities/calendar.entity';
 import { SearchPlayerInput } from './dto/search-player.input';
+import { NotificationService } from 'src/notification/notification.service';
+import { Notification } from 'src/notification/entities/notification.entity';
 
 @Resolver(() => Player)
 export class PlayerResolver {
-  constructor(private readonly playerService: PlayerService) {}
+  constructor(private readonly playerService: PlayerService, public readonly notificationService: NotificationService) {}
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Player)
@@ -123,5 +125,10 @@ export class PlayerResolver {
   @ResolveField((returns) => [Calendar])
   async getPlayerCalendar(@Parent() player: Player): Promise<Calendar> {
     return this.playerService.getPlayerCalendar(player.id);
+  }
+
+  @ResolveField((returns) => [Notification])
+  async notifications(@Parent() player: Player): Promise<Notification[]> {
+    return this.notificationService.getMyNotifications(player.id);
   }
 }
